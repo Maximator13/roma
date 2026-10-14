@@ -14,8 +14,6 @@ import { useTimelineGestures, useTimelineKeys } from './useTimelineInput.ts'
 import { animateView } from './viewAnimation.ts'
 import { viewAround, yearToX, type Viewport } from './viewport.ts'
 
-const ROW_HEIGHT = 28
-const BASELINE_HEIGHT = 14
 
 function eventLabel(event: HistoricalEvent): string {
   return `${event.title}, ${formatDate(event)}, ${CERTAINTY[event.certainty].label.toLowerCase()}`
@@ -61,7 +59,7 @@ function Ticks({ view, width }: { view: Viewport; width: number }) {
 function EventItem({ placed, selected }: { placed: PlacedEvent; selected: boolean }) {
   const { event, x, row } = placed
   const className = `event event--${event.certainty}${selected ? ' is-selected' : ''}${row === null ? ' is-compact' : ''}`
-  const top = row === null ? undefined : row * ROW_HEIGHT
+  const top = row === null ? undefined : `calc(var(--row-height) * ${row})`
   return (
     <button
       type="button"
@@ -78,7 +76,7 @@ function EventItem({ placed, selected }: { placed: PlacedEvent; selected: boolea
 }
 
 function Lane({ layout, selectedId }: { layout: LaneLayout; selectedId: string | null }) {
-  const height = layout.rows * ROW_HEIGHT + BASELINE_HEIGHT
+  const height = `calc(var(--row-height) * ${layout.rows} + var(--baseline-height))`
   return (
     <div className={`lane lane--${layout.lane}`} style={{ height }}>
       {layout.segments.map((segment) => (

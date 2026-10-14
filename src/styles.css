@@ -9,6 +9,7 @@
   --font-display: 'Cinzel', 'Times New Roman', serif;
   --font-text: 'EB Garamond', Georgia, serif;
   --row-height: 28px;
+  --baseline-height: 14px;
   color-scheme: dark;
 }
 
@@ -627,8 +628,13 @@ a {
     display: none;
   }
 
+  :root {
+    --row-height: 22px;
+    --baseline-height: 12px;
+  }
+
   .app::before {
-    background: linear-gradient(to top, rgb(10 7 5 / 0.85) 0%, rgb(10 7 5 / 0.5) 45%, transparent 75%);
+    background: linear-gradient(to top, rgb(10 7 5 / 0.92) 0%, rgb(10 7 5 / 0.72) 50%, transparent 85%);
   }
 
   .main {
@@ -655,6 +661,11 @@ a {
     width: 100%;
     border-left: 0;
     border-top: 2px solid var(--accent);
+    background: rgb(16 11 8);
+  }
+
+  .event {
+    font-size: 0.85rem;
   }
 
   .timeline__help {
