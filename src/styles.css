@@ -417,6 +417,10 @@ a {
   white-space: nowrap;
 }
 
+.lanes {
+  min-height: calc(var(--row-height) * 6 + var(--baseline-height) * 4);
+}
+
 .lane {
   position: relative;
   overflow: hidden;
@@ -478,6 +482,12 @@ a {
   bottom: 1px;
   height: 12px;
   padding: 0;
+}
+
+.event.is-compact::after {
+  content: '';
+  position: absolute;
+  inset: -10px -7px -4px;
 }
 
 .event.is-compact .event__marker {

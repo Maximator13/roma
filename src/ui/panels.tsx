@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { formatDate, formatRange } from '../core/dates.ts'
+import { frenchSpacing } from '../core/typography.ts'
 import { eras } from '../data/eras.ts'
 import type { Page } from '../data/pages.ts'
 import { people } from '../data/people.ts'
@@ -77,10 +78,10 @@ export function EventPanel({ event }: { event: HistoricalEvent }) {
           <strong>
             {UI.certainty} : {certainty.label.toLowerCase()}.
           </strong>{' '}
-          {event.certaintyNote ?? certainty.description}
+          {frenchSpacing(event.certaintyNote ?? certainty.description)}
         </span>
       </p>
-      <p className="panel__summary">{event.summary}</p>
+      <p className="panel__summary">{frenchSpacing(event.summary)}</p>
       <Markdown className="panel__body prose" source={event.body} />
       {(place || persons.length > 0) && (
         <dl className="panel__facts">
@@ -124,7 +125,7 @@ export function NotFoundPanel() {
       <h2 id="panel-title" className="panel__title" tabIndex={-1}>
         {UI.notFoundTitle}
       </h2>
-      <p>{UI.notFoundText}</p>
+      <p>{frenchSpacing(UI.notFoundText)}</p>
       <p>
         <a href="#/">{UI.backHome}</a>
       </p>
@@ -139,8 +140,8 @@ export function EraCaption({ index }: { index: number }) {
     <section className="era-caption" aria-live="polite">
       <h2 className="era-caption__name">{era.name}</h2>
       <p className="era-caption__range">{formatRange(era.start, era.end)}</p>
-      <p className="era-caption__summary">{era.summary}</p>
-      <p className="era-caption__note">{era.boundsNote}</p>
+      <p className="era-caption__summary">{frenchSpacing(era.summary)}</p>
+      <p className="era-caption__note">{frenchSpacing(era.boundsNote)}</p>
     </section>
   )
 }

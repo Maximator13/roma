@@ -1,5 +1,6 @@
 import { marked } from 'marked'
 import { useMemo } from 'react'
+import { frenchSpacing } from '../core/typography.ts'
 
 marked.use({
   renderer: {
@@ -12,6 +13,6 @@ marked.use({
 })
 
 export function Markdown({ source, className }: { source: string; className?: string }) {
-  const html = useMemo(() => marked.parse(source, { async: false }), [source])
+  const html = useMemo(() => marked.parse(frenchSpacing(source), { async: false }), [source])
   return <div className={className} dangerouslySetInnerHTML={{ __html: html }} />
 }

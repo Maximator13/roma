@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { formatDate } from './core/dates.ts'
+import { frenchSpacing } from './core/typography.ts'
 import { internalRoute, routeToHash, type Route } from './core/route.ts'
 import { eras } from './data/eras.ts'
 import { events } from './data/events.ts'
@@ -110,7 +111,7 @@ function Intro() {
   if (!first) return null
   return (
     <div className="intro">
-      <p className="intro__tagline">{UI.tagline}</p>
+      <p className="intro__tagline">{frenchSpacing(UI.tagline)}</p>
       <button type="button" className="button button--primary" onClick={() => animateView(viewAround(first.start, first.end, 0.04), 1.2)}>
         {UI.startCta}
       </button>
