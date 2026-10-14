@@ -35,3 +35,14 @@ export function routeToHash(route: Route): string {
       return `#/${route.path}`
   }
 }
+
+export function routeFromLocation(pathname: string, hash: string, base: string): Route {
+  if (hash.replace(/^#\/?/, '') !== '') return parseHash(hash)
+  const path = pathname.startsWith(base) ? pathname.slice(base.length) : ''
+  return path.replace(/\/+$/, '') === '' || path === 'index.html' ? { name: 'home' } : parseHash(`#/${path}`)
+}
+
+export function internalRoute(href: string, base: string): Route | null {
+  const hash = href.startsWith('#/') ? href : href.startsWith(`${base}#/`) ? href.slice(base.length) : null
+  return hash === null ? null : parseHash(hash)
+}

@@ -10,3 +10,7 @@ export const SITE = {
 } as const
 
 export const SITE_URL = `${SITE.origin}${SITE.base}`
+
+export const ANALYTICS: { goatcounterCode: string | null } = {
+  goatcounterCode: null,
+}

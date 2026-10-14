@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { eras } from '../data/eras.ts'
-import { ERA_GRADING, gradingAt, mixGrading, rgbToCss } from './grading.ts'
+import { BACKGROUND, ERA_GRADING, contrastRatio, gradingAt, mixGrading, readableAccent, rgbToCss } from './grading.ts'
 
 describe('gradingAt', () => {
   it('uses the era grading well inside an era', () => {
@@ -26,5 +26,18 @@ describe('gradingAt', () => {
 describe('rgbToCss', () => {
   it('clamps channels', () => {
     expect(rgbToCss([1.2, 0.5, -0.1])).toBe('rgb(255 128 0)')
+  })
+})
+
+describe('readableAccent', () => {
+  it('keeps text and markers readable on the dark background in every era and transition', () => {
+    for (let year = -752; year <= 1453; year += 7) {
+      const accent = readableAccent(gradingAt(year, eras).accent)
+      expect(contrastRatio(accent, BACKGROUND)).toBeGreaterThanOrEqual(4.5)
+    }
+  })
+
+  it('computes the reference contrast of black on white', () => {
+    expect(contrastRatio([1, 1, 1], [0, 0, 0])).toBeCloseTo(21)
   })
 })

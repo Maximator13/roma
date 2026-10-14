@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseHash, routeToHash } from './route.ts'
+import { internalRoute, parseHash, routeFromLocation, routeToHash } from './route.ts'
 
 describe('parseHash', () => {
   it('reads the home route', () => {
@@ -26,5 +26,31 @@ describe('routeToHash', () => {
     for (const hash of ['#/', '#/evenement/chute-de-constantinople', '#/sources']) {
       expect(routeToHash(parseHash(hash))).toBe(hash)
     }
+  })
+})
+
+describe('routeFromLocation', () => {
+  it('prefers the hash route', () => {
+    expect(routeFromLocation('/roma/evenement/a/', '#/sources', '/roma/')).toEqual({ name: 'page', id: 'sources' })
+  })
+
+  it('boots share pages into their event', () => {
+    expect(routeFromLocation('/roma/evenement/bataille-de-cannes/', '', '/roma/')).toEqual({
+      name: 'event',
+      id: 'bataille-de-cannes',
+    })
+  })
+
+  it('treats the site root as home', () => {
+    expect(routeFromLocation('/roma/', '', '/roma/')).toEqual({ name: 'home' })
+    expect(routeFromLocation('/roma/index.html', '#/', '/roma/')).toEqual({ name: 'home' })
+  })
+})
+
+describe('internalRoute', () => {
+  it('recognises internal links in both forms and ignores the rest', () => {
+    expect(internalRoute('#/sources', '/roma/')).toEqual({ name: 'page', id: 'sources' })
+    expect(internalRoute('/roma/#/evenement/x', '/roma/')).toEqual({ name: 'event', id: 'x' })
+    expect(internalRoute('https://example.org/', '/roma/')).toBeNull()
   })
 })

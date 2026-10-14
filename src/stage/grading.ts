@@ -143,3 +143,19 @@ export function rgbToCss([r, g, b]: Rgb): string {
   const channel = (value: number) => Math.round(Math.min(1, Math.max(0, value)) * 255)
   return `rgb(${channel(r)} ${channel(g)} ${channel(b)})`
 }
+
+export const BACKGROUND: Rgb = [0.07, 0.05, 0.04]
+
+function relativeLuminance([r, g, b]: Rgb): number {
+  const linear = (value: number) => (value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
+  return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b)
+}
+
+export function contrastRatio(a: Rgb, b: Rgb): number {
+  const [light, dark] = [relativeLuminance(a), relativeLuminance(b)].sort((x, y) => y - x)
+  return (light! + 0.05) / (dark! + 0.05)
+}
+
+export function readableAccent(accent: Rgb): Rgb {
+  return mixRgb(accent, [1, 1, 1], 0.4)
+}

@@ -8,6 +8,7 @@ export default defineConfig({
   build: {
     target: 'es2022',
     assetsInlineLimit: 0,
+    chunkSizeWarningLimit: 1200,
   },
   test: {
     include: ['src/**/*.test.ts', 'scripts/**/*.test.ts'],
