@@ -7,7 +7,6 @@ test('capture the social sharing image', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop')
   await page.goto('./?quality=high')
   await page.locator('.eras__button').first().waitFor()
-  await page.getByRole('button', { name: /^Haut-Empire,/ }).click()
   await page.waitForTimeout(4000)
   await page.screenshot({ path: 'public/og-image.jpg', type: 'jpeg', quality: 82 })
 })
