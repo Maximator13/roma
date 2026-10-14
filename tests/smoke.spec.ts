@@ -1,10 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { gzipSync } from 'node:zlib'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import { events } from '../src/data/events.ts'
 
 const FIRST_SCREEN_BUDGET = 5_000_000
-const COMPRESSED_TYPES = /\.(js|css|html|svg|json|xml|glb|wasm|bin)$/
 
 function watchErrors(page: Page): string[] {
   const errors: string[] = []
@@ -19,22 +17,17 @@ async function timelineReady(page: Page) {
   await expect(page.locator('.eras__button').first()).toBeVisible()
 }
 
-function transferSize(pathname: string): number {
-  const file = `dist${pathname.replace(/^\/roma/, '')}`
-  if (!existsSync(file)) return 0
-  const content = readFileSync(file)
-  return COMPRESSED_TYPES.test(file) ? gzipSync(content).length : content.length
-}
-
 test('home loads without console errors and within the first screen budget', async ({ page }, testInfo) => {
   const errors = watchErrors(page)
-  const requested = new Set<string>()
-  page.on('request', (request) => requested.add(new URL(request.url()).pathname))
+  const transfers: Promise<{ url: string; bytes: number }>[] = []
+  page.on('requestfinished', (request) => {
+    transfers.push(request.sizes().then((sizes) => ({ url: new URL(request.url()).pathname, bytes: sizes.responseBodySize })))
+  })
   await page.goto('./')
   await timelineReady(page)
   await expect(page.locator('.stage canvas')).toBeAttached()
   await page.waitForLoadState('networkidle')
-  const files = [...requested].map((pathname) => ({ pathname, bytes: transferSize(pathname === '/roma/' ? '/roma/index.html' : pathname) }))
+  const files = await Promise.all(transfers)
   const total = files.reduce((sum, file) => sum + file.bytes, 0)
   mkdirSync('reports', { recursive: true })
   writeFileSync(`reports/first-screen-${testInfo.project.name}.json`, JSON.stringify({ total, files }, null, 2))

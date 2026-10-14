@@ -61,7 +61,7 @@ Site en ligne : https://maximator13.github.io/roma/
 
 ### Poids mesurés et budget
 
-Mesure Playwright sur le build : fichiers réellement demandés au premier affichage, taille gzip pour les types que GitHub Pages compresse.
+Mesure Playwright des octets réellement transférés au premier affichage : 551,6 Ko sur le build local, **557,3 Ko sur le site en ligne** (le 15 octobre 2026, avec la compression gzip de GitHub Pages). La commande `LIVE_URL=https://maximator13.github.io/roma/ npm run test:e2e` relance les tests de fumée sur le site en ligne.
 
 | Poste | Budget | Mesuré |
 |---|---|---|
@@ -74,7 +74,7 @@ Mesure Playwright sur le build : fichiers réellement demandés au premier affic
 | Vidéo | 20 Mo par vidéo | aucune vidéo en phase 1 |
 | Site complet | 600 Mo | **2,09 Mo** (76 fichiers, dont 58 pages de partage) |
 
-Tests : 60 tests unitaires, 12 tests Playwright (6 sur ordinateur, 6 sur mobile), sans aucune erreur console.
+Tests : 60 tests unitaires, 12 tests Playwright (6 sur ordinateur, 6 sur mobile), sans aucune erreur console, en local, en CI et sur le site en ligne. Vérifié en ligne : statut 404 sur une adresse inconnue, redirection HTTP vers HTTPS, balises propres sur les pages de partage, 59 adresses dans `sitemap.xml`.
 
 ### Décisions prises en autonomie (à confirmer ou à changer)
 
