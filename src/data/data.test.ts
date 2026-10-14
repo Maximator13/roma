@@ -39,12 +39,21 @@ describe('validateDataset', () => {
 
   it('reports forbidden dashes anywhere in the data', () => {
     const dash = String.fromCharCode(0x2014)
-    const broken = { ...valid, scenes: [{ id: 'cannes', title: `Cannes ${dash} 216`, status: 'planned' }] }
+    const broken = { ...valid, scenes: valid.scenes.map((scene, index) => (index === 0 ? { ...scene, title: `Cannes ${dash} 216` } : scene)) }
     expect(validateDataset(broken)).toEqual(['data.scenes[0].title: em or en dash'])
   })
 
   it('reports schema problems with the item id', () => {
     const broken = { ...valid, scenes: [{ id: 'Cannes', title: 'Cannes', status: 'planned' }] }
     expect(validateDataset(broken)[0]).toMatch(/^scene Cannes: id /)
+  })
+})
+
+describe('phase 1 coverage', () => {
+  it('has about forty events with at least three in every era', () => {
+    expect(dataset.events.length).toBeGreaterThanOrEqual(40)
+    for (const era of dataset.eras) {
+      expect(dataset.events.filter((event) => event.era === era.id).length).toBeGreaterThanOrEqual(3)
+    }
   })
 })

@@ -53,7 +53,7 @@ Toutes les dates passent par `src/core/dates.ts`, couvert par des tests :
 - années astronomiques : 1 av. J.-C. = 0, 753 av. J.-C. = -752 ; de 753 av. J.-C. à 1453, 2 205 ans ;
 - écriture française : « av. J.-C. » une fois par intervalle ; « apr. J.-C. » seulement de l'an 1 à l'an 99 et pour le Ier siècle ;
 - précisions jour, mois, année, décennie (« vers 120 ») et siècle (« IIIe siècle av. J.-C. ») ;
-- calendrier julien pour toutes les dates, comme les sources.
+- les jours et les mois sont ceux que donnent les sources : calendrier romain préjulien avant la réforme de César (45 av. J.-C.), calendrier julien ensuite, sans conversion (voir `docs/A_VERIFIER.md`).
 
 Les graduations de la frise tombent sur des années historiques rondes des deux côtés de l'ère, sans jamais afficher d'an 0.
 
