@@ -4,6 +4,8 @@ import type { HistoricalEvent } from '../data/schema.ts'
 import { useApp } from '../store.ts'
 import { clampViewport, viewAround, type Viewport } from './viewport.ts'
 
+gsap.ticker.lagSmoothing(0)
+
 let current: gsap.core.Tween | null = null
 
 export function stopViewAnimation() {

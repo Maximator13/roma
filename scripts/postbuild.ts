@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { formatDate } from '../src/core/dates.ts'
 import { events } from '../src/data/events.ts'
@@ -7,6 +7,8 @@ import { CERTAINTY } from '../src/data/ui.ts'
 import { SITE, SITE_URL } from '../src/site.ts'
 
 const DIST = 'dist'
+const SITE_BUDGET = 600_000_000
+const FILE_LIMIT = 100_000_000
 
 export interface PageMeta {
   title: string
@@ -110,12 +112,33 @@ function writePage(relativePath: string, content: string) {
   writeFileSync(file, content)
 }
 
+export function filesIn(directory: string): { path: string; bytes: number }[] {
+  return readdirSync(directory, { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => {
+      const path = join(entry.parentPath, entry.name)
+      return { path, bytes: statSync(path).size }
+    })
+}
+
+function checkSiteBudget() {
+  const files = filesIn(DIST)
+  const total = files.reduce((sum, file) => sum + file.bytes, 0)
+  const oversized = files.filter((file) => file.bytes > FILE_LIMIT)
+  console.log(`Site weight: ${(total / 1e6).toFixed(2)} MB of ${SITE_BUDGET / 1e6} MB, ${files.length} files.`)
+  if (total > SITE_BUDGET || oversized.length > 0) {
+    console.error(`Budget exceeded: ${oversized.map((file) => file.path).join(', ') || 'total site weight'}`)
+    process.exit(1)
+  }
+}
+
 function main() {
   const template = readFileSync(join(DIST, 'index.html'), 'utf8')
   events.forEach((event) => writePage(join(eventPath(event), 'index.html'), sharePage(template, event)))
   writePage('404.html', notFoundPage())
   writePage('sitemap.xml', sitemap(events, new Date().toISOString().slice(0, 10)))
   console.log(`Postbuild: ${events.length} share pages, 404.html, sitemap.xml.`)
+  checkSiteBudget()
 }
 
 if (import.meta.main) main()

@@ -1,5 +1,7 @@
 import { test } from '@playwright/test'
 
+test.skip(!!process.env.CI, 'captures are reviewed locally')
+
 test('capture the home screen', async ({ page }, testInfo) => {
   await page.goto('./')
   await page.locator('.eras__button').first().waitFor()
