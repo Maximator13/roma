@@ -92,7 +92,7 @@ Les bornes des époques sont des conventions d'historiens, expliquées pour chac
 ## Crédits
 
 - Polices : Cinzel (Natanael Gama) et EB Garamond (Georg Duffner et Octavio Pardo), sous licence SIL Open Font License 1.1.
-- Bibliothèques : React, three.js, React Three Fiber, drei, postprocessing (licences MIT), GSAP (licence gratuite propre à Webflow), Zustand, marked.
+- Bibliothèques : React, three.js, React Three Fiber, drei, Zustand et marked (licence MIT), postprocessing (licence zlib), GSAP (licence gratuite propre à Webflow).
 
 La liste complète des ressources, avec leurs auteurs, licences et modifications, est tenue à jour dans le fichier [CREDITS.md](https://github.com/Maximator13/roma/blob/main/CREDITS.md) du dépôt.`,
   },
