@@ -1,10 +1,9 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
-
-export const base = '/roma/'
+import { SITE } from './src/site.ts'
 
 export default defineConfig({
-  base,
+  base: SITE.base,
   plugins: [react()],
   build: {
     target: 'es2022',
