@@ -128,7 +128,6 @@ Tests : 60 tests unitaires, 12 tests Playwright (6 sur ordinateur, 6 sur mobile)
 
 - **Nîmes** : un agent construit la scène dans Blender par script (`blender/kit/` puis `blender/nimes.py`), avec relief IGN, Maison Carrée, forum, Arènes, enceinte, porte d'Auguste, tour Magne et quartiers. Un historien de l'architecture relira ensuite les rendus, puis une passe de corrections suivra.
 - **Fichiers lourds** : scripts `npm run assets` (optimisation meshopt et KTX2, rapport de poids), `assets:publish` (GitHub Releases, manifeste SHA-256) et `assets:pull`, écrits et en relecture.
-- **Recherche** des propositions du pont du Gard, du Panthéon d'Hadrien et de la bataille de Cannes, puis vérification contradictoire de chacune.
 
 ### Poids mesurés (site en ligne)
 
@@ -158,5 +157,5 @@ Tests : 117 tests unitaires et 14 tests Playwright (ordinateur et mobile), verts
 ### Ce que j'attends de toi
 
 1. Valider le plan de design (`docs/DESIGN.md`).
-2. Valider la proposition d'Arles (`docs/scenes/arles.md`).
+2. Valider les propositions de scènes vérifiées : Arles (`docs/scenes/arles.md`), pont du Gard (`docs/scenes/pont-du-gard.md`), Panthéon (`docs/scenes/pantheon.md`, une maquette sous licence NC-ND écartée sauf accord) et Cannes (`docs/scenes/cannes.md`).
 3. Toujours valables : mesures du HUD, relecture de `docs/A_VERIFIER.md` (70 points désormais), Search Console, GoatCounter (facultatif).
