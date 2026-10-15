@@ -18,11 +18,6 @@ function basisTranscoder(): Plugin {
         response.end(readFileSync(BASIS_DIRECTORY + file))
       })
     },
-    generateBundle() {
-      for (const file of BASIS_FILES) {
-        this.emitFile({ type: 'asset', fileName: `basis/${file}`, source: readFileSync(BASIS_DIRECTORY + file) })
-      }
-    },
   }
 }
 

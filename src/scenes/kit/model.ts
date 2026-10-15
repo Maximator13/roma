@@ -13,8 +13,10 @@ const pendingDisposals = new Map<string, ReturnType<typeof setTimeout>>()
 let ktx2: KTX2Loader | null = null
 
 function ktx2For(renderer: WebGLRenderer): KTX2Loader {
-  ktx2 ??= new KTX2Loader().setTranscoderPath(`${import.meta.env.BASE_URL}basis/`).detectSupport(renderer)
-  return ktx2
+  if (ktx2) return ktx2
+  ktx2 = new KTX2Loader()
+  if (import.meta.env.DEV) ktx2.setTranscoderPath(`${import.meta.env.BASE_URL}basis/`)
+  return ktx2.detectSupport(renderer)
 }
 
 export function assetUrl(path: string): string {
