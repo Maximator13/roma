@@ -144,6 +144,12 @@ export const scenePointSchema = z.strictObject({
   sources: z.array(label).min(1),
 })
 
+export const ambienceSchema = z.strictObject({
+  layer: slug,
+  volume: z.number().min(0).max(1),
+  points: z.array(slug).min(1).optional(),
+})
+
 export const sceneSchema = z.strictObject({
   id: slug,
   title: label,
@@ -153,6 +159,7 @@ export const sceneSchema = z.strictObject({
   lon: z.number().min(-180).max(180).optional(),
   summary: label.optional(),
   points: z.array(scenePointSchema).optional(),
+  ambience: z.array(ambienceSchema).optional(),
 })
 
 export type EraId = (typeof ERA_IDS)[number]
@@ -167,6 +174,7 @@ export type Place = z.infer<typeof placeSchema>
 export type Person = z.infer<typeof personSchema>
 export type Scene = z.infer<typeof sceneSchema>
 export type ScenePoint = z.infer<typeof scenePointSchema>
+export type Ambience = z.infer<typeof ambienceSchema>
 export type City = z.infer<typeof citySchema>
 export type Waypoint = z.infer<typeof waypointSchema>
 export type Itinerary = z.infer<typeof itinerarySchema>

@@ -73,6 +73,8 @@ export const UI = {
   sceneEnter: (name: string) => `Visiter ${name} en 3D`,
   sceneDate: 'Date de la scène',
   sceneShortcuts: 'À visiter en 3D',
+  soundOn: 'Son : activé',
+  soundOff: 'Son : coupé',
   sources: 'Sources',
 } as const
 

@@ -1,6 +1,6 @@
 import { PerformanceMonitor } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { EffectComposer, ToneMapping, Vignette } from '@react-three/postprocessing'
+import { EffectComposer, N8AO, ToneMapping, Vignette } from '@react-three/postprocessing'
 import { ToneMappingMode } from 'postprocessing'
 import { Component, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { HalfFloatType, UnsignedByteType } from 'three'
@@ -12,18 +12,26 @@ import { useApp } from '../store.ts'
 import { DebugHud, StatsProbe } from './DebugHud.tsx'
 import { gradingAt } from './grading.ts'
 import { GradingEffect } from './GradingEffect.ts'
-import { QUALITY, isDebug, stepQuality } from './quality.ts'
+import { QUALITY, isDebug, stepQuality, type QualityTier } from './quality.ts'
 import { SceneHost } from './SceneHost.tsx'
 import { useSceneSwap } from './useSceneSwap.ts'
 
 const TERRAIN_SEGMENTS = { low: 256, medium: 448, high: 640 } as const
 const TERRAIN_DETAIL = { low: 0.4, medium: 1, high: 1 } as const
 
-function Effects({ multisampling, halfFloat }: { multisampling: number; halfFloat: boolean }) {
+function Effects({ multisampling, halfFloat, ambientOcclusion }: { multisampling: number; halfFloat: boolean; ambientOcclusion: AmbientOcclusion }) {
   const grading = useMemo(() => new GradingEffect(), [])
   useFrame(() => grading.applyGrading(gradingAt(useApp.getState().view.center, eras)))
   return (
     <EffectComposer multisampling={multisampling} frameBufferType={halfFloat ? HalfFloatType : UnsignedByteType}>
+      <N8AO
+        enabled={ambientOcclusion !== 'off'}
+        halfRes={ambientOcclusion === 'half'}
+        quality="performance"
+        aoRadius={2.5}
+        distanceFalloff={1}
+        intensity={2.2}
+      />
       <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
       <primitive object={grading} dispose={null} />
       <Vignette offset={0.3} darkness={0.55} />
@@ -45,6 +53,13 @@ class SceneBoundary extends Component<{ id: string; children: ReactNode }, { fai
   render() {
     return this.state.failed ? null : this.props.children
   }
+}
+
+type AmbientOcclusion = 'off' | 'half' | 'full'
+
+function ambientOcclusionFor(sceneShown: boolean, quality: QualityTier): AmbientOcclusion {
+  if (!sceneShown || quality === 'low') return 'off'
+  return quality === 'high' ? 'full' : 'half'
 }
 
 function changeQuality(direction: 1 | -1) {
@@ -120,7 +135,12 @@ export default function Stage() {
               <SceneHost id={shown} insets={insets} quality={quality} onReady={onReady} />
             </SceneBoundary>
           )}
-          <Effects key={quality} multisampling={settings.multisampling} halfFloat={settings.halfFloat} />
+          <Effects
+            key={quality}
+            multisampling={settings.multisampling}
+            halfFloat={settings.halfFloat}
+            ambientOcclusion={ambientOcclusionFor(shown !== null, quality)}
+          />
           {debug && <StatsProbe />}
         </Canvas>
         <div ref={veil} className="veil">

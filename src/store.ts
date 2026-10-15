@@ -10,11 +10,31 @@ interface AppState {
   quality: QualityTier
   scenePoint: number
   failedScene: string | null
+  soundOn: boolean
+  setSoundOn: (soundOn: boolean) => void
   setRoute: (route: Route) => void
   setScenePoint: (point: number) => void
   setFailedScene: (id: string | null) => void
   setView: (view: Viewport) => void
   setQuality: (quality: QualityTier) => void
+}
+
+const SOUND_KEY = 'roma.sound'
+
+function storedSound(): boolean {
+  try {
+    return localStorage.getItem(SOUND_KEY) === 'on'
+  } catch {
+    return false
+  }
+}
+
+function storeSound(soundOn: boolean) {
+  try {
+    localStorage.setItem(SOUND_KEY, soundOn ? 'on' : 'off')
+  } catch {
+    return
+  }
 }
 
 function isSameRoute(first: Route, second: Route): boolean {
@@ -31,6 +51,11 @@ export const useApp = create<AppState>()((set) => ({
   quality: initialQuality(),
   scenePoint: 0,
   failedScene: null,
+  soundOn: storedSound(),
+  setSoundOn: (soundOn) => {
+    storeSound(soundOn)
+    set({ soundOn })
+  },
   setRoute: (route) =>
     set((state) => {
       if (route.name !== 'scene') return { route, failedScene: null }

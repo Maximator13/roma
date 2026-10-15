@@ -361,6 +361,17 @@ export const cities: City[] = [
     "scene": "arles"
   },
   {
+    "id": "pont-du-gard",
+    "name": "Pont du Gard",
+    "lat": 43.94725,
+    "lon": 4.53529,
+    "pleiadesId": 149496,
+    "from": 50,
+    "importance": 3,
+    "note": "Pont de l'aqueduc de Nîmes sur le Gardon, achevé vers le milieu du Ier siècle apr. J.-C. ; trois étages d'arches, 48,77 m de hauteur.",
+    "scene": "pont-du-gard"
+  },
+  {
     "id": "narbonne",
     "name": "Narbonne",
     "ancientName": "Narbo Martius",

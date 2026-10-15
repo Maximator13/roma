@@ -372,6 +372,30 @@ a {
   margin: 1.25rem 0 0.5rem;
 }
 
+.scene__status {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.scene__sound {
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: none;
+  color: var(--ink-muted);
+  font: 400 0.75rem/1.4 var(--font-display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.scene__sound[aria-pressed='true'] {
+  border-color: var(--accent-ink);
+  color: var(--accent-ink);
+}
+
 .scene__step {
   margin: 0 0 0.75rem;
   color: var(--accent-ink);

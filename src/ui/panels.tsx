@@ -160,6 +160,15 @@ function ScenePoints({ scene, point }: { scene: Scene; point: number }) {
   )
 }
 
+function SoundToggle() {
+  const soundOn = useApp((state) => state.soundOn)
+  return (
+    <button type="button" className="scene__sound" aria-pressed={soundOn} onClick={() => useApp.getState().setSoundOn(!soundOn)}>
+      {soundOn ? UI.soundOn : UI.soundOff}
+    </button>
+  )
+}
+
 export function ScenePanel({ scene }: { scene: Scene }) {
   const point = useApp((state) => state.scenePoint)
   const failed = useApp((state) => state.failedScene === scene.id)
@@ -178,7 +187,10 @@ export function ScenePanel({ scene }: { scene: Scene }) {
       {!playable && <p className="panel__summary">{frenchSpacing(failed ? UI.sceneFailed : UI.scenePlanned)}</p>}
       {playable && (
         <>
-          <p className="scene__step">{UI.sceneStep(point + 1, total)}</p>
+          <div className="scene__status">
+            <p className="scene__step">{UI.sceneStep(point + 1, total)}</p>
+            {(scene.ambience?.length ?? 0) > 0 && <SoundToggle />}
+          </div>
           <section className="scene__cartel" aria-live="polite">
             <h3 className="scene__point-title">{current ? current.title : UI.sceneOverview}</h3>
             <p>{frenchSpacing(current ? current.text : (scene.summary ?? ''))}</p>

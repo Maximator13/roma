@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react'
+import { ambienceTargets, playAmbience, pointIdAt } from './core/ambience.ts'
 import { formatDate } from './core/dates.ts'
 import { frenchSpacing } from './core/typography.ts'
 import { internalRoute, routeToHash, type Route } from './core/route.ts'
@@ -146,6 +147,17 @@ function useSceneKeys() {
   }, [])
 }
 
+function useAmbience() {
+  const route = useApp((state) => state.route)
+  const point = useApp((state) => state.scenePoint)
+  const soundOn = useApp((state) => state.soundOn)
+  useEffect(() => {
+    const scene = route.name === 'scene' ? findScene(route.id) : undefined
+    const playable = isPlayable(scene)
+    playAmbience(playable ? ambienceTargets(scene, pointIdAt(scene, point)) : {}, soundOn && playable)
+  }, [route, point, soundOn])
+}
+
 function Intro() {
   const first = eras[0]
   if (!first) return null
@@ -166,6 +178,7 @@ export function App() {
   useEraAccent()
   useFocusOnSelection()
   useSceneKeys()
+  useAmbience()
   const inScene = route.name === 'scene' && isPlayable(findScene(route.id))
   return (
     <>
