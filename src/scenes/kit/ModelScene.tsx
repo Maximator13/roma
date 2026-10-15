@@ -4,6 +4,7 @@ import { QUALITY } from '../../stage/quality.ts'
 import type { SceneProps } from '../registry.ts'
 import { Atmosphere, type HazeSettings, type SunSettings } from './Atmosphere.tsx'
 import { GuidedRail } from './GuidedRail.tsx'
+import { Life } from './Life.tsx'
 import { markerForward, useSceneModel } from './model.ts'
 import { overviewStop, stopFromMarker, type CameraStop } from './rail.ts'
 
@@ -41,6 +42,7 @@ export function ModelScene({ config, scene, point, insets, quality }: SceneProps
     <>
       <Atmosphere sun={config.sun} haze={config.haze} shadows={shadows} />
       <primitive object={model.root} />
+      <Life model={model} quality={quality} shadows={shadows} />
       <GuidedRail stops={stops} index={point} insets={insets} />
     </>
   )

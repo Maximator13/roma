@@ -4,8 +4,13 @@ import { Box3, Mesh, Quaternion, Vector3, type Material, type Object3D, type Web
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
+import { groupRoutes } from './paths.ts'
 
 const MARKER_PREFIX = 'poi_'
+const ROUTE_PREFIX = 'walk_'
+const WALKER_PREFIX = 'walker_'
+const SMOKE_PREFIX = 'smoke_'
+const FLOCK_PREFIX = 'birds_'
 const DISPOSE_DELAY_MS = 1000
 
 const pendingDisposals = new Map<string, ReturnType<typeof setTimeout>>()
@@ -27,6 +32,34 @@ export interface SceneModel {
   root: Object3D
   markers: Map<string, Object3D>
   bounds: Box3
+  routes: Map<string, Vector3[]>
+  walkers: Mesh[]
+  smokes: Vector3[]
+  flocks: Vector3[]
+}
+
+function worldPosition(node: Object3D): Vector3 {
+  return node.getWorldPosition(new Vector3())
+}
+
+function readModel(root: Object3D): SceneModel {
+  root.updateMatrixWorld(true)
+  const markers = new Map<string, Object3D>()
+  const named: { name: string; position: Vector3 }[] = []
+  const walkers: Mesh[] = []
+  const smokes: Vector3[] = []
+  const flocks: Vector3[] = []
+  const bounds = new Box3()
+  root.traverse((child) => {
+    if (child.name.startsWith(MARKER_PREFIX)) markers.set(child.name.slice(MARKER_PREFIX.length), child)
+    else if (child.name.startsWith(ROUTE_PREFIX)) named.push({ name: child.name, position: worldPosition(child) })
+    else if (child.name.startsWith(SMOKE_PREFIX)) smokes.push(worldPosition(child))
+    else if (child.name.startsWith(FLOCK_PREFIX)) flocks.push(worldPosition(child))
+    if (!(child instanceof Mesh)) return
+    if (child.name.startsWith(WALKER_PREFIX)) walkers.push(child)
+    else bounds.expandByObject(child)
+  })
+  return { root, markers, bounds, routes: groupRoutes(named, ROUTE_PREFIX), walkers, smokes, flocks }
 }
 
 function materialsOf(mesh: Mesh): Material[] {
@@ -53,19 +86,13 @@ export function useSceneModel(path: string, shadows: boolean): SceneModel {
     loader.setMeshoptDecoder(MeshoptDecoder)
     loader.setKTX2Loader(ktx2For(renderer))
   })
-  const model = useMemo(() => {
-    const markers = new Map<string, Object3D>()
-    gltf.scene.traverse((child) => {
-      if (child.name.startsWith(MARKER_PREFIX)) markers.set(child.name.slice(MARKER_PREFIX.length), child)
-    })
-    gltf.scene.updateMatrixWorld(true)
-    return { root: gltf.scene, markers, bounds: new Box3().setFromObject(gltf.scene) }
-  }, [gltf])
+  const model = useMemo(() => readModel(gltf.scene), [gltf])
   useEffect(() => {
     model.root.traverse((child) => {
       if (!(child instanceof Mesh)) return
       child.castShadow = shadows
       child.receiveShadow = shadows
+      if (child.name.startsWith(WALKER_PREFIX)) child.visible = false
     })
   }, [model, shadows])
   useEffect(() => {
