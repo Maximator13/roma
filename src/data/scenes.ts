@@ -5,4 +5,5 @@ export const scenes: Scene[] = [
   { id: 'pantheon', title: "Panthéon d'Hadrien", status: 'planned' },
   { id: 'nimes', title: 'Nîmes romaine (Nemausus)', status: 'planned' },
   { id: 'arles', title: 'Arles romaine (Arelate)', status: 'planned' },
+  { id: 'pont-du-gard', title: 'Le pont du Gard', status: 'planned' },
 ]
