@@ -36,7 +36,10 @@ export interface SceneModel {
   walkers: Mesh[]
   smokes: Vector3[]
   flocks: Vector3[]
+  anchors: Map<string, Vector3>
 }
+
+const ANCHOR_NAMES = new Set(['oculus', 'sunbeam_target'])
 
 export function castsShadow(node: Object3D): boolean {
   for (let current: Object3D | null = node; current; current = current.parent) {
@@ -58,7 +61,9 @@ function readModel(root: Object3D): SceneModel {
   const smokes: Vector3[] = []
   const flocks: Vector3[] = []
   const bounds = new Box3()
+  const anchors = new Map<string, Vector3>()
   root.traverse((child) => {
+    if (ANCHOR_NAMES.has(child.name)) anchors.set(child.name, worldPosition(child))
     if (child.name.startsWith(MARKER_PREFIX)) markers.set(child.name.slice(MARKER_PREFIX.length), child)
     else if (child.name.startsWith(ROUTE_PREFIX)) named.push({ name: child.name, position: worldPosition(child) })
     else if (child.name.startsWith(SMOKE_PREFIX)) smokes.push(worldPosition(child))
@@ -67,7 +72,7 @@ function readModel(root: Object3D): SceneModel {
     if (child.name.startsWith(WALKER_PREFIX)) walkers.push(child)
     else bounds.expandByObject(child)
   })
-  return { root, markers, bounds, routes: groupRoutes(named, ROUTE_PREFIX), walkers, smokes, flocks }
+  return { root, markers, bounds, routes: groupRoutes(named, ROUTE_PREFIX), walkers, smokes, flocks, anchors }
 }
 
 function materialsOf(mesh: Mesh): Material[] {

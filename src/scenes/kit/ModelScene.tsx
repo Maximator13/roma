@@ -5,6 +5,7 @@ import type { SceneProps } from '../registry.ts'
 import { Atmosphere, type HazeSettings, type SunSettings } from './Atmosphere.tsx'
 import { GuidedRail } from './GuidedRail.tsx'
 import { Life } from './Life.tsx'
+import { LightShaft } from './LightShaft.tsx'
 import { markerForward, useSceneModel } from './model.ts'
 import { overviewStop, stopFromMarker, type CameraStop } from './rail.ts'
 
@@ -13,6 +14,7 @@ export interface ModelSceneConfig {
   sun: SunSettings
   haze: HazeSettings
   overview: { azimuth: number; elevation: number }
+  forceShadows?: boolean
 }
 
 const OVERVIEW_MARKER = 'vue-d-ensemble'
@@ -30,7 +32,7 @@ export function markerStop(markers: Map<string, Object3D>, id: string): CameraSt
 }
 
 export function ModelScene({ config, scene, point, insets, quality }: SceneProps & { config: ModelSceneConfig }) {
-  const shadows = QUALITY[quality].shadows
+  const shadows = QUALITY[quality].shadows || config.forceShadows === true
   const model = useSceneModel(config.model, shadows)
   const stops = useMemo<CameraStop[]>(() => {
     const overview =
@@ -43,6 +45,9 @@ export function ModelScene({ config, scene, point, insets, quality }: SceneProps
       <Atmosphere sun={config.sun} haze={config.haze} shadows={shadows} />
       <primitive object={model.root} />
       <Life model={model} quality={quality} shadows={shadows} />
+      {model.anchors.has('oculus') && model.anchors.has('sunbeam_target') && (
+        <LightShaft from={model.anchors.get('oculus')!} to={model.anchors.get('sunbeam_target')!} />
+      )}
       <GuidedRail stops={stops} index={point} insets={insets} />
     </>
   )

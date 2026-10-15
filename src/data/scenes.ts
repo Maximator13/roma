@@ -2,7 +2,68 @@ import type { Scene } from './schema.ts'
 
 export const scenes: Scene[] = [
   { id: 'cannes', title: 'Bataille de Cannes', status: 'planned' },
-  { id: 'pantheon', title: "Panthéon d'Hadrien", status: 'planned' },
+  {
+    "id": "pantheon",
+    "title": "Panthéon d'Hadrien",
+    "status": "planned",
+    "year": 129,
+    "lat": 41.89861,
+    "lon": 12.47683,
+    "summary": "Le 21 avril 129, à midi, jour anniversaire de la fondation de Rome. Rebâti sous Trajan et Hadrien sur le temple d'Agrippa, le Panthéon couvre sa rotonde d'une coupole de béton d'environ 43 m de diamètre, aussi haute que large, ouverte au ciel par un oculus de près de 9 m. À midi, la lumière du soleil y découpe une tache qui glisse sur les caissons et les murs.",
+    "points": [
+      {
+        "id": "le-porche",
+        "title": "Granit et bronze : le porche",
+        "text": "Seize fûts monolithes de granit égyptien, d'environ 40 pieds romains (près de 12 m) et 50 tonnes chacun, portent le porche : gris du mont Claudien en façade, roses d'Assouan derrière. Bases et chapiteaux sont en marbre du Pentélique, près d'Athènes. Le toit reposait sur une charpente entièrement en bronze, sans doute la plus ancienne charpente métallique connue. Elle a tenu jusqu'en 1625 : le pape Urbain VIII la fit alors démonter, et l'essentiel de son métal, plus de 150 tonnes, fut fondu en canons. Le porche aurait été conçu pour des colonnes encore plus hautes, jamais arrivées : l'hypothèse reste discutée.",
+        "sources": [
+          "Marder et Wilson Jones 2015, p. 8 et 9 : https://assets.cambridge.org/97805218/09320/excerpt/9780521809320_excerpt.pdf",
+          "Wikipédia (en), Pantheon, Rome (fûts de 40 pieds d'après Wilson Jones ; bronze fondu surtout en canons d'après Lanciani et Fea) : https://en.wikipedia.org/wiki/Pantheon,_Rome",
+          "Université de Cologne, charpente de bronze (1625 et 1626, 180 t) : https://archaeologie.phil-fak.uni-koeln.de/en/research/research-projects/the-bronze-roof-truss-of-the-vestibule-of-the-pantheon-in-rome",
+          "BTU Cottbus (« wohl ältesten metallischen Dachtragwerks ») : https://www.b-tu.de/fg-bautechnikgeschichte/forschung/abgeschlossene-projekte/das-bronzedachwerk-der-vorhalle-des-pantheons-in-rom",
+          "Heinzelmann, Heinzelmann et Lorenz, Construction History 33, 2 (2018) (152 t, titre cité par la page de Cologne)",
+          "Davies, Hemsoll et Wilson Jones, Art History 10 (1987), p. 133 à 153 (colonnes prévues plus grandes, cité par Marder et Wilson Jones, n. 15)"
+        ]
+      },
+      {
+        "id": "la-rotonde",
+        "title": "La coupole à caissons",
+        "text": "La coupole de béton couvre un cercle d'environ 43,3 m de diamètre, et l'oculus s'ouvre à la même hauteur : une sphère presque parfaite tiendrait dans la salle. Cinq rangées de 28 caissons, de plus en plus petits vers le haut, allègent la voûte. Les bâtisseurs ont aussi allégé le béton en montant, avec de la pierre ponce. Dehors, des tuiles de bronze couvraient la coupole : elles sont attestées en 663, quand l'empereur Constant II les fit enlever. Le décor des caissons est perdu : des rosaces de bronze ont été supposées, sans preuve.",
+        "sources": [
+          "MiC, 43,30 m de diamètre et de hauteur : https://direzionemuseiroma.cultura.gov.it/en/pantheon/historical-background/",
+          "Turismo Roma, cinq rangs de 28 caissons : https://www.turismoroma.it/it/luoghi/pantheon",
+          "Fletcher 2019, p. 334 (sphère de 43,98 m du relevé de Berne) : https://doi.org/10.1007/s00004-018-00423-2",
+          "Platner et Ashby 1929 (pierre ponce, tuiles enlevées en 663) : https://penelope.uchicago.edu/Thayer/E/Gazetteer/Places/Europe/Italy/Lazio/Roma/Rome/_Texts/PLATOP*/Pantheon.html",
+          "Paul Diacre, Histoire des Lombards 5, 11 (traduction citée par Wikipédia en anglais) : https://en.wikipedia.org/wiki/Pantheon,_Rome",
+          "F. G. Moore, « The Gilt-Bronze Tiles of the Pantheon », AJA 3 (1899), p. 40 à 43 : https://penelope.uchicago.edu/Thayer/E/Journals/AJA/3/1/Pantheon_Tiles*.html"
+        ]
+      },
+      {
+        "id": "l-oculus",
+        "title": "L'oculus, cadran solaire géant",
+        "text": "Large d'environ 9 m, l'oculus est la seule ouverture de la rotonde vers le ciel. La tache de soleil qu'il découpe tourne au fil des heures, comme sur un cadran solaire. À midi, elle reste sur la coupole en hiver, atteint la naissance de la voûte aux équinoxes et descend sur le sol en été. Vers le 21 avril, anniversaire de la fondation de Rome, elle couvre la porte d'entrée. Robert Hannah et Giulio Magli y voient une mise en scène voulue ; l'hypothèse reste discutée. Les jours de pluie, l'eau tombe dans la salle et s'écoule par 22 trous du dallage.",
+        "sources": [
+          "Hannah et Magli, Numen 58 (2011), p. 486 à 513 (prépublication, p. 5 et 6) : https://arxiv.org/abs/0910.0128",
+          "G. Magli, étude de cas 9.3, ICOMOS et UAI, Heritage Sites of Astronomy and Archaeoastronomy (2010), p. 151 à 154 : https://web.astronomicalheritage.org/images/astronomicalheritage.org/thematic-study/ch09cs3.pdf",
+          "K. de Fine Licht, The Rotunda in Rome (1968), p. 295, n. 43, avis contraire cité par Hannah et Magli, n. 5",
+          "MiC, oculus d'environ 9 m et 22 trous : https://direzionemuseiroma.cultura.gov.it/en/pantheon/historical-background/",
+          "Plutarque, Romulus 12, 1 : https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Plutarch/Lives/Romulus*.html"
+        ]
+      },
+      {
+        "id": "les-niches",
+        "title": "Niches, édicules et marbres",
+        "text": "Sous la coupole, le mur s'ouvre sur sept grandes niches, semi-circulaires ou rectangulaires, précédées ou encadrées de colonnes cannelées, pour la plupart en jaune antique, un marbre jaune d'Afrique du Nord. Entre elles se dressent huit édicules à frontons triangulaires ou cintrés. Porphyre, granit et marbres colorés venus de tout l'Empire couvrent le sol et les parois. Des statues occupaient sans doute ces niches, mais aucune n'a survécu. Dion Cassius cite Mars, Vénus et César divinisé, mais pour le premier Panthéon, celui d'Agrippa. Pour celui d'Hadrien, on ignore quels dieux étaient là : les statues restent donc anonymes.",
+        "sources": [
+          "Direzione Musei (MiC), sept chapelles et huit édicules : https://direzionemuseiroma.cultura.gov.it/en/pantheon/historical-background/",
+          "Fletcher 2019, p. 332 : https://doi.org/10.1007/s00004-018-00423-2",
+          "Piranesi, Veduta interna del Panteon (légende : douze colonnes principales de giallo ; essai du projet : marbre de Chemtou, Tunisie) : https://scalar.usc.edu/works/piranesidigitalproject/entirely-ancient",
+          "Platner et Ashby 1929 : https://penelope.uchicago.edu/Thayer/E/Gazetteer/Places/Europe/Italy/Lazio/Roma/Rome/_Texts/PLATOP*/Pantheon.html",
+          "Dion Cassius 53, 27, 2 et 3 : https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Cassius_Dio/53*.html",
+          "Hannah et Magli, p. 2 (statues non conservées) : https://arxiv.org/abs/0910.0128"
+        ]
+      }
+    ]
+  },
   {
     "id": "nimes",
     "title": "Nîmes romaine (Nemausus)",
