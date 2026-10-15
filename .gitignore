@@ -7,3 +7,4 @@ reports/
 *.local
 .cache/
 public/assets/
+__pycache__/

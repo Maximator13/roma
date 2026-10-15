@@ -626,3 +626,47 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 - **Hypothèse retenue** : Dans la piste rome, la royauté finit en 500 av. J.-C. et l'Empire commence à Actium (31 av. J.-C.) selon Cliopatria, et non en 509 et 27 av. J.-C. comme nos époques.
 - **Pourquoi un doute** : Seuls la géométrie et le nom de l'entité sont touchés, pas les bornes des pistes.
 - **Décision** : à trancher
+
+## Scène de Nîmes (vers 130)
+
+### 1. Terrain retouché autour du castellum
+
+- **Hypothèse retenue** : Le fort Vauban et trois remblais modernes sont effacés du relief IGN par des masques tracés à la main et comblés en surface douce (liste dans `.cache/scenes/nimes/build_report.json`, clé `terrain_infill`).
+- **Pourquoi un doute** : Tracés d'après l'ombrage du relief, sans plan archéologique du terrain antique.
+- **Décision** : à trancher
+
+### 2. Lecture de l'inscription de la porte d'Auguste
+
+- **Hypothèse retenue** : IMP·CAESAR·DIVI·F·AVGVSTVS·COS·XI·TRIB·POTEST·VIII / PORTAS·MVROS·COL·DAT, sans « -que ».
+- **Pourquoi un doute** : Lecture courante, à confirmer dans le CIL XII 3151 ou l'EDCS.
+- **Décision** : à trancher
+
+### 3. Hiérarchie des rues
+
+- **Hypothèse retenue** : Rues principales dallées avec trottoirs, ornières et pierres de passage (decumanus vers la porte d'Auguste, cardines au nord et au sud du forum, rue des Arènes) ; les autres en terre battue ; fontaines à un carrefour dallé sur deux.
+- **Pourquoi un doute** : Restitution à confronter au plan de M. Monteil.
+- **Décision** : à trancher
+
+### 4. Îlots d'habitation
+
+- **Hypothèse retenue** : Îlots denses formés de rangs de maisons continus, boutiques sur les rues principales et une domus à péristyle ou un jardin au centre ; maisons isolées et terrasses sur les collines.
+- **Pourquoi un doute** : Disposition plausible, non tirée d'un plan de fouilles.
+- **Décision** : à trancher
+
+### 5. Sanctuaire de la Fontaine
+
+- **Hypothèse retenue** : Propylée placé dans le portique est, statues sous les deux portiques, d'après Chulsky 2015 ; positions inventées.
+- **Pourquoi un doute** : Plan du sanctuaire mal connu.
+- **Décision** : à trancher
+
+### 6. Niveau d'eau du castellum
+
+- **Hypothèse retenue** : Eau montrée à 0,74 m sous la margelle pour laisser voir les dix départs.
+- **Pourquoi un doute** : En service, le niveau était sans doute plus haut.
+- **Décision** : à trancher
+
+### 7. Frise de rinceaux de la Maison Carrée
+
+- **Hypothèse retenue** : Rinceau d'acanthe générique, quatre périodes sur 5,1 m, sur les faces est, sud et ouest.
+- **Pourquoi un doute** : Ce n'est pas une copie de la frise conservée.
+- **Décision** : à trancher

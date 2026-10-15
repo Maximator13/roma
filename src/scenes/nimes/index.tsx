@@ -3,8 +3,8 @@ import type { SceneProps } from '../registry.ts'
 
 const NIMES: ModelSceneConfig = {
   model: 'scenes/nimes/nimes.glb',
-  sun: { azimuth: 295, elevation: 12, color: '#ffc58a', intensity: 3.2 },
-  haze: { color: '#d8b48c', density: 0.00022 },
+  sun: { azimuth: 291, elevation: 12, color: '#ffc58a', intensity: 2.6 },
+  haze: { color: '#c9d6e6', density: 0.00007 },
   overview: { azimuth: 150, elevation: 30 },
 }
 

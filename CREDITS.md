@@ -39,3 +39,13 @@ Les textes des événements, des époques et des pistes sont rédigés pour le p
 | Lieux et villes | Pleiades, A Gazetteer of Past Places (R. Bagnall et al., éd.) ; CC BY 3.0 | Pleiades: A Gazetteer of Past Places, https://pleiades.stoa.org, © les contributeurs, CC BY 3.0, données modifiées | Identifiants et coordonnées vérifiés lieu par lieu pour `src/data/places.ts` et `src/data/cities.ts` |
 
 Les autres sources retenues pour la carte (AWMC, Itiner-e) et leurs obligations sont décrites dans `docs/ARCHITECTURE.md` ; chacune sera ajoutée ici au moment de son intégration.
+
+## Scènes 3D
+
+| Ressource | Source et licence | Attribution | Usage et modifications |
+|---|---|---|---|
+| Relief de Nîmes | IGN, RGE ALTI 5 m et 50 m, service WMS-R de la Géoplateforme ; Licence Ouverte Etalab 2.0 | IGN, RGE ALTI | Terrain de la scène de Nîmes, reprojeté du Lambert-93 vers le repère local ; fort Vauban et trois remblais modernes effacés (`blender/kit/terrain.py`) |
+| Textures de pierre, d'enduit, de sable et de dallage | Poly Haven, Sandstone Blocks 08, Yellow Plaster, Sand 01, Rectangular Paving (1k) ; CC0 1.0 | Rob Tuytel ; Dimitrios Savva (Rectangular Paving) | Teintées et répétées dans la scène de Nîmes (`blender/kit/materials.py`) |
+| Lettres de bronze des dédicaces | Cinzel (SIL OFL 1.1), déjà livrée avec le site | The Cinzel Project Authors | Converties en volumes pour CIL XII 3156 et CIL XII 3151 |
+
+La frise de rinceaux de la Maison Carrée est générée par le script ; ce n'est pas une copie de la frise conservée.

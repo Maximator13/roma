@@ -38,6 +38,14 @@ export interface SceneModel {
   flocks: Vector3[]
 }
 
+export function castsShadow(node: Object3D): boolean {
+  for (let current: Object3D | null = node; current; current = current.parent) {
+    const flag: unknown = current.userData.cast_shadow
+    if (typeof flag === 'boolean') return flag
+  }
+  return true
+}
+
 function worldPosition(node: Object3D): Vector3 {
   return node.getWorldPosition(new Vector3())
 }
@@ -90,7 +98,7 @@ export function useSceneModel(path: string, shadows: boolean): SceneModel {
   useEffect(() => {
     model.root.traverse((child) => {
       if (!(child instanceof Mesh)) return
-      child.castShadow = shadows
+      child.castShadow = shadows && castsShadow(child)
       child.receiveShadow = shadows
       if (child.name.startsWith(WALKER_PREFIX)) child.visible = false
     })

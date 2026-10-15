@@ -60,11 +60,11 @@ export function Atmosphere({ sun, haze, shadows }: { sun: SunSettings; haze: Haz
   return (
     <>
       <Sky distance={SKY_DISTANCE} sunPosition={skyPosition} turbidity={7} rayleigh={1.6} mieCoefficient={0.006} mieDirectionalG={0.86} />
-      <Environment frames={1} resolution={128}>
+      <Environment frames={1} resolution={128} environmentIntensity={0.45}>
         <Sky sunPosition={skyPosition} turbidity={7} rayleigh={1.6} mieCoefficient={0.006} mieDirectionalG={0.86} />
       </Environment>
       <fogExp2 attach="fog" args={[hazeColor, haze.density]} />
-      <hemisphereLight args={['#c9d6e8', '#6b5440', 0.55]} />
+      <hemisphereLight args={['#c9d6e8', '#6b5440', 0.3]} />
       <directionalLight
         ref={light}
         color={sun.color}
