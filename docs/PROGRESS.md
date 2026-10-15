@@ -104,6 +104,59 @@ Tests : 60 tests unitaires, 12 tests Playwright (6 sur ordinateur, 6 sur mobile)
    - donne-moi le nom du fichier : je l'ajoute au site, puis tu déclares `sitemap.xml`.
 4. **Facultatif** : un compte GoatCounter, si tu veux la mesure d'audience (donne-moi le code du site).
 
-### Suite
+## Phase 2 : tranche verticale (en cours)
 
-Phase 2, la tranche verticale. Elle commence par un plan de design (palette nommée, typographies, principes, maquette de l'interface), à valider avant toute production.
+État au 15 octobre 2026, 11 h 30. Site en ligne à jour : https://maximator13.github.io/roma/
+
+### Fait
+
+- **Plan de design** : `docs/DESIGN.md` (palette nommée, accents et lumière par époque, typographies, principes, captures de l'interface dans `docs/screenshots/phase-2/`). À valider.
+- **Carte 3D du monde romain**, synchronisée avec la frise :
+  - relief ETOPO 2022 et côtes Natural Earth, mer animée, ombres de nuages, brume de bord de carte ;
+  - territoire année par année de 753 av. J.-C. à 1453, tiré de Cliopatria v0.2.1 (CC BY 4.0) : 282 tranches, 877 Ko, frontière qui s'étend depuis l'ancien tracé à chaque changement ;
+  - 44 villes vérifiées dans Pleiades, épingles des événements de la période, itinéraire d'Hannibal animé (218 av. J.-C.) ;
+  - caméra qui cadre le territoire, ou le lieu de l'événement ouvert ; la frise se recale sur l'année de l'événement ou de la scène ouverte par lien.
+- **Moteur des scènes 3D** (prêt, en attente du premier modèle) :
+  - route `#/scene/<id>` ; module de scène chargé à la demande ;
+  - plongée de la caméra de la carte vers la ville, voile de brume pendant la bascule, retour à la carte ;
+  - kit glTF commun : chargement compressé (meshopt, KTX2), ciel et brume du soir, soleil avec ombres, rail de caméra entre les points d'intérêt avec regard libre limité ;
+  - cartel de musée par point d'intérêt, avec sources, étapes et touches fléchées ; feuille basse sur téléphone ;
+  - accès par un anneau doré cliquable sur la ville, par la liste « À visiter en 3D » sous l'époque, et par un bouton dans les fiches liées.
+- **Propositions de scènes vérifiées** : Nîmes vers 130 (validée, option A2 : le pont du Gard devient une scène à part) et Arles vers 160 (`docs/scenes/arles.md`, à valider).
+
+### En cours
+
+- **Nîmes** : un agent construit la scène dans Blender par script (`blender/kit/` puis `blender/nimes.py`), avec relief IGN, Maison Carrée, forum, Arènes, enceinte, porte d'Auguste, tour Magne et quartiers. Un historien de l'architecture relira ensuite les rendus, puis une passe de corrections suivra.
+- **Fichiers lourds** : scripts `npm run assets` (optimisation meshopt et KTX2, rapport de poids), `assets:publish` (GitHub Releases, manifeste SHA-256) et `assets:pull`, écrits et en relecture.
+- **Recherche** des propositions du pont du Gard, du Panthéon d'Hadrien et de la bataille de Cannes, puis vérification contradictoire de chacune.
+
+### Poids mesurés (site en ligne)
+
+| Poste | Budget | Mesuré |
+|---|---|---|
+| Premier écran utile | 5 Mo | **1,32 Mo** (13 fichiers) |
+| dont application | | 185 Ko |
+| dont 3D (three.js, R3F, carte) | | 331 Ko |
+| dont polices | | 105 Ko |
+| dont relief et territoires | | 694 Ko |
+| Site complet | 600 Mo | 5,35 Mo (85 fichiers) |
+
+Tests : 117 tests unitaires et 14 tests Playwright (ordinateur et mobile), verts en local, en CI et sur le site en ligne.
+
+### Décisions prises en autonomie (à confirmer ou à changer)
+
+- **Lacune byzantine de 1402 à 1406** : Cliopatria n'a pas de tranche byzantine ces années-là (elle donne Constantinople aux Ottomans) ; la carte reprend la géométrie identique des années voisines, et l'attribution le précise.
+- **Sécessions** : l'Empire des Gaules (de 260 à 274) et Palmyre (de 270 à 273) sont retirés du territoire de Rome pendant leurs dates.
+- **Scène de Nîmes** : la frise passe à l'an 130 en entrant dans la scène, pour que l'étalonnage et le territoire correspondent.
+
+### Problèmes connus
+
+- **Constantinople** tombe juste hors des polygones de Cliopatria (côte tracée trop au nord) : invisible à l'échelle de la carte, à corriger si la caméra zoome sur la ville.
+- **Bas-Empire** : la lumière froide rend les plaines très pâles, presque enneigées (point ouvert dans `docs/DESIGN.md`).
+- **Mesure des i/s** toujours à faire sur ta machine (rendu logiciel en CI).
+
+### Ce que j'attends de toi
+
+1. Valider le plan de design (`docs/DESIGN.md`).
+2. Valider la proposition d'Arles (`docs/scenes/arles.md`).
+3. Toujours valables : mesures du HUD, relecture de `docs/A_VERIFIER.md` (70 points désormais), Search Console, GoatCounter (facultatif).
