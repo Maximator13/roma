@@ -150,6 +150,7 @@ Tests : 117 tests unitaires et 14 tests Playwright (ordinateur et mobile), verts
 
 ### Problèmes connus
 
+- **Netteté de la carte au zoom** (demande du 15 octobre 2026) : le relief à 2048 x 1152 px (environ 3,5 km par pixel) devient flou quand la caméra s'approche d'un lieu ou plonge vers une ville ; à améliorer plus tard (tuiles de relief plus fines chargées près de la caméra, détail procédural).
 - **Constantinople** tombe juste hors des polygones de Cliopatria (côte tracée trop au nord) : invisible à l'échelle de la carte, à corriger si la caméra zoome sur la ville.
 - **Bas-Empire** : la lumière froide rend les plaines très pâles, presque enneigées (point ouvert dans `docs/DESIGN.md`).
 - **Mesure des i/s** toujours à faire sur ta machine (rendu logiciel en CI).
