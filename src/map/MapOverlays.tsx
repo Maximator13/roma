@@ -1,5 +1,5 @@
 import { Billboard, Line, Text } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, type ThreeEvent } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import { AdditiveBlending, DoubleSide, Vector3, type Group, type Mesh, type MeshBasicMaterial } from 'three'
 import type { Line2 } from 'three-stdlib'
@@ -10,9 +10,11 @@ import { cities } from '../data/cities.ts'
 import { events } from '../data/events.ts'
 import { itineraries } from '../data/itineraries.ts'
 import { places } from '../data/places.ts'
-import type { City, HistoricalEvent, Itinerary } from '../data/schema.ts'
+import type { City, HistoricalEvent, Itinerary, Scene } from '../data/schema.ts'
+import { UI } from '../data/ui.ts'
+import { findScene, isPlayable } from '../scenes/registry.ts'
 import { isVisibleAt } from '../timeline/layout.ts'
-import { useApp } from '../store.ts'
+import { navigate, useApp } from '../store.ts'
 import { project } from './geo.ts'
 import type { HeightSampler } from './reliefSampler.ts'
 
@@ -90,12 +92,104 @@ function CityLabel({ city, height }: { city: City; height: HeightSampler }) {
 }
 
 function CityLabels({ height }: { height: HeightSampler }) {
+  const gates = useMemo(
+    () =>
+      cities.flatMap((city) => {
+        const scene = city.scene ? findScene(city.scene) : undefined
+        return isPlayable(scene) ? [{ city, scene }] : []
+      }),
+    [],
+  )
   return (
     <>
       {cities.map((city) => (
         <CityLabel key={city.id} city={city} height={height} />
       ))}
+      {gates.map(({ city, scene }) => (
+        <SceneGate key={city.id} city={city} scene={scene} height={height} />
+      ))}
     </>
+  )
+}
+
+function setPointer(active: boolean) {
+  document.body.style.cursor = active ? 'pointer' : ''
+}
+
+function SceneGate({ city, scene, height }: { city: City; scene: Scene; height: HeightSampler }) {
+  const group = useRef<Group>(null)
+  const ring = useRef<Mesh>(null)
+  const label = useRef<{ fillOpacity: number; outlineOpacity: number } | null>(null)
+  const hovered = useRef(false)
+  const opacity = useRef(0)
+  const emphasis = useRef(0)
+  const position = useMemo(() => pointOnMap(city.lon, city.lat, height), [city, height])
+  const reducedMotion = useMemo(() => prefersReducedMotion(), [])
+
+  useFrame(({ camera, clock }, delta) => {
+    const { view, route } = useApp.getState()
+    const alive = view.center >= city.from && view.center <= (city.to ?? Infinity)
+    opacity.current = fade(opacity.current, alive && route.name !== 'scene' ? 1 : 0, delta, reducedMotion)
+    emphasis.current = fade(emphasis.current, hovered.current ? 1 : 0, delta * 3, reducedMotion)
+    const current = group.current
+    if (!current) return
+    current.visible = opacity.current > 0.01
+    current.scale.setScalar(camera.position.distanceTo(position) * LABEL_SCALE)
+    if (ring.current) {
+      ring.current.rotation.z = reducedMotion ? 0 : clock.elapsedTime * 0.5
+      ring.current.scale.setScalar(1 + emphasis.current * 0.35)
+      ;(ring.current.material as MeshBasicMaterial).opacity = opacity.current * (0.75 + emphasis.current * 0.25)
+    }
+    if (label.current) {
+      label.current.fillOpacity = opacity.current * emphasis.current
+      label.current.outlineOpacity = opacity.current * emphasis.current * 0.8
+    }
+  })
+
+  const enter = (event: ThreeEvent<MouseEvent>) => {
+    if (opacity.current < 0.5) return
+    event.stopPropagation()
+    setPointer(false)
+    navigate({ name: 'scene', id: scene.id })
+  }
+  const hoverStart = (event: ThreeEvent<PointerEvent>) => {
+    if (opacity.current < 0.5) return
+    event.stopPropagation()
+    hovered.current = true
+    setPointer(true)
+  }
+  const hoverEnd = () => {
+    hovered.current = false
+    setPointer(false)
+  }
+
+  return (
+    <group ref={group} position={position} visible={false}>
+      <mesh rotation-x={-Math.PI / 2} onClick={enter} onPointerOver={hoverStart} onPointerOut={hoverEnd}>
+        <circleGeometry args={[0.8, 24]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+      <mesh ref={ring} rotation-x={-Math.PI / 2}>
+        <ringGeometry args={[0.34, 0.44, 4, 1]} />
+        <meshBasicMaterial color="#ffd27a" transparent opacity={0} side={DoubleSide} depthWrite={false} />
+      </mesh>
+      <Billboard position={[0, -0.5, 0]}>
+        <Text
+          ref={label}
+          font={garamondItalicUrl}
+          fontSize={0.8}
+          color="#ffe7bd"
+          outlineWidth={0.06}
+          outlineColor="#1b130c"
+          anchorX="center"
+          anchorY="top"
+          fillOpacity={0}
+          outlineOpacity={0}
+        >
+          {UI.sceneEnter(city.name)}
+        </Text>
+      </Billboard>
+    </group>
   )
 }
 

@@ -337,6 +337,30 @@ export const cities: City[] = [
     "note": "Résidence royale parthe après la conquête de la Babylonie vers 141 av. J.-C., puis capitale sassanide prise par les Arabes en 637, repère hors de l'Empire."
   },
   {
+    "id": "nimes",
+    "name": "Nîmes",
+    "ancientName": "Nemausus",
+    "lat": 43.8431,
+    "lon": 4.3542,
+    "pleiadesId": 148142,
+    "from": -43,
+    "importance": 2,
+    "note": "Chef-lieu des Volques Arécomiques devenu colonie de droit latin entre 44 et 42 av. J.-C., puis Colonia Augusta Nemausus ; Auguste lui donne ses portes et ses murs en 16 ou 15 av. J.-C.",
+    "scene": "nimes"
+  },
+  {
+    "id": "arles",
+    "name": "Arles",
+    "ancientName": "Arelate",
+    "lat": 43.677616,
+    "lon": 4.630799,
+    "pleiadesId": 148217,
+    "from": -45,
+    "importance": 2,
+    "note": "Colonie de vétérans de la VIe légion fondée en 46 av. J.-C. sur l'ordre de César, grand port du Rhône entre la Méditerranée et la Gaule ; atelier monétaire en 313 et siège d'un concile en 314.",
+    "scene": "arles"
+  },
+  {
     "id": "narbonne",
     "name": "Narbonne",
     "ancientName": "Narbo Martius",

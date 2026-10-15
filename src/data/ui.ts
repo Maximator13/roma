@@ -59,6 +59,21 @@ export const UI = {
   consentRefuse: 'Refuser',
   consentManage: "Mesure d'audience",
   webglMissing: "La scène 3D ne peut pas s'afficher sur cet appareil ; la frise reste utilisable.",
+  sceneLoading: (title: string) => `Chargement : ${title}`,
+  sceneKicker: 'Scène 3D',
+  sceneOverview: "Vue d'ensemble",
+  scenePrevious: 'Point précédent',
+  sceneNext: 'Point suivant',
+  sceneBack: 'Retour à la carte',
+  sceneSteps: 'Étapes du parcours',
+  sceneStep: (index: number, total: number) => `Étape ${index} sur ${total}`,
+  scenePlanned: 'Cette scène est en préparation : la carte vous montre en attendant le lieu.',
+  sceneFailed: "Le modèle 3D de cette scène n'a pas pu être chargé. La carte reste disponible.",
+  sceneHelp: 'Flèches gauche et droite : changer de point. Glisser : regarder autour. Échap : retour à la carte.',
+  sceneEnter: (name: string) => `Visiter ${name} en 3D`,
+  sceneDate: 'Date de la scène',
+  sceneShortcuts: 'À visiter en 3D',
+  sources: 'Sources',
 } as const
 
 export const PAGE_LINKS: { id: PageId; label: string }[] = [

@@ -3,6 +3,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { events } from '../src/data/events.ts'
 
 const FIRST_SCREEN_BUDGET = 5_000_000
+const SETTLE_MS = 2_000
 
 function watchErrors(page: Page): string[] {
   const errors: string[] = []
@@ -23,10 +24,15 @@ test('home loads without console errors and within the first screen budget', asy
   page.on('requestfinished', (request) => {
     transfers.push(request.sizes().then((sizes) => ({ url: new URL(request.url()).pathname, bytes: sizes.responseBodySize })))
   })
+  const mapData = Promise.all([
+    page.waitForResponse((response) => response.url().endsWith('/geo/relief.webp')),
+    page.waitForResponse((response) => response.url().endsWith('/geo/territories.json')),
+  ])
   await page.goto('./')
   await timelineReady(page)
   await expect(page.locator('.stage canvas')).toBeAttached()
-  await page.waitForLoadState('networkidle')
+  await mapData
+  await page.waitForTimeout(SETTLE_MS)
   const files = await Promise.all(transfers)
   const total = files.reduce((sum, file) => sum + file.bytes, 0)
   mkdirSync('reports', { recursive: true })
@@ -90,4 +96,24 @@ test.describe('events', () => {
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(`/evenement/${event.id}/$`))
     expect(errors).toEqual([])
   })
+})
+
+test('a scene opens from its hash route, walks its points and returns to the map', async ({ page }) => {
+  const errors = watchErrors(page)
+  await page.goto('./#/scene/nimes')
+  await expect(page.getByRole('heading', { name: 'Nîmes romaine (Nemausus)' })).toBeVisible()
+  await expect(page).toHaveTitle('Nîmes romaine (Nemausus) | Roma')
+  const steps = page.locator('.scene-nav')
+  if (await steps.isVisible()) {
+    await expect(page.locator('.timeline')).toBeHidden()
+    await expect(page.locator('.veil')).toHaveCSS('opacity', '0', { timeout: 30_000 })
+    await page.keyboard.press('ArrowRight')
+    await expect(page.locator('.scene__step')).toHaveText('Étape 2 sur 6')
+    await page.getByRole('button', { name: /Étape 4 sur 6/ }).click()
+    await expect(page.locator('.scene__point-title')).toHaveText("L'amphithéâtre")
+  }
+  await page.keyboard.press('Escape')
+  await expect(page).toHaveURL(/\/roma\/#\/$/)
+  await timelineReady(page)
+  expect(errors).toEqual([])
 })

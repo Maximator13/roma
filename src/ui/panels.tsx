@@ -1,13 +1,15 @@
 import { useEffect, useRef, type ReactNode } from 'react'
-import { formatDate, formatRange } from '../core/dates.ts'
+import { formatDate, formatRange, formatYear } from '../core/dates.ts'
 import { frenchSpacing } from '../core/typography.ts'
 import { eras } from '../data/eras.ts'
+import { scenes } from '../data/scenes.ts'
 import type { Page } from '../data/pages.ts'
 import { people } from '../data/people.ts'
 import { places } from '../data/places.ts'
-import type { HistoricalEvent, Source } from '../data/schema.ts'
+import type { HistoricalEvent, Scene, Source } from '../data/schema.ts'
 import { CATEGORY, CERTAINTY, UI } from '../data/ui.ts'
-import { navigate } from '../store.ts'
+import { findScene, isPlayable } from '../scenes/registry.ts'
+import { navigate, useApp } from '../store.ts'
 import { Markdown } from './Markdown.tsx'
 
 function Panel({ kind, labelId, focusKey, children }: { kind: string; labelId: string; focusKey: string; children: ReactNode }) {
@@ -102,8 +104,99 @@ export function EventPanel({ event }: { event: HistoricalEvent }) {
           )}
         </dl>
       )}
+      <SceneLink id={event.scene} />
       <SourceList title={UI.ancientSources} sources={event.sources.filter((source) => source.kind === 'ancient')} />
       <SourceList title={UI.modernSources} sources={event.sources.filter((source) => source.kind === 'modern')} />
+    </Panel>
+  )
+}
+
+function SceneLink({ id }: { id: string | undefined }) {
+  const scene = id ? findScene(id) : undefined
+  if (!isPlayable(scene)) return null
+  return (
+    <p className="panel__scene">
+      <a className="button button--primary" href={`#/scene/${scene.id}`}>
+        {UI.sceneEnter(scene.title)}
+      </a>
+    </p>
+  )
+}
+
+function clampPoint(scene: Scene, point: number): number {
+  return Math.max(0, Math.min(scene.points?.length ?? 0, point))
+}
+
+function ScenePoints({ scene, point }: { scene: Scene; point: number }) {
+  const labels = [UI.sceneOverview, ...(scene.points ?? []).map((item) => item.title)]
+  const setPoint = (next: number) => useApp.getState().setScenePoint(clampPoint(scene, next))
+  return (
+    <nav className="scene-nav" aria-label={UI.sceneSteps}>
+      <button type="button" className="button" onClick={() => setPoint(point - 1)} disabled={point === 0}>
+        {UI.scenePrevious}
+      </button>
+      <ol className="scene-nav__steps">
+        {labels.map((label, index) => (
+          <li key={label}>
+            <button
+              type="button"
+              className="scene-nav__step"
+              aria-current={index === point ? 'step' : undefined}
+              aria-label={`${UI.sceneStep(index + 1, labels.length)} : ${label}`}
+              onClick={() => setPoint(index)}
+            />
+          </li>
+        ))}
+      </ol>
+      <button
+        type="button"
+        className="button button--primary"
+        onClick={() => setPoint(point + 1)}
+        disabled={point === labels.length - 1}
+      >
+        {UI.sceneNext}
+      </button>
+    </nav>
+  )
+}
+
+export function ScenePanel({ scene }: { scene: Scene }) {
+  const point = useApp((state) => state.scenePoint)
+  const failed = useApp((state) => state.failedScene === scene.id)
+  const playable = isPlayable(scene) && !failed
+  const current = point > 0 ? scene.points?.[point - 1] : undefined
+  const total = (scene.points?.length ?? 0) + 1
+  return (
+    <Panel kind="scene" labelId="panel-title" focusKey={scene.id}>
+      <p className="panel__eyebrow">
+        {UI.sceneKicker}
+        {scene.year !== undefined && ` · vers ${formatYear(scene.year)}`}
+      </p>
+      <h2 id="panel-title" className="panel__title" tabIndex={-1}>
+        {scene.title}
+      </h2>
+      {!playable && <p className="panel__summary">{frenchSpacing(failed ? UI.sceneFailed : UI.scenePlanned)}</p>}
+      {playable && (
+        <>
+          <p className="scene__step">{UI.sceneStep(point + 1, total)}</p>
+          <section className="scene__cartel" aria-live="polite">
+            <h3 className="scene__point-title">{current ? current.title : UI.sceneOverview}</h3>
+            <p>{frenchSpacing(current ? current.text : (scene.summary ?? ''))}</p>
+            {current && (
+              <details className="scene__sources">
+                <summary>{UI.sources}</summary>
+                <ul>
+                  {current.sources.map((source) => (
+                    <li key={source}>{source}</li>
+                  ))}
+                </ul>
+              </details>
+            )}
+          </section>
+          <ScenePoints scene={scene} point={point} />
+          <p className="scene__help">{UI.sceneHelp}</p>
+        </>
+      )}
     </Panel>
   )
 }
@@ -130,6 +223,28 @@ export function NotFoundPanel() {
         <a href="#/">{UI.backHome}</a>
       </p>
     </Panel>
+  )
+}
+
+export function SceneShortcuts({ index }: { index: number }) {
+  const era = eras[index]
+  if (!era) return null
+  const available = scenes.filter((scene) => isPlayable(scene) && scene.year !== undefined && scene.year >= era.start && scene.year <= era.end)
+  if (available.length === 0) return null
+  return (
+    <section className="scene-shortcuts" aria-labelledby="scene-shortcuts-title">
+      <h3 id="scene-shortcuts-title" className="scene-shortcuts__title">
+        {UI.sceneShortcuts}
+      </h3>
+      <ul>
+        {available.map((scene) => (
+          <li key={scene.id}>
+            <a href={`#/scene/${scene.id}`}>{scene.title}</a>
+            {scene.year !== undefined && <span className="scene-shortcuts__date"> · vers {formatYear(scene.year)}</span>}
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
 

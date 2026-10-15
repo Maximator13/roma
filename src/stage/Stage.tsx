@@ -2,16 +2,19 @@ import { PerformanceMonitor } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { EffectComposer, ToneMapping, Vignette } from '@react-three/postprocessing'
 import { ToneMappingMode } from 'postprocessing'
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Component, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { HalfFloatType, UnsignedByteType } from 'three'
 import { eras } from '../data/eras.ts'
 import { UI } from '../data/ui.ts'
 import { MapStage, type UiInsets } from '../map/MapStage.tsx'
+import { findScene } from '../scenes/registry.ts'
 import { useApp } from '../store.ts'
 import { DebugHud, StatsProbe } from './DebugHud.tsx'
 import { gradingAt } from './grading.ts'
 import { GradingEffect } from './GradingEffect.ts'
 import { QUALITY, isDebug, stepQuality } from './quality.ts'
+import { SceneHost } from './SceneHost.tsx'
+import { useSceneSwap } from './useSceneSwap.ts'
 
 const TERRAIN_SEGMENTS = { low: 256, medium: 448, high: 640 } as const
 const TERRAIN_DETAIL = { low: 0.4, medium: 1, high: 1 } as const
@@ -28,6 +31,22 @@ function Effects({ multisampling, halfFloat }: { multisampling: number; halfFloa
   )
 }
 
+class SceneBoundary extends Component<{ id: string; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+
+  componentDidCatch() {
+    useApp.getState().setFailedScene(this.props.id)
+  }
+
+  render() {
+    return this.state.failed ? null : this.props.children
+  }
+}
+
 function changeQuality(direction: 1 | -1) {
   const { quality, setQuality } = useApp.getState()
   setQuality(stepQuality(quality, direction))
@@ -38,12 +57,14 @@ function measureInsets(): UiInsets {
   const timeline = document.querySelector('.timeline')?.getBoundingClientRect()
   const side = document.querySelector('.main__side')?.getBoundingClientRect()
   const panel = document.querySelector('.panel')?.getBoundingClientRect()
+  const sheet = document.querySelector('.panel--scene')?.getBoundingClientRect()
   const wide = window.innerWidth > 720
+  const timelineInset = timeline && timeline.height > 0 ? window.innerHeight - timeline.top : 0
   return {
     left: wide && side ? Math.min(side.right + 16, window.innerWidth * 0.45) : 0,
     right: wide && panel ? Math.max(0, window.innerWidth - panel.left + 16) : 0,
     top: header?.bottom ?? 0,
-    bottom: timeline ? window.innerHeight - timeline.top : 0,
+    bottom: !wide && sheet ? Math.max(timelineInset, window.innerHeight - sheet.top) : timelineInset,
   }
 }
 
@@ -72,10 +93,14 @@ export default function Stage() {
   const settings = QUALITY[quality]
   const debug = useMemo(() => isDebug(), [])
   const insets = useUiInsets()
+  const veil = useRef<HTMLDivElement>(null)
+  const { shown, loading, onReady } = useSceneSwap(veil)
+  const loadingTitle = shown && loading ? findScene(shown)?.title : undefined
   return (
     <>
       <div className="stage" aria-hidden="true">
         <Canvas
+          shadows="percentage"
           dpr={[1, settings.maxDpr]}
           camera={{ position: [0, 40, 20], fov: 40, near: 0.05, far: 400 }}
           gl={{ antialias: false, stencil: false, powerPreference: 'high-performance' }}
@@ -88,11 +113,19 @@ export default function Stage() {
             onFallback={() => useApp.getState().setQuality('low')}
           />
           <Suspense fallback={null}>
-            <MapStage segments={TERRAIN_SEGMENTS[quality]} insets={insets} detail={TERRAIN_DETAIL[quality]} />
+            <MapStage segments={TERRAIN_SEGMENTS[quality]} insets={insets} detail={TERRAIN_DETAIL[quality]} active={shown === null} />
           </Suspense>
+          {shown && (
+            <SceneBoundary key={shown} id={shown}>
+              <SceneHost id={shown} insets={insets} quality={quality} onReady={onReady} />
+            </SceneBoundary>
+          )}
           <Effects key={quality} multisampling={settings.multisampling} halfFloat={settings.halfFloat} />
           {debug && <StatsProbe />}
         </Canvas>
+        <div ref={veil} className="veil">
+          {loadingTitle && <p className="veil__status">{UI.sceneLoading(loadingTitle)}</p>}
+        </div>
       </div>
       {debug && <DebugHud />}
     </>

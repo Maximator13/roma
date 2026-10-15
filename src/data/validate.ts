@@ -80,6 +80,19 @@ function referenceErrors(data: {
   })
 }
 
+const READY_SCENE_FIELDS = ['year', 'lat', 'lon', 'summary', 'points'] as const
+
+function sceneErrors(scenes: z.infer<typeof sceneSchema>[]): string[] {
+  return scenes.flatMap((scene) => {
+    const missing = scene.status === 'ready' ? READY_SCENE_FIELDS.filter((field) => scene[field] === undefined) : []
+    const errors = missing.map((field) => `scene ${scene.id}: ready scene without ${field}`)
+    if (scene.status === 'ready' && scene.points?.length === 0) errors.push(`scene ${scene.id}: ready scene without points`)
+    const pointIds = scene.points?.map((point) => point.id) ?? []
+    const repeated = pointIds.filter((id, index) => pointIds.indexOf(id) !== index)
+    return [...errors, ...repeated.map((id) => `scene ${scene.id}: duplicate point ${id}`)]
+  })
+}
+
 function cityErrors(cities: z.infer<typeof citySchema>[], sceneIds: Set<string>): string[] {
   return cities.flatMap((city) => {
     const errors: string[] = []
@@ -122,6 +135,7 @@ export function validateDataset(dataset: Dataset): string[] {
     ...duplicateErrors('scene', data.scenes),
     ...duplicateErrors('city', data.cities),
     ...duplicateErrors('itinerary', data.itineraries),
+    ...sceneErrors(data.scenes),
     ...cityErrors(data.cities, new Set(data.scenes.map((scene) => scene.id))),
     ...eraContinuityErrors(data.eras),
     ...referenceErrors(data),

@@ -137,10 +137,22 @@ export const itinerarySchema = z.strictObject({
   sources: z.array(label).min(1),
 })
 
+export const scenePointSchema = z.strictObject({
+  id: slug,
+  title: label,
+  text: label,
+  sources: z.array(label).min(1),
+})
+
 export const sceneSchema = z.strictObject({
   id: slug,
   title: label,
   status: z.enum(['planned', 'ready']),
+  year: anyYear.optional(),
+  lat: z.number().min(-90).max(90).optional(),
+  lon: z.number().min(-180).max(180).optional(),
+  summary: label.optional(),
+  points: z.array(scenePointSchema).optional(),
 })
 
 export type EraId = (typeof ERA_IDS)[number]
@@ -154,6 +166,7 @@ export type Track = z.infer<typeof trackSchema>
 export type Place = z.infer<typeof placeSchema>
 export type Person = z.infer<typeof personSchema>
 export type Scene = z.infer<typeof sceneSchema>
+export type ScenePoint = z.infer<typeof scenePointSchema>
 export type City = z.infer<typeof citySchema>
 export type Waypoint = z.infer<typeof waypointSchema>
 export type Itinerary = z.infer<typeof itinerarySchema>

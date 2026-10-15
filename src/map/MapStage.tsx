@@ -5,6 +5,7 @@ import { prefersReducedMotion } from '../core/motion.ts'
 import { eras } from '../data/eras.ts'
 import { events } from '../data/events.ts'
 import { places } from '../data/places.ts'
+import { findScene, isPlayable } from '../scenes/registry.ts'
 import { gradingAt, readableAccent } from '../stage/grading.ts'
 import { useApp } from '../store.ts'
 import { approach, approachGoal, goalForBounds, goalForPlace, MAX_DISTANCE, type CameraGoal } from './camera.ts'
@@ -21,6 +22,9 @@ const OVERVIEW_PITCH = 0.95
 const CLOSE_PITCH = 0.78
 const INTRO_PITCH = 1.45
 const CAMERA_TIME_CONSTANT = 0.9
+const DIVE_DISTANCE = 0.8
+const DIVE_PITCH = 1.22
+const DIVE_TIME_CONSTANT = 0.45
 
 let territoriesPromise: Promise<TerritoryData> | null = null
 
@@ -38,15 +42,36 @@ export interface UiInsets {
   bottom: number
 }
 
-function selectedPlace(): { lon: number; lat: number } | null {
+interface Focus {
+  lon: number
+  lat: number
+  dive: boolean
+}
+
+function focusPlace(): Focus | null {
   const { route } = useApp.getState()
+  if (route.name === 'scene') {
+    const scene = findScene(route.id)
+    if (scene?.lon === undefined || scene.lat === undefined) return null
+    return { lon: scene.lon, lat: scene.lat, dive: isPlayable(scene) }
+  }
   if (route.name !== 'event') return null
   const event = events.find((candidate) => candidate.id === route.id)
   const place = places.find((candidate) => candidate.id === event?.placeId)
-  return place ? { lon: place.lon, lat: place.lat } : null
+  return place ? { lon: place.lon, lat: place.lat, dive: false } : null
 }
 
-export function MapStage({ segments, insets, detail }: { segments: number; insets: UiInsets; detail: number }) {
+export function MapStage({
+  segments,
+  insets,
+  detail,
+  active,
+}: {
+  segments: number
+  insets: UiInsets
+  detail: number
+  active: boolean
+}) {
   const territories = use(loadTerritories())
   const relief = useLoader(TextureLoader, `${import.meta.env.BASE_URL}geo/relief.webp`)
   const masks = useMemo(() => new TerritoryMasks(), [])
@@ -76,7 +101,7 @@ export function MapStage({ segments, insets, detail }: { segments: number; inset
 
   useFrame(({ clock, scene, size, camera: frameCamera }, delta) => {
     const mesh = terrain.current
-    if (!mesh) return
+    if (!mesh || !active) return
     const camera = frameCamera as PerspectiveCamera
     const now = clock.elapsedTime
     const year = useApp.getState().view.center
@@ -103,16 +128,17 @@ export function MapStage({ segments, insets, detail }: { segments: number; inset
     const freeWidth = Math.max(1, size.width - insets.left - insets.right)
     const freeHeight = Math.max(1, size.height - insets.top - insets.bottom)
     const visibleFov = (2 * Math.atan(Math.tan((camera.fov * Math.PI) / 360) * (freeHeight / size.height)) * 180) / Math.PI
-    const place = selectedPlace()
+    const place = focusPlace()
     const bounds = unionBounds(slices.filter((slice) => isMainTrack(slice.track)))
     const target = place
-      ? goalForPlace(place.lon, place.lat)
+      ? goalForPlace(place.lon, place.lat, place.dive ? DIVE_DISTANCE : undefined)
       : bounds
         ? goalForBounds(bounds, visibleFov, freeWidth / freeHeight, Math.sin(OVERVIEW_PITCH))
         : frame.goal
-    const timeConstant = reducedMotion ? 0 : CAMERA_TIME_CONSTANT
+    const timeConstant = reducedMotion ? 0 : place?.dive ? DIVE_TIME_CONSTANT : CAMERA_TIME_CONSTANT
     frame.goal = approachGoal(frame.goal, target, delta, timeConstant)
-    frame.pitch = approach(frame.pitch, place ? CLOSE_PITCH : OVERVIEW_PITCH, delta, reducedMotion ? 0 : 1.6)
+    const pitch = place?.dive ? DIVE_PITCH : place ? CLOSE_PITCH : OVERVIEW_PITCH
+    frame.pitch = approach(frame.pitch, pitch, delta, reducedMotion ? 0 : place?.dive ? DIVE_TIME_CONSTANT : 1.6)
 
     const yaw = reducedMotion ? 0 : Math.sin(now * 0.05) * 0.06
     const horizontal = Math.cos(frame.pitch) * frame.goal.distance
@@ -129,9 +155,9 @@ export function MapStage({ segments, insets, detail }: { segments: number; inset
   })
 
   return (
-    <>
+    <group visible={active}>
       <mesh ref={terrain} geometry={geometry} material={material} frustumCulled={false} />
       <MapOverlays height={heightAt} />
-    </>
+    </group>
   )
 }

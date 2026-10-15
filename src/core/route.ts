@@ -5,6 +5,7 @@ export type PageId = (typeof PAGE_IDS)[number]
 export type Route =
   | { name: 'home' }
   | { name: 'event'; id: string }
+  | { name: 'scene'; id: string }
   | { name: 'page'; id: PageId }
   | { name: 'not-found'; path: string }
 
@@ -19,6 +20,7 @@ export function parseHash(hash: string): Route {
   if (path === '') return { name: 'home' }
   const [section, id, ...rest] = path.split('/')
   if (section === 'evenement' && id && SLUG.test(id) && rest.length === 0) return { name: 'event', id }
+  if (section === 'scene' && id && SLUG.test(id) && rest.length === 0) return { name: 'scene', id }
   if (section && isPageId(section) && id === undefined) return { name: 'page', id: section }
   return { name: 'not-found', path }
 }
@@ -29,6 +31,8 @@ export function routeToHash(route: Route): string {
       return '#/'
     case 'event':
       return `#/evenement/${route.id}`
+    case 'scene':
+      return `#/scene/${route.id}`
     case 'page':
       return `#/${route.id}`
     case 'not-found':

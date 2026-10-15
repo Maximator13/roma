@@ -14,6 +14,13 @@ describe('parseHash', () => {
     expect(parseHash('#/mentions-legales')).toEqual({ name: 'page', id: 'mentions-legales' })
   })
 
+  it('reads scene routes', () => {
+    expect(parseHash('#/scene/nimes')).toEqual({ name: 'scene', id: 'nimes' })
+    expect(parseHash('#/scene/pont-du-gard/')).toEqual({ name: 'scene', id: 'pont-du-gard' })
+    expect(parseHash('#/scene/Nimes')).toEqual({ name: 'not-found', path: 'scene/Nimes' })
+    expect(parseHash('#/scene/nimes/forum')).toEqual({ name: 'not-found', path: 'scene/nimes/forum' })
+  })
+
   it('reports anything else as not found', () => {
     expect(parseHash('#/evenement/Cannes')).toEqual({ name: 'not-found', path: 'evenement/Cannes' })
     expect(parseHash('#/evenement')).toEqual({ name: 'not-found', path: 'evenement' })
@@ -23,7 +30,7 @@ describe('parseHash', () => {
 
 describe('routeToHash', () => {
   it('round trips every route kind', () => {
-    for (const hash of ['#/', '#/evenement/chute-de-constantinople', '#/sources']) {
+    for (const hash of ['#/', '#/evenement/chute-de-constantinople', '#/scene/arles', '#/sources']) {
       expect(routeToHash(parseHash(hash))).toBe(hash)
     }
   })

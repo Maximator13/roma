@@ -15,7 +15,8 @@ import { Timeline } from './timeline/Timeline.tsx'
 import { animateView, viewForEvent } from './timeline/viewAnimation.ts'
 import { viewAround, xToYear } from './timeline/viewport.ts'
 import { ConsentBanner } from './ui/ConsentBanner.tsx'
-import { EraCaption, EventPanel, NotFoundPanel, PagePanel } from './ui/panels.tsx'
+import { findScene, isPlayable } from './scenes/registry.ts'
+import { EraCaption, EventPanel, NotFoundPanel, PagePanel, ScenePanel, SceneShortcuts } from './ui/panels.tsx'
 
 const Stage = lazy(() => import('./stage/Stage.tsx'))
 
@@ -27,6 +28,10 @@ function documentTitle(route: Route): string {
   if (route.name === 'page') {
     const page = pages.find((candidate) => candidate.id === route.id)
     if (page) return `${page.title} | ${SITE.name}`
+  }
+  if (route.name === 'scene') {
+    const scene = findScene(route.id)
+    if (scene) return `${scene.title} | ${SITE.name}`
   }
   if (route.name === 'not-found') return `${UI.notFoundTitle} | ${SITE.name}`
   return SITE.title
@@ -102,8 +107,30 @@ function ActivePanel({ route }: { route: Route }) {
     const page = pages.find((candidate) => candidate.id === route.id)
     return page ? <PagePanel page={page} /> : <NotFoundPanel />
   }
+  if (route.name === 'scene') {
+    const scene = findScene(route.id)
+    return scene ? <ScenePanel scene={scene} /> : <NotFoundPanel />
+  }
   if (route.name === 'not-found') return <NotFoundPanel />
   return null
+}
+
+function useSceneKeys() {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const { route, scenePoint, setScenePoint } = useApp.getState()
+      if (route.name !== 'scene' || event.altKey || event.ctrlKey || event.metaKey) return
+      const target = event.target instanceof Element ? event.target : null
+      if (target?.closest('input, textarea, select')) return
+      const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0
+      if (step === 0) return
+      event.preventDefault()
+      const last = findScene(route.id)?.points?.length ?? 0
+      setScenePoint(Math.max(0, Math.min(last, scenePoint + step)))
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
 }
 
 function Intro() {
@@ -125,12 +152,14 @@ export function App() {
   useHashRoute()
   useEraAccent()
   useFocusOnSelectedEvent()
+  useSceneKeys()
+  const inScene = route.name === 'scene' && isPlayable(findScene(route.id))
   return (
     <>
       <Suspense fallback={null}>
         <Stage />
       </Suspense>
-      <div className="app">
+      <div className={inScene ? 'app app--scene' : 'app'}>
         <header className="header">
           <a className="brand" href="#/">
             <span className="brand__name">{UI.brand}</span>
@@ -145,13 +174,16 @@ export function App() {
           </nav>
         </header>
         <main className="main">
-          <div className="main__side">
-            <EraCaption index={eraIndex} />
-            {route.name === 'home' && <Intro />}
-          </div>
+          {!inScene && (
+            <div className="main__side">
+              <EraCaption index={eraIndex} />
+              <SceneShortcuts index={eraIndex} />
+              {route.name === 'home' && <Intro />}
+            </div>
+          )}
           <ActivePanel route={route} />
         </main>
-        <Timeline />
+        {!inScene && <Timeline />}
       </div>
       <ConsentBanner />
     </>

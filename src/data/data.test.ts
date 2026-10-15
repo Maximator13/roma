@@ -49,6 +49,27 @@ describe('validateDataset', () => {
   })
 })
 
+describe('scene rules', () => {
+  const valid = structuredClone(dataset)
+
+  it('requires date, place, summary and points for a ready scene', () => {
+    const broken = { ...valid, scenes: [...valid.scenes, { id: 'essai', title: 'Essai', status: 'ready' }] }
+    expect(validateDataset(broken)).toEqual([
+      'scene essai: ready scene without year',
+      'scene essai: ready scene without lat',
+      'scene essai: ready scene without lon',
+      'scene essai: ready scene without summary',
+      'scene essai: ready scene without points',
+    ])
+  })
+
+  it('reports duplicate points of interest', () => {
+    const point = { id: 'forum', title: 'Forum', text: 'Texte.', sources: ['Source'] }
+    const broken = { ...valid, scenes: [...valid.scenes, { id: 'essai', title: 'Essai', status: 'planned', points: [point, point] }] }
+    expect(validateDataset(broken)).toEqual(['scene essai: duplicate point forum'])
+  })
+})
+
 describe('phase 1 coverage', () => {
   it('has about forty events with at least three in every era', () => {
     expect(dataset.events.length).toBeGreaterThanOrEqual(40)
