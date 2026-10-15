@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { AdditiveBlending, CylinderGeometry, DoubleSide, Matrix4, Mesh, Quaternion, ShaderMaterial, Vector3 } from 'three'
 
-const SHAFT_RADIUS = 4.4
 
 const vertexShader = [
   'varying vec2 vUv;',
@@ -24,15 +23,15 @@ const fragmentShader = [
   'varying vec3 vViewDirection;',
   'void main() {',
   '  float facing = abs(dot(normalize(vNormalView), normalize(vViewDirection)));',
-  '  float along = smoothstep(0.0, 0.12, vUv.y) * smoothstep(1.0, 0.75, vUv.y);',
+  '  float along = smoothstep(0.0, 0.12, vUv.y) * smoothstep(1.0, 0.95, vUv.y);',
   '  gl_FragColor = vec4(color * strength * facing * facing * along, 1.0);',
   '}',
 ].join('\n')
 
-export function LightShaft({ from, to }: { from: Vector3; to: Vector3 }) {
+export function LightShaft({ from, to, radius }: { from: Vector3; to: Vector3; radius: number }) {
   const shaft = useMemo(() => {
     const length = from.distanceTo(to)
-    const geometry = new CylinderGeometry(SHAFT_RADIUS, SHAFT_RADIUS * 1.08, length, 48, 1, true)
+    const geometry = new CylinderGeometry(radius, radius * 1.08, length, 48, 1, true)
     const material = new ShaderMaterial({
       uniforms: { color: { value: new Vector3(1, 0.92, 0.78) }, strength: { value: 0.22 } },
       vertexShader,
@@ -49,7 +48,7 @@ export function LightShaft({ from, to }: { from: Vector3; to: Vector3 }) {
     mesh.applyMatrix4(new Matrix4().compose(middle, rotation, new Vector3(1, 1, 1)))
     mesh.renderOrder = 3
     return mesh
-  }, [from, to])
+  }, [from, to, radius])
   useEffect(
     () => () => {
       shaft.geometry.dispose()

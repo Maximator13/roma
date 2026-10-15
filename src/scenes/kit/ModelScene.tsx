@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Vector3, type Object3D } from 'three'
 import { QUALITY } from '../../stage/quality.ts'
 import type { SceneProps } from '../registry.ts'
-import { Atmosphere, type HazeSettings, type SunSettings } from './Atmosphere.tsx'
+import { Atmosphere, type HazeSettings, type InteriorSettings, type SunSettings } from './Atmosphere.tsx'
 import { GuidedRail } from './GuidedRail.tsx'
 import { Life } from './Life.tsx'
 import { LightShaft } from './LightShaft.tsx'
@@ -15,6 +15,9 @@ export interface ModelSceneConfig {
   haze: HazeSettings
   overview: { azimuth: number; elevation: number }
   forceShadows?: boolean
+  interior?: InteriorSettings
+  lightShaftRadius?: number
+  views?: Record<string, { position: [number, number, number]; target: [number, number, number] }>
 }
 
 const OVERVIEW_MARKER = 'vue-d-ensemble'
@@ -37,16 +40,20 @@ export function ModelScene({ config, scene, point, insets, quality }: SceneProps
   const stops = useMemo<CameraStop[]>(() => {
     const overview =
       markerStop(model.markers, OVERVIEW_MARKER) ?? overviewStop(model.bounds, config.overview.azimuth, config.overview.elevation)
-    const points = (scene.points ?? []).map((item) => markerStop(model.markers, item.id) ?? overview)
+    const viewStop = (id: string): CameraStop | null => {
+      const view = config.views?.[id]
+      return view ? { position: new Vector3(...view.position), target: new Vector3(...view.target) } : null
+    }
+    const points = (scene.points ?? []).map((item) => viewStop(item.id) ?? markerStop(model.markers, item.id) ?? overview)
     return [overview, ...points]
   }, [model, scene, config])
   return (
     <>
-      <Atmosphere sun={config.sun} haze={config.haze} shadows={shadows} />
+      <Atmosphere sun={config.sun} haze={config.haze} shadows={shadows} interior={config.interior} />
       <primitive object={model.root} />
       <Life model={model} quality={quality} shadows={shadows} />
       {model.anchors.has('oculus') && model.anchors.has('sunbeam_target') && (
-        <LightShaft from={model.anchors.get('oculus')!} to={model.anchors.get('sunbeam_target')!} />
+        <LightShaft from={model.anchors.get('oculus')!} to={model.anchors.get('sunbeam_target')!} radius={config.lightShaftRadius ?? 4} />
       )}
       <GuidedRail stops={stops} index={point} insets={insets} />
     </>

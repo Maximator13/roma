@@ -49,6 +49,7 @@ Les autres sources retenues pour la carte (AWMC, Itiner-e) et leurs obligations 
 |---|---|---|---|
 | Relief de Nîmes | IGN, RGE ALTI 5 m et 50 m, service WMS-R de la Géoplateforme ; Licence Ouverte Etalab 2.0 | IGN, RGE ALTI | Terrain de la scène de Nîmes, reprojeté du Lambert-93 vers le repère local ; fort Vauban et trois remblais modernes effacés (`blender/kit/terrain.py`) |
 | Textures de pierre, d'enduit, de sable et de dallage | Poly Haven, Sandstone Blocks 08, Yellow Plaster, Sand 01, Rectangular Paving (1k) ; CC0 1.0 | Rob Tuytel ; Dimitrios Savva (Rectangular Paving) | Teintées et répétées dans la scène de Nîmes (`blender/kit/materials.py`) |
+| Textures de marbre, de granit et de travertin du Panthéon | ambientCG, Marble021, Marble014, Granite001A, Travertine009 ; CC0 1.0 | ambientCG (Lennart Demes) | Recolorées en pentélique, jaune antique, pavonazzetto, granit gris et rose, porphyre (`blender/kit/pantheon_materials.py`) |
 | Lettres de bronze des dédicaces | Cinzel (SIL OFL 1.1), déjà livrée avec le site | The Cinzel Project Authors | Converties en volumes pour CIL XII 3156 et CIL XII 3151 |
 
 La frise de rinceaux de la Maison Carrée est générée par le script ; ce n'est pas une copie de la frise conservée.

@@ -7,6 +7,13 @@
       "sha256": "9fd08ace715fca2c0e74b846be617319ed1d5824ce788255d6322193022b7884",
       "release": "assets-v1",
       "file": "9fd08ace715f-nimes.glb"
+    },
+    {
+      "path": "scenes/pantheon/pantheon.glb",
+      "bytes": 7822168,
+      "sha256": "1af410bdfec1148b0ab9b1f4d40afa952082f340a67f4a3460899fcb1acf3ed9",
+      "release": "assets-v2",
+      "file": "1af410bdfec1-pantheon.glb"
     }
   ]
 }

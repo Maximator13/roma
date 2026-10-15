@@ -60,7 +60,8 @@ function publish(release: string, entries: ManifestEntry[]) {
 function main() {
   const dryRun = process.argv.includes('--dry-run')
   const manifest = parseManifest(readFileSync(manifestFile, 'utf8'))
-  const changed = changedAssets(manifest, localAssets())
+  const only = process.argv.filter((argument) => argument.startsWith('--only=')).map((argument) => argument.slice('--only='.length))
+  const changed = changedAssets(manifest, localAssets()).filter((asset) => only.length === 0 || only.includes(asset.path))
   if (changed.length === 0) {
     console.log(`Nothing to publish: ${manifestFile} matches ${buildRoot}.`)
     return

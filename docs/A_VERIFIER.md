@@ -670,3 +670,41 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 - **Hypothèse retenue** : Rinceau d'acanthe générique, quatre périodes sur 5,1 m, sur les faces est, sud et ouest.
 - **Pourquoi un doute** : Ce n'est pas une copie de la frise conservée.
 - **Décision** : à trancher
+
+## Scène du Panthéon (21 avril 129)
+
+### 1. Monuments voisins du Panthéon
+
+- **Hypothèse retenue** : Temple de Matidie, Iseum, Area Sacra, Porticus Minucia, théâtres de Balbus et de Marcellus, cirque Flaminius, basilique de Neptune, Saepta et thermes placés à des positions approchées.
+- **Pourquoi un doute** : Positions de mémoire, sans plan archéologique géoréférencé.
+- **Décision** : à trancher
+
+### 2. Entrée et tache de soleil
+
+- **Hypothèse retenue** : L'entrée est un passage de 8,9 m sous l'entablement ; la tache de midi du 21 avril tombe sur son sol, et non sur le mur à 6,5 m comme dans le modèle simplifié de la proposition.
+- **Pourquoi un doute** : Dépend du tracé exact du passage et de la porte.
+- **Décision** : à trancher
+
+### 3. Marches du porche
+
+- **Hypothèse retenue** : Sept marches sur toute la façade.
+- **Pourquoi un doute** : Une des deux restitutions possibles, l'autre étant deux escaliers.
+- **Décision** : à trancher
+
+### 4. Toit du porche
+
+- **Hypothèse retenue** : Tuiles de bronze comme la coupole.
+- **Pourquoi un doute** : La proposition dit seulement « tuiles ».
+- **Décision** : à trancher
+
+### 5. Revêtements de marbre intérieurs
+
+- **Hypothèse retenue** : Pavonazzetto sur les piliers, jaune antique pour les pilastres et les colonnes des niches, porphyre en alternance dans les édicules, attique de marbre blanc.
+- **Pourquoi un doute** : Répartition plausible, non tirée d'un relevé.
+- **Décision** : à trancher
+
+### 6. Parvis
+
+- **Hypothèse retenue** : Place de 60 m sur environ 153 m jusqu'au portique nord.
+- **Pourquoi un doute** : La proposition donne 60 m sur 120 m d'après une source non vérifiée.
+- **Décision** : à trancher

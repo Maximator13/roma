@@ -1,7 +1,8 @@
 import { Environment, Sky } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
-import { Color, Vector3, type DirectionalLight } from 'three'
+import { Color, Vector3, type DirectionalLight, type HemisphereLight } from 'three'
+import { approach } from '../../map/camera.ts'
 
 export interface SunSettings {
   azimuth: number
@@ -27,15 +28,48 @@ export function sunDirection(sun: SunSettings): Vector3 {
   return new Vector3(Math.sin(azimuth) * Math.cos(elevation), Math.sin(elevation), -Math.cos(azimuth) * Math.cos(elevation))
 }
 
-export function Atmosphere({ sun, haze, shadows }: { sun: SunSettings; haze: HazeSettings; shadows: boolean }) {
+export interface InteriorSettings {
+  center: [number, number, number]
+  radius: number
+  height: number
+  ambientScale: number
+}
+
+const AMBIENT = 0.3
+const ENVIRONMENT = 0.45
+
+export function interiorFactor(position: Vector3, interior: InteriorSettings | undefined): number {
+  if (!interior) return 0
+  const [x, y, z] = interior.center
+  const horizontal = Math.hypot(position.x - x, position.z - z)
+  return horizontal < interior.radius && position.y > y && position.y < y + interior.height ? 1 : 0
+}
+
+export function Atmosphere({
+  sun,
+  haze,
+  shadows,
+  interior,
+}: {
+  sun: SunSettings
+  haze: HazeSettings
+  shadows: boolean
+  interior?: InteriorSettings
+}) {
+  const ambient = useRef<HemisphereLight>(null)
+  const inside = useRef(0)
   const light = useRef<DirectionalLight>(null)
   const direction = useMemo(() => sunDirection(sun), [sun])
   const skyPosition = useMemo(() => direction.clone().multiplyScalar(SUN_DISTANCE).toArray(), [direction])
   const hazeColor = useMemo(() => new Color(haze.color), [haze.color])
   const focusRef = useRef(new Vector3())
 
-  useFrame(({ camera, scene: frameScene }) => {
+  useFrame(({ camera, scene: frameScene }, delta) => {
     frameScene.background = null
+    inside.current = approach(inside.current, interiorFactor(camera.position, interior), delta, 0.4)
+    const scale = 1 - inside.current * (1 - (interior?.ambientScale ?? 1))
+    frameScene.environmentIntensity = ENVIRONMENT * scale
+    if (ambient.current) ambient.current.intensity = AMBIENT * scale
     const current = light.current
     if (!current) return
     const focus = focusRef.current
@@ -60,11 +94,11 @@ export function Atmosphere({ sun, haze, shadows }: { sun: SunSettings; haze: Haz
   return (
     <>
       <Sky distance={SKY_DISTANCE} sunPosition={skyPosition} turbidity={7} rayleigh={1.6} mieCoefficient={0.006} mieDirectionalG={0.86} />
-      <Environment frames={1} resolution={128} environmentIntensity={0.45}>
+      <Environment frames={1} resolution={128} environmentIntensity={ENVIRONMENT}>
         <Sky sunPosition={skyPosition} turbidity={7} rayleigh={1.6} mieCoefficient={0.006} mieDirectionalG={0.86} />
       </Environment>
       <fogExp2 attach="fog" args={[hazeColor, haze.density]} />
-      <hemisphereLight args={['#c9d6e8', '#6b5440', 0.3]} />
+      <hemisphereLight ref={ambient} args={['#c9d6e8', '#6b5440', AMBIENT]} />
       <directionalLight
         ref={light}
         color={sun.color}

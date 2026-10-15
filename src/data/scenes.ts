@@ -5,7 +5,7 @@ export const scenes: Scene[] = [
   {
     "id": "pantheon",
     "title": "Panthéon d'Hadrien",
-    "status": "planned",
+    "status": "ready",
     "year": 129,
     "lat": 41.89861,
     "lon": 12.47683,
