@@ -1009,7 +1009,7 @@ def viewpoints(scene, layout, gate_frames, basin_frame, north_bearing):
     cx, cy = rotate(-12.0, layout.axis_front + 36.0, GRID)
     center = SITES["amphitheatre"]
     eye_bearing = north_bearing - 12.0
-    cam_a = bearing_point(center, eye_bearing, amphitheatre_radius(eye_bearing) + 45.0)
+    cam_a = bearing_point(center, eye_bearing, amphitheatre_radius(eye_bearing) + 75.0)
     aim_bearing = north_bearing - 14.0
     facade = bearing_point(center, aim_bearing, amphitheatre_radius(aim_bearing))
     arena_z = scene.arena_level - scene.datum
@@ -1018,7 +1018,7 @@ def viewpoints(scene, layout, gate_frames, basin_frame, north_bearing):
     gate_target = gate @ Vector((0.0, 0.2, 8.6))
     kx, ky = SITES["castellum"]
     castellum_level = scene.ground(kx, ky)
-    castellum_eye = Vector((kx, ky, castellum_level)) + Vector((*rotate(2.0, 9.0, GRID), 13.0))
+    castellum_eye = Vector((kx, ky, castellum_level)) + Vector((*rotate(-14.0, -18.0, GRID), 9.0))
     castellum_target = Vector((kx, ky, castellum_level)) + Vector((*rotate(0.0, -0.8, GRID), -0.6))
     city = Vector((60.0, -20.0))
     eye_xy = city + Vector((math.sin(math.radians(150.0)), math.cos(math.radians(150.0)))) * 1200.0
@@ -1028,7 +1028,7 @@ def viewpoints(scene, layout, gate_frames, basin_frame, north_bearing):
     aerial_target = aerial_eye + Vector((heading.x * math.cos(pitch), heading.y * math.cos(pitch), math.sin(pitch))) * 900
     points = {
         "maison-carree": (world_point(scene, cx, cy, 1.7), mc_target),
-        "amphitheatre": (Vector((cam_a[0], cam_a[1], arena_z + 2.0)), Vector((facade[0], facade[1], arena_z + 9.0))),
+        "amphitheatre": (Vector((cam_a[0], cam_a[1], arena_z + 3.0)), Vector((facade[0], facade[1], arena_z + 11.0))),
         "fontaine-tour-magne": (basin_frame @ Vector((6.0, -30.0, 4.0)), basin_frame @ Vector((0.0, 40.0, 9.0))),
         "porte-d-auguste": (Vector((gate_eye.x, gate_eye.y, scene.ground(gate_eye.x, gate_eye.y) + 1.7)), gate_target),
         "eau-castellum": (castellum_eye, castellum_target),
