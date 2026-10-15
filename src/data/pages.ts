@@ -96,6 +96,7 @@ Les bornes des époques sont des conventions d'historiens, expliquées pour chac
 - Relief et fonds marins : NOAA NCEI, ETOPO 2022 (domaine public), [doi:10.25921/fd45-gt74](https://doi.org/10.25921/fd45-gt74).
 - Traits de côte et lacs : Made with Natural Earth (domaine public).
 - Lieux antiques : [Pleiades](https://pleiades.stoa.org), © les contributeurs, CC BY 3.0.
+- Territoires romains année par année : J. S. Bennett, E. Mutch, A. Tollefson et al., [Cliopatria v0.2.1](https://github.com/Seshat-Global-History-Databank/cliopatria) (Seshat Global History Databank), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ; données modifiées (extraction des entités romaines, simplification, dates alignées sur le projet, lacune byzantine de 1402 à 1406 comblée par la géométrie identique des années voisines).
 
 La liste complète des ressources, avec leurs auteurs, licences et modifications, est tenue à jour dans le fichier [CREDITS.md](https://github.com/Maximator13/roma/blob/main/CREDITS.md) du dépôt.`,
   },

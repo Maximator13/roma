@@ -582,3 +582,47 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 - **Hypothèse retenue** : Les naissances approximatives (vers 482 pour Justinien, vers 575 pour Héraclius, vers 1182 pour Alexis Ier de Trébizonde, vers 1175 pour Théodore Ier Laskaris, etc.) sont laissées vides pour éviter une fausse précision.
 - **Pourquoi un doute** : Le schéma n'accepte qu'un entier sans « vers » ; à ajouter si l'interface sait signaler une date approximative.
 - **Décision** : à trancher
+
+## Territoires de la carte (Cliopatria v0.2.1)
+
+### 1. Convention d'années de Cliopatria
+
+- **Hypothèse retenue** : Les années av. J.-C. de Cliopatria sont en numérotation historique (sans année 0) : -31 signifie 31 av. J.-C. ; conversion en année astronomique par y + 1 pour les années négatives.
+- **Pourquoi un doute** : Le README ne parle pas de l'année 0 ; la convention est déduite des noms d'images (B100-31, B078-202) et de nombreuses dates connues (Actium, Issos, Gaugamèles), confirmées par le vérificateur.
+- **Décision** : à trancher
+
+### 2. Constantinople au bord des polygones
+
+- **Hypothèse retenue** : La ville historique tombe juste hors des polygones de Cliopatria (côte tracée 4 à 7 km trop au nord), comme Alexandrie, Carthage, Syracuse, Trébizonde et Dyrrachium par endroits.
+- **Pourquoi un doute** : Invisible sur la carte entière (environ 2 px), visible si la caméra zoome sur la ville ; à corriger en élargissant les polygones puis en les découpant sur les terres de Natural Earth, au prix de poids.
+- **Décision** : à trancher
+
+### 3. Mésopotamie et Arménie romaines jusqu'en 126
+
+- **Hypothèse retenue** : La ligne Cliopatria [117, 126] garde l'extension de Trajan jusqu'en 126, alors qu'Hadrien abandonne ces conquêtes en 117 et 118.
+- **Pourquoi un doute** : Effet de l'échantillonnage de la source (une image en 117, la suivante en 127) ; on peut utiliser la géométrie de 127 à 153 dès 118.
+- **Décision** : à trancher
+
+### 4. Grèce du Sud de 397 à 401
+
+- **Hypothèse retenue** : Cliopatria attribue Athènes, Thèbes et Sparte aux Wisigoths de 397 à 401 ; aucune piste romaine ne les couvre ces années-là.
+- **Pourquoi un doute** : Alaric ravage la Grèce de 395 à 397 sans la gouverner : la source se trompe probablement.
+- **Décision** : à trancher
+
+### 5. Sécessions retirées de Rome
+
+- **Hypothèse retenue** : Le territoire de l'Empire des Gaules est retiré de Rome de 260 à 274 et celui de Palmyre de 270 à 273, pour respecter le modèle des pistes.
+- **Pourquoi un doute** : En 260, l'image Cliopatria montre encore la Gaule romaine ; correction à valider avec le rendu.
+- **Décision** : à trancher
+
+### 6. Détail des petits territoires
+
+- **Hypothèse retenue** : La simplification à 27 km pour tenir 900 Ko fait perdre de la surface aux petits États (500 av. J.-C. : 46 % ; Byzance de 1395 à 1414 : 69 %).
+- **Pourquoi un doute** : Options chiffrées : garder 877 Ko, passer à 14 km (1,38 Mo, en fichier de release) ou adopter un format à arcs partagés (176 Ko compressé, décodeur à écrire).
+- **Décision** : à trancher
+
+### 7. Dates de passage entre entités romaines
+
+- **Hypothèse retenue** : Dans la piste rome, la royauté finit en 500 av. J.-C. et l'Empire commence à Actium (31 av. J.-C.) selon Cliopatria, et non en 509 et 27 av. J.-C. comme nos époques.
+- **Pourquoi un doute** : Seuls la géométrie et le nom de l'entité sont touchés, pas les bornes des pistes.
+- **Décision** : à trancher
