@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Vector3 } from 'three'
+import { Vector3, type Object3D } from 'three'
 import { QUALITY } from '../../stage/quality.ts'
 import type { SceneProps } from '../registry.ts'
 import { Atmosphere, type HazeSettings, type SunSettings } from './Atmosphere.tsx'
@@ -14,15 +14,27 @@ export interface ModelSceneConfig {
   overview: { azimuth: number; elevation: number }
 }
 
+const OVERVIEW_MARKER = 'vue-d-ensemble'
+const TARGET_SUFFIX = '_target'
+
+function worldPosition(marker: Object3D): Vector3 {
+  return marker.getWorldPosition(new Vector3())
+}
+
+export function markerStop(markers: Map<string, Object3D>, id: string): CameraStop | null {
+  const eye = markers.get(id)
+  if (!eye) return null
+  const target = markers.get(`${id}${TARGET_SUFFIX}`)
+  return target ? { position: worldPosition(eye), target: worldPosition(target) } : stopFromMarker(worldPosition(eye), markerForward(eye))
+}
+
 export function ModelScene({ config, scene, point, insets, quality }: SceneProps & { config: ModelSceneConfig }) {
   const shadows = QUALITY[quality].shadows
   const model = useSceneModel(config.model, shadows)
   const stops = useMemo<CameraStop[]>(() => {
-    const overview = overviewStop(model.bounds, config.overview.azimuth, config.overview.elevation)
-    const points = (scene.points ?? []).map((item) => {
-      const marker = model.markers.get(item.id)
-      return marker ? stopFromMarker(marker.getWorldPosition(new Vector3()), markerForward(marker)) : overview
-    })
+    const overview =
+      markerStop(model.markers, OVERVIEW_MARKER) ?? overviewStop(model.bounds, config.overview.azimuth, config.overview.elevation)
+    const points = (scene.points ?? []).map((item) => markerStop(model.markers, item.id) ?? overview)
     return [overview, ...points]
   }, [model, scene, config])
   return (
