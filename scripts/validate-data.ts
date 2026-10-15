@@ -9,9 +9,9 @@ export function sceneFileErrors(scenes: { id: string; status: string }[], folder
   const missingFiles = scenes
     .filter((scene) => scene.status === 'ready')
     .flatMap((scene) =>
-      [`src/scenes/${scene.id}/index.tsx`, `blender/${scene.id}.py`]
-        .filter((path) => !exists(path))
-        .map((path) => `scene ${scene.id}: ready scene without ${path}`),
+      [[`src/scenes/${scene.id}/index.tsx`], [`blender/${scene.id}.py`, `blender/${scene.id.replaceAll('-', '_')}.py`]]
+        .filter((paths) => !paths.some(exists))
+        .map((paths) => `scene ${scene.id}: ready scene without ${paths[0]}`),
     )
   const orphans = folders
     .filter((folder) => !SCENE_SHARED_FOLDERS.has(folder) && !ids.has(folder))

@@ -245,7 +245,7 @@ def curia(width=22.0, depth=17.0, height=12.0):
 def castellum(radius=2.95, depth=1.4, size=13.0, column_height=3.6):
     builder = MeshBuilder()
     half = size / 2
-    builder.box((-half - 0.5, -half - 0.5, -1.5), (half + 0.5, half + 0.5, 0.3), ASHLAR, bottom=False, top=False)
+    builder.box((-half - 0.5, -half - 0.5, -2.6), (half + 0.5, half + 0.5, 0.3), ASHLAR, bottom=False, top=False)
     inner_ring = []
     outer_ring = []
     for step in range(32):
@@ -259,7 +259,15 @@ def castellum(radius=2.95, depth=1.4, size=13.0, column_height=3.6):
                   32, "lens_smooth", smooth=False)
     builder.lathe([(radius, -0.74), (0.0, -0.74)], 32, "water", smooth=False, caps=False)
     builder.box((-half, half - 0.7, 0.3), (half, half, 5.0), "plaster_ochre", bottom=False)
-    builder.box((-half + 0.7, half - 0.75, 1.0), (half - 0.7, half - 0.7, 4.2), "painted_red")
+    first = len(builder.polygons)
+    builder.box((-half + 0.7, half - 0.75, 1.0), (half - 0.7, half - 0.7, 4.2), MATTE_LEAD)
+    builder.tint(first, (0.32, 0.50, 0.52))
+    first = len(builder.polygons)
+    for k in range(6):
+        x = -half + 1.2 + k * (size - 2.4) / 6
+        builder.box((x, half - 0.76, 2.1 + 0.12 * (k % 2)), (x + (size - 2.4) / 6 - 0.15, half - 0.75, 2.42 + 0.12 * (k % 2)),
+                    MATTE_LEAD, bottom=False, top=False)
+    builder.tint(first, (0.62, 0.76, 0.74))
     builder.box((-1.1, half - 0.8, 0.3), (1.1, half + 0.2, 1.6), VOID)
     roof_low = 0.3 + column_height
     for side in range(4):

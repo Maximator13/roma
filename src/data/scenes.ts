@@ -152,7 +152,7 @@ export const scenes: Scene[] = [
   {
     "id": "arles",
     "title": "Arles romaine (Arelate)",
-    "status": "planned",
+    "status": "ready",
     "year": 160,
     "lat": 43.677616,
     "lon": 4.630799,
@@ -233,7 +233,7 @@ export const scenes: Scene[] = [
   {
     "id": "pont-du-gard",
     "title": "Le pont du Gard",
-    "status": "planned",
+    "status": "ready",
     "year": 130,
     "lat": 43.94725,
     "lon": 4.53529,

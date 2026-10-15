@@ -66,7 +66,7 @@ def amphitheatre_bay(width):
     for x in (-width / 4, width / 4):
         builder.box((x - 0.22, 0.0, 19.35), (x + 0.22, 0.6, 19.95), ASHLAR)
         builder.box((x - 0.18, 0.0, 16.55), (x + 0.18, 0.42, 16.85), ASHLAR)
-        builder.lathe([(0.09, 16.85), (0.07, 25.2)], 5, "dark_wood", smooth=True, matrix=placement(x, 0.34, 0.0))
+        builder.lathe([(0.14, 16.85), (0.11, 25.2)], 5, "dark_wood", smooth=True, matrix=placement(x, 0.34, 0.0))
     vault = [(-3.2 + 2.0 * math.cos(math.pi * i / 8), 5.2 + 2.0 * math.sin(math.pi * i / 8)) for i in range(9)]
     builder.surface([[(x, y, z) for y, z in vault] for x in (-half, half)], WEATHERED)
     builder.box((-half, -5.2, -0.2), (half, -1.2, 0.0), "paving", bottom=False)

@@ -41,6 +41,15 @@ function markOpacity(attribute: InstancedBufferAttribute) {
   attribute.needsUpdate = true
 }
 
+export function standingGeometry(source: Mesh): BufferGeometry {
+  source.updateWorldMatrix(true, false)
+  const geometry = source.geometry.clone().applyMatrix4(source.matrixWorld)
+  geometry.computeBoundingBox()
+  const box = geometry.boundingBox
+  if (box) geometry.translate(-(box.min.x + box.max.x) / 2, -box.min.y, -(box.min.z + box.max.z) / 2)
+  return geometry
+}
+
 interface Walker {
   route: Route
   variant: number
@@ -74,10 +83,9 @@ function Walkers({ model, density, shadows }: { model: SceneModel; density: numb
     () =>
       model.walkers.map((source: Mesh, variant) => {
         const count = plan.filter((walker) => walker.variant === variant).length
-        const mesh = new InstancedMesh(source.geometry, source.material, Math.max(1, count))
+        const mesh = new InstancedMesh(standingGeometry(source), source.material, Math.max(1, count))
         mesh.count = count
         mesh.frustumCulled = false
-        mesh.scale.copy(source.getWorldScale(new Vector3()))
         return mesh
       }),
     [model, plan],
@@ -85,7 +93,11 @@ function Walkers({ model, density, shadows }: { model: SceneModel; density: numb
   const live = useRef(meshes)
   useEffect(() => {
     live.current = meshes
-    return () => meshes.forEach((mesh) => mesh.dispose())
+    return () =>
+      meshes.forEach((mesh) => {
+        mesh.geometry.dispose()
+        mesh.dispose()
+      })
   }, [meshes])
   const scratchRef = useRef({ here: new Vector3(), ahead: new Vector3(), matrix: new Matrix4(), turn: new Quaternion(), euler: new Euler(), unit: new Vector3(1, 1, 1) })
 

@@ -708,3 +708,95 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 - **Hypothèse retenue** : Place de 60 m sur environ 153 m jusqu'au portique nord.
 - **Pourquoi un doute** : La proposition donne 60 m sur 120 m d'après une source non vérifiée.
 - **Décision** : à trancher
+
+## Scène du pont du Gard (vers 130)
+
+### 1. Position de la grande arche
+
+- **Hypothèse retenue** : Deuxième arche depuis la rive gauche, centrée 31 m au nord-ouest du point Pleiades, mesurée sur l'orthophotographie IGN ; portées restituées (15,50, 24,52, 21,50, 19,20, 19,20 et 15,75 m) pour 142,35 m.
+- **Pourquoi un doute** : Seules certaines portées sont publiées.
+- **Décision** : à trancher
+
+### 2. Culée amont
+
+- **Hypothèse retenue** : Courbe de 145,6 m jusqu'au bassin régulateur estimé, au lieu d'environ 130 m publiés.
+- **Pourquoi un doute** : Tracé hypothétique.
+- **Décision** : à trancher
+
+### 3. Bassin régulateur
+
+- **Hypothèse retenue** : Plan de 5,2 m sur 6,4 m et vannes illustratives.
+- **Pourquoi un doute** : Dimensions non relevées par la proposition.
+- **Décision** : à trancher
+
+### 4. Dalles soulevées pour l'entretien
+
+- **Hypothèse retenue** : Trois dalles soulevées par une équipe au-dessus de la grande arche.
+- **Pourquoi un doute** : Analogie avec la familia aquarum, non attestée à Nîmes.
+- **Décision** : à trancher
+
+### 5. Maisons de carriers de l'Estel
+
+- **Hypothèse retenue** : Quatre fondations sans toit alignées hors de la fosse.
+- **Pourquoi un doute** : Position non tirée d'un plan.
+- **Décision** : à trancher
+
+### 6. Deuxième étage
+
+- **Hypothèse retenue** : Trois arches au nord-ouest et deux au sud-est au-delà du premier étage.
+- **Pourquoi un doute** : Découpage choisi pour que les murs d'about restent au-dessus du terrain.
+- **Décision** : à trancher
+
+
+## Scène d'Arles (vers 160)
+
+### 1. Niveau autour de l'amphithéâtre
+
+- **Hypothèse retenue** : Sol antique proche du niveau moderne voisin (18 m NGF), terrasses pour rattraper la pente.
+- **Pourquoi un doute** : Hypothèse sur le niveau de circulation antique.
+- **Décision** : à trancher
+
+### 2. Attique de l'amphithéâtre
+
+- **Hypothèse retenue** : Attique de 20,9 à 24,5 m, mâts du velum jusqu'à 29 m.
+- **Pourquoi un doute** : L'attique est perdu.
+- **Décision** : à trancher
+
+### 3. Cryptoportiques
+
+- **Hypothèse retenue** : Terrain abaissé de 4,5 m au nord et à l'ouest seulement.
+- **Pourquoi un doute** : Lecture de la proposition (dégagés au nord, semi-enterrés au sud et à l'est).
+- **Décision** : à trancher
+
+### 4. Mur de scène du théâtre
+
+- **Hypothèse retenue** : Édicules en saillie, environ 96 colonnes, marbres par niveau, exèdre de la valva regia et programme statuaire.
+- **Pourquoi un doute** : Restitution plausible, non relevée.
+- **Décision** : à trancher
+
+### 5. Tracé du decumanus
+
+- **Hypothèse retenue** : Le decumanus contourne le théâtre sur la trame pour rejoindre la porte augustéenne.
+- **Pourquoi un doute** : Tracé réel non établi près du théâtre.
+- **Décision** : à trancher
+
+
+## Scène de Nîmes, passe de réalisme
+
+### 1. Statues du bassin sacré
+
+- **Hypothèse retenue** : Petites statues de bronze en toge sur les colonnes de l'île du bassin.
+- **Pourquoi un doute** : Hypothèse de restitution.
+- **Décision** : à trancher
+
+### 2. Panneau peint du castellum
+
+- **Hypothèse retenue** : Panneau repeint en bleu-vert avec une bande de vagues, d'après la restauration du musée.
+- **Pourquoi un doute** : Couleurs restituées.
+- **Décision** : à trancher
+
+### 3. Longueur de la Maison Carrée
+
+- **Hypothèse retenue** : Podium de 26,4 m plus un escalier de 4,5 m en saillie (30,9 m au total), contre 26 m sur 15 m cités par la Ville de Nîmes.
+- **Pourquoi un doute** : À vérifier dans Amy et Gros 1979.
+- **Décision** : à trancher

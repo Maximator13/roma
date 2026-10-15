@@ -1,6 +1,7 @@
 import json
 import math
 import os
+import random
 import sys
 import time
 
@@ -9,8 +10,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bpy
 import numpy as np
 from mathutils import Matrix, Vector
+from mathutils.bvhtree import BVHTree
+from mathutils.kdtree import KDTree
 
-from kit import buildings, life, monuments, urban
+from kit import buildings, materials, monuments, nimes_detail, nimes_figures, urban
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.materials import baked_material, build_library, save_pixels
 from kit.orders import column
@@ -36,6 +39,10 @@ STREET = 8.0
 U_OFFSET = 36.0
 V_OFFSET = 18.3
 SAND_BASE = np.array([0.84, 0.72, 0.53])
+PAVING = dict(asset="monastery_stone_floor", color=(0.86, 0.80, 0.70), contrast=0.5, roughness=0.85, normal=0.3,
+              tile=3.2)
+EYE_CLEARANCE = 2.4
+JUMP = 0.3
 
 SITES = {
     "maison_carree": (0.0, 0.0),
@@ -146,6 +153,16 @@ class Exclusions:
         def test(px, py):
             u, v = rotate(px - x, py - y, -angle)
             return (u / semi_major) ** 2 + (v / semi_minor) ** 2 < 1.0
+        self.shapes.append(test)
+
+    def wedge(self, eye, aim, half_angle, reach):
+        ex, ey = eye
+        heading = math.atan2(aim[1] - ey, aim[0] - ex)
+
+        def test(px, py):
+            distance = math.hypot(px - ex, py - ey)
+            turn = (math.atan2(py - ey, px - ex) - heading + math.pi) % (2 * math.pi) - math.pi
+            return distance < reach and abs(turn) < half_angle
         self.shapes.append(test)
 
     def corridor(self, a, b, width):
@@ -304,13 +321,18 @@ def terrain_objects(field, far_field, plain_level, datum, collection, root):
     far_object["cast_shadow"] = False
 
 
-def ground_patch(scene, name, cx, cy, radius, plain_level, spacing=3.0, lift=0.07, hole=None):
+def ground_patch(scene, name, cx, cy, radius, plain_level, spacing=3.0, lift=0.07, hole=None, tint=(1.0, 1.0, 1.0)):
     count = int(2 * radius / spacing) + 1
     axis = np.linspace(-radius, radius, count)
     local_x, local_y = np.meshgrid(axis, axis)
     xs, ys = local_x + cx, local_y + cy
     colours = terrain_colour_at(scene.field, xs, ys, plain_level) / SAND_BASE
-    colours = np.clip(colours * 0.96, 0.0, 1.0)
+    wear = value_noise(xs.shape, max(int(radius / 9), 2), int(cx * 7 + cy * 3) % 1000, 3)
+    colours = np.clip(colours * (0.86 + 0.2 * wear)[..., None], 0.0, 1.0)
+    verge = np.clip(1.3 - np.min([polyline_distance(road, xs, ys) for road in ROADS], axis=0) / 12.0, 0.0, 0.85)
+    dust = np.array([0.98, 0.97, 0.95]) * (0.9 + 0.12 * wear)[..., None]
+    colours = colours * (1 - verge[..., None]) + dust * verge[..., None]
+    colours = np.clip(colours * np.array(tint), 0.0, 1.0)
     heights = scene.field.sample(xs, ys) - scene.datum + lift
     index = np.arange(count * count).reshape(count, count)
     keep = np.hypot(local_x[:-1, :-1] + spacing / 2, local_y[:-1, :-1] + spacing / 2) < radius
@@ -334,6 +356,43 @@ def ground_patch(scene, name, cx, cy, radius, plain_level, spacing=3.0, lift=0.0
     created = new_object(name, mesh, scene.collection, scene.root("ground"))
     created["cast_shadow"] = False
     return created
+
+
+WALKABLE = ("terrain", "streets", "roads", "ground", "forum", "fontaine", "castellum", "gates", "amphitheatre",
+            "tour_magne")
+SPLIT_GROUPS = {"gates", "tour_magne", "fontaine", "castellum", "forum", "amphitheatre"}
+
+
+class Surface:
+    def __init__(self, roots):
+        bpy.context.view_layer.update()
+        cache = {}
+        vertices = []
+        triangles = []
+        offset = 0
+        for root in roots:
+            for item in [root] + list(root.children_recursive):
+                if item.type != "MESH" or item.name == "terrain_far":
+                    continue
+                mesh = item.data
+                if mesh.name not in cache:
+                    co = np.empty(len(mesh.vertices) * 3, dtype=np.float64)
+                    mesh.vertices.foreach_get("co", co)
+                    mesh.calc_loop_triangles()
+                    tris = np.empty(len(mesh.loop_triangles) * 3, dtype=np.int64)
+                    mesh.loop_triangles.foreach_get("vertices", tris)
+                    cache[mesh.name] = (co.reshape(-1, 3), tris.reshape(-1, 3))
+                co, tris = cache[mesh.name]
+                matrix = np.array(item.matrix_world)
+                vertices.append(co @ matrix[:3, :3].T + matrix[:3, 3])
+                triangles.append(tris + offset)
+                offset += len(co)
+        self.tree = BVHTree.FromPolygons(np.concatenate(vertices).tolist(), np.concatenate(triangles).tolist(),
+                                         all_triangles=True)
+
+    def height(self, x, y, hint, reach=2.0):
+        hit = self.tree.ray_cast(Vector((x, y, hint + reach)), Vector((0.0, 0.0, -1.0)), reach + 6.0)
+        return hint if hit[0] is None else hit[0].z
 
 
 class Scene:
@@ -364,7 +423,11 @@ class Scene:
     def flush(self):
         for group, items in self.pending.items():
             merged = MeshBuilder()
+            done = set()
             for builder, matrix in items:
+                if group in SPLIT_GROUPS and id(builder) not in done:
+                    nimes_detail.split_vertical(builder)
+                    done.add(id(builder))
                 merged.merge(builder, matrix, keep_local=True)
             unique_object(f"{group}_static", merged, self.collection, self.root(group), self.tiles)
         self.pending = {}
@@ -481,8 +544,14 @@ def build_amphitheatre(scene):
                  frames[north])
     cavea = buildings.amphitheatre_cavea(34.0, 19.0, a - 6.3, b - 6.3, 19.35)
     scene.unique("amphitheatre", "amphitheatre_cavea", cavea, placement(cx, cy, z, angle))
-    scene.unique("amphitheatre", "amphitheatre_velum", urban.velum(a - 1.0, b - 1.0, 34.0, 19.0, 21.6, 19.8, angles),
+    edge_a, edge_b, edge_z = a - 2.66, b - 2.66, 24.4
+    scene.unique("amphitheatre", "amphitheatre_velum",
+                 urban.velum(edge_a, edge_b, 34.0, 19.0, edge_z, 19.8, angles, extent=0.6),
                  placement(cx, cy, z, angle), occlusion=False)
+    masts = [frame @ Vector((side * bay_width * 1.01 / 4, 0.34, 25.1)) for frame in frames for side in (-1, 1)]
+    scene.unique("amphitheatre", "amphitheatre_ropes",
+                 nimes_detail.velum_ropes(masts, (cx, cy, z), angle, edge_a, edge_b, edge_z), Matrix.Identity(4),
+                 occlusion=False)
     return bearings[north]
 
 
@@ -518,10 +587,15 @@ def build_walls(scene):
         direction = (end - start).normalized()
         normal = outward_normal(direction, ccw)
         rotation = math.atan2(normal.y, normal.x) - math.pi / 2
-        z = min(scene.ground(start.x, start.y), scene.ground(end.x, end.y), scene.ground(middle.x, middle.y))
-        wall_frames.append(placement(middle.x, middle.y, z - 0.2, rotation, ((end - start).length / 10.0 + 0.02,
-                                                                             1.0, 1.0)))
-    scene.instances("walls", "wall_curtain", lambda: buildings.curtain_wall(10.0, foundation=10.0), wall_frames)
+        along = Vector((math.cos(rotation), math.sin(rotation), 0.0))
+        length = (end - start).length
+        low_end, high_end = middle - along * length / 2, middle + along * length / 2
+        z_low, z_high = scene.ground(low_end.x, low_end.y), scene.ground(high_end.x, high_end.y)
+        z = min((z_low + z_high) / 2, scene.ground(middle.x, middle.y))
+        pitch = math.atan2(z_high - z_low, length)
+        wall_frames.append(Matrix.Translation((middle.x, middle.y, z - 0.2)) @ Matrix.Rotation(rotation, 4, "Z")
+                           @ Matrix.Rotation(-pitch, 4, "Y") @ Matrix.Diagonal((length / 10.0 + 0.02, 1.0, 1.0, 1.0)))
+    scene.instances("walls", "wall_curtain", lambda: nimes_detail.split_vertical(buildings.curtain_wall(10.0, foundation=10.0)), wall_frames)
     round_frames = []
     barlong_frames = []
     spacing = 72.0
@@ -540,9 +614,9 @@ def build_walls(scene):
         z = scene.ground(middle.x, middle.y) - 0.3
         target = round_frames if int(along / spacing) % 3 else barlong_frames
         target.append(placement(middle.x, middle.y, z, rotation))
-    scene.instances("walls", "wall_tower_round", lambda: buildings.round_tower(4.5, 13.0, 3.0, 10.0),
+    scene.instances("walls", "wall_tower_round", lambda: nimes_detail.split_vertical(buildings.round_tower(4.5, 13.0, 3.0, 10.0)),
                     round_frames)
-    scene.instances("walls", "wall_tower_barlong", lambda: buildings.barlong_tower(8.0, 6.5, 12.5, 10.0),
+    scene.instances("walls", "wall_tower_barlong", lambda: nimes_detail.split_vertical(buildings.barlong_tower(8.0, 6.5, 12.5, 10.0)),
                     barlong_frames)
     gate_frames = {}
     for name, center in [("porte_auguste", SITES["porte_auguste"]), ("porte_france", SITES["porte_france"])] + [
@@ -552,8 +626,13 @@ def build_walls(scene):
         rotation = math.atan2(normal.y, normal.x) - math.pi / 2
         gate_frames[name] = placement(center[0], center[1], scene.ground(*center), rotation)
     scene.unique("gates", "porte_auguste", buildings.augustus_gate(), gate_frames["porte_auguste"])
+    apron = MeshBuilder()
+    apron.box((-10.0, -16.0, -0.6), (10.0, 0.0, 0.15), "paving", bottom=False)
+    apron.box((-12.0, 0.0, -0.6), (12.0, 14.0, 0.15), "paving", bottom=False)
+    apron.tint(0, (0.9, 0.86, 0.8))
+    scene.unique("gates", "porte_auguste_apron", apron, gate_frames["porte_auguste"])
     scene.unique("gates", "porte_de_france", buildings.porte_de_france(), gate_frames["porte_france"])
-    scene.instances("gates", "gate_secondary", buildings.secondary_gate,
+    scene.instances("gates", "gate_secondary", lambda: nimes_detail.split_vertical(buildings.secondary_gate()),
                     [gate_frames[f"gate_{index}"] for index in range(len(SECONDARY_GATES))])
     x, y = SITES["tour_magne"]
     scene.unique("tour_magne", "tour_magne", buildings.tour_magne(), placement(x, y, scene.ground(x, y) - 0.5,
@@ -590,8 +669,9 @@ def road_strip(scene, points, width, step=8.0):
     return builder
 
 
-def build_roads(scene):
-    for index, (road, width) in enumerate(((ROADS[0], 6.0), (ROADS[2], 5.0), (ROADS[1], 5.0))):
+def build_roads(scene, gate_frames):
+    approach = tuple((gate_frames["porte_auguste"] @ Vector((0.0, 14.0, 0.0))).to_2d())
+    for index, (road, width) in enumerate((([approach] + ROADS[0][1:], 6.0), (ROADS[2], 5.0), (ROADS[1], 5.0))):
         scene.unique("roads", f"road_{index}", road_strip(scene, road, width), Matrix.Identity(4), occlusion=False)
 
 
@@ -602,6 +682,10 @@ def build_sanctuary(scene):
     scene.unique("fontaine", "sacred_basin", basin, basin_frame)
     scene.instances("fontaine", "basin_column", lambda: column("corinthian", 0.55, 5.2, "medium"),
                     [basin_frame @ frame for frame in corners], merge=True)
+    scene.instances("fontaine", "basin_column_statue", nimes_detail.column_statue,
+                    [basin_frame @ frame @ placement(0.0, 0.0, 5.2, math.atan2(frame.translation.y,
+                                                                               frame.translation.x) - math.pi / 2)
+                     for frame in corners], merge=True)
     scene.unique("fontaine", "basin_altar", buildings.altar(2.6, 1.8, 1.2), basin_frame @ placement(0, 0, 1.5))
     for name, offset, angle, length in (("sanctuary_portico_south", (0.0, -40.0), 0.0, 96.0),
                                         ("sanctuary_portico_east", (48.0, 5.0), math.pi / 2, 90.0)):
@@ -641,8 +725,8 @@ def build_sanctuary(scene):
 
 ROW_VARIANTS = 4
 TABERNAE_VARIANTS = 2
-HOUSES = {f"row_{index}": (lambda index=index: urban.row_template(index + 1)) for index in range(ROW_VARIANTS)}
-HOUSES.update({f"row_tabernae_{index}": (lambda index=index: urban.row_template(101 + index, tabernae=True))
+HOUSES = {f"row_{index}": (lambda index=index: nimes_detail.row_template(index + 1)) for index in range(ROW_VARIANTS)}
+HOUSES.update({f"row_tabernae_{index}": (lambda index=index: nimes_detail.row_template(101 + index, tabernae=True))
                for index in range(TABERNAE_VARIANTS)})
 HOUSES.update({
     "domus_a": lambda: urban.domus(11, 32.0, 30.0, 13.0, 12.0, 6.5, "plaster_white"),
@@ -650,7 +734,7 @@ HOUSES.update({
     "house_single_a": lambda: urban.single_house(21),
     "house_single_b": lambda: urban.single_house(22, 12.0, 8.0),
     "kitchen_garden": lambda: urban.kitchen_garden(31),
-    "terrace": lambda: urban.terrace(41),
+    "terrace": lambda: nimes_detail.terrace(41),
 })
 
 
@@ -733,16 +817,18 @@ def build_streets(scene, exclusions, plain_level):
         matrix, _ = slope_matrix(scene, u, v, "u", 8.0)
         node_frames["street_node_paved" if paved else "street_node_earth"].append(matrix)
         if paved and (round((u - U_OFFSET) / PITCH) + round((v - V_OFFSET) / PITCH)) % 2 == 0:
-            fx, fy = from_grid(u + 3.3, v + 3.3)
-            fountains.append((fx, fy, GRID + math.pi))
-    builds = {"street_paved": lambda: urban.street_segment(True), "street_earth": lambda: urban.street_segment(False),
+            spots = [(du, dv, GRID + turn) for du, dv, turn in (
+                (3.3, 6.6, -math.pi / 2), (-3.3, 6.6, math.pi / 2), (3.3, -6.6, -math.pi / 2),
+                (-3.3, -6.6, math.pi / 2), (6.6, 3.3, 0.0), (6.6, -3.3, math.pi), (-6.6, 3.3, 0.0),
+                (-6.6, -3.3, math.pi))]
+            fountains.append([(*from_grid(u + du, v + dv), turn) for du, dv, turn in spots])
+    builds = {"street_paved": lambda: nimes_detail.street_segment(True),
+              "street_earth": lambda: nimes_detail.street_segment(False),
               "street_node_paved": lambda: urban.street_node(True), "street_node_earth": lambda: urban.street_node(False)}
     for key, matrices in list(segments.items()) + list(node_frames.items()):
         scene.instances("streets", key, builds[key], matrices, cast_shadow=False, occlusion=False)
-    fountain_frames = [placement(x, y, scene.ground(x, y) + 0.36, angle) for x, y, angle in fountains]
-    scene.instances("streets", "street_fountain", urban.street_fountain, fountain_frames, occlusion=False)
     return {"segments": sum(len(m) for m in segments.values()), "nodes": len(nodes), "fountains": len(fountains)}, \
-        fountain_frames, sidewalks
+        fountains, sidewalks
 
 
 def block_facing_main(axis, line, low, high):
@@ -777,7 +863,7 @@ def build_city(scene, exclusions, plain_level, rng):
             probe, relief = relief_at(bx, by, 30.0)
             plain = max(probe) < plain_level + 14.0 and relief < 4.5
             centrality = math.hypot(bx - 150.0, by + 60.0)
-            dense = plain and rng.random() < min(0.97, max(0.45, 1.5 - centrality / 900.0))
+            dense = plain and rng.random() < min(0.97, max(0.2, 1.5 - centrality / 700.0))
             if dense:
                 rows = [
                     (u0 + 16.0, v0 + 0.6 + depth / 2, 0.0, ("v", v0 - STREET / 2), (u0, u0 + 32.0)),
@@ -806,7 +892,7 @@ def build_city(scene, exclusions, plain_level, rng):
                         key = f"row_{rng.integers(0, ROW_VARIANTS)}"
                     matrix = placement(x, y, z, GRID + turn)
                     placements[key].append(matrix)
-                    rows_dense.append((x, y, z, key))
+                    rows_dense.append((x, y, z, key, matrix))
                 x, y = from_grid(u0 + 32.0, v0 + 32.0)
                 if free([(x, y)]):
                     z = sum(probe) / 4 - scene.datum - 0.15
@@ -900,7 +986,7 @@ def build_landscape(scene, exclusions, plain_level, city_trees, sanctuary_trees,
 
     garrigue = scatter(scene, rng, 1500, lambda x, y: is_hill(x, y) and not exclusions.blocked(x, y) and (
         outside(x, y) or rng.random() < 0.7) and road_distance(x, y) > 8)
-    oaks = scatter(scene, rng, 1100, lambda x, y: is_hill(x, y) and not exclusions.blocked(x, y) and (
+    oaks = scatter(scene, rng, 950, lambda x, y: is_hill(x, y) and not exclusions.blocked(x, y) and (
         outside(x, y) or rng.random() < 0.4) and road_distance(x, y) > 10)
     olives = []
     vines = []
@@ -916,6 +1002,8 @@ def build_landscape(scene, exclusions, plain_level, city_trees, sanctuary_trees,
             if 0.93 < parcel < 0.975:
                 for i in range(11):
                     for j in range(5):
+                        if (i + j) % 4 == 3:
+                            continue
                         x, y = from_grid(u0 + 5 + i * 10.5, v0 + 5 + j * 10.5)
                         if outside(x, y) and road_distance(x, y) > 6 and not exclusions.blocked(x, y):
                             olives.append((x, y))
@@ -942,15 +1030,22 @@ def build_landscape(scene, exclusions, plain_level, city_trees, sanctuary_trees,
     pines = scatter(scene, rng, 60, lambda x, y: outside(x, y) and not is_hill(x, y) and road_distance(x, y) > 12)
     scene.instances("vegetation", "tree_scrub", lambda: buildings.scrub(1.8, 1),
                     tree_frames(scene, garrigue, rng, (0.7, 1.6)), cast_shadow=False)
-    scene.instances("vegetation", "tree_holm_oak", lambda: buildings.holm_oak(7.5, 2), tree_frames(scene, oaks, rng))
-    scene.instances("vegetation", "tree_olive", lambda: buildings.olive_tree(4.6, 3),
-                    tree_frames(scene, olives + city_trees, rng, (0.8, 1.15)), cast_shadow=False)
+    scene.instances("vegetation", "tree_holm_oak", lambda: nimes_detail.holm_oak(7.5, 2),
+                    tree_frames(scene, oaks, rng))
+    olive_frames = tree_frames(scene, olives + city_trees, rng, (0.8, 1.15))
+    near_eye, far_eye = [], []
+    for frame in olive_frames:
+        close = min((frame.translation.to_2d() - eye).length for eye in scene.shadow_eyes) < 450.0
+        (near_eye if close else far_eye).append(frame)
+    scene.instances("vegetation", "tree_olive", lambda: nimes_detail.olive_tree(4.6, 3), near_eye)
+    scene.instances("vegetation", "tree_olive_far", lambda: nimes_detail.olive_tree(4.6, 3), far_eye,
+                    cast_shadow=False)
     scene.instances("vegetation", "tree_cypress", lambda: buildings.cypress(12.0, 4),
                     tree_frames(scene, cypresses, rng, (0.8, 1.25)))
     scene.instances("vegetation", "tree_pine", lambda: buildings.umbrella_pine(13.0, 5), tree_frames(scene, pines, rng))
-    scene.instances("vegetation", "tree_plane", lambda: buildings.plane_tree(15.0, 6),
+    scene.instances("vegetation", "tree_plane", lambda: nimes_detail.plane_tree(15.0, 6),
                     tree_frames(scene, plane_points, rng, (0.9, 1.1)))
-    scene.instances("vegetation", "vine_row", lambda: buildings.vine_row(20.0), vines, cast_shadow=False)
+    scene.instances("vegetation", "vine_row", lambda: nimes_detail.vine_row(20.0), vines, cast_shadow=False)
     tombs = {"tomb_enclosure": [], "tomb_mausoleum": [], "tomb_stele": [], "tomb_altar": []}
     for road, reach in ((ROADS[0], 420.0), (ROADS[2], 260.0)):
         (x0, y0), (x1, y1) = road[0], road[1]
@@ -976,8 +1071,8 @@ def build_landscape(scene, exclusions, plain_level, city_trees, sanctuary_trees,
             along += rng.uniform(6.0, 11.0)
     scene.instances("necropolis", "tomb_enclosure", buildings.funerary_enclosure, tombs["tomb_enclosure"])
     scene.instances("necropolis", "tomb_mausoleum", buildings.mausoleum, tombs["tomb_mausoleum"])
-    scene.instances("necropolis", "tomb_stele", buildings.funerary_stele, tombs["tomb_stele"])
-    scene.instances("necropolis", "tomb_altar", buildings.tomb_altar, tombs["tomb_altar"])
+    scene.instances("necropolis", "tomb_stele", buildings.funerary_stele, tombs["tomb_stele"], cast_shadow=False)
+    scene.instances("necropolis", "tomb_altar", buildings.tomb_altar, tombs["tomb_altar"], cast_shadow=False)
     farms = scatter(scene, rng, 14, lambda x, y: outside(x, y) and not is_hill(x, y) and 40 < road_distance(x, y)
                     < 160 and min(math.hypot(x - a, y - b) for a, b in WALL_TRACE) > 200)
     scene.instances("city", "farmstead", buildings.farmstead, [placement(x, y, scene.ground(x, y) - 0.1,
@@ -1022,8 +1117,9 @@ def viewpoints(scene, layout, gate_frames, basin_frame, north_bearing):
     castellum_target = Vector((kx, ky, castellum_level)) + Vector((*rotate(0.0, -0.8, GRID), -0.6))
     city = Vector((60.0, -20.0))
     eye_xy = city + Vector((math.sin(math.radians(150.0)), math.cos(math.radians(150.0)))) * 1200.0
-    heading = (city - eye_xy).normalized()
-    pitch = math.radians(-10.0)
+    middle = (Vector(SITES["maison_carree"]) + Vector(SITES["amphitheatre"])) / 2
+    heading = (middle - eye_xy).normalized()
+    pitch = math.radians(-16.0)
     aerial_eye = Vector((eye_xy.x, eye_xy.y, scene.ground(*city) + 400.0))
     aerial_target = aerial_eye + Vector((heading.x * math.cos(pitch), heading.y * math.cos(pitch), math.sin(pitch))) * 900
     points = {
@@ -1050,6 +1146,8 @@ def camera_exclusions(exclusions, points):
             continue
         exclusions.corridor((eye.x, eye.y), (target.x, target.y), 12.0 if key == "amphitheatre" else 9.0)
         exclusions.circle(eye.x, eye.y, 14.0)
+        if key == "amphitheatre":
+            exclusions.wedge((eye.x, eye.y), (target.x, target.y), math.radians(32.0), 60.0)
 
 
 def site_exclusions():
@@ -1073,24 +1171,68 @@ def resample(points, spacing):
     for start, end in zip(points[:-1], points[1:]):
         a, b = Vector(start), Vector(end)
         length = (b - a).length
-        count = max(int(round(length / spacing)), 1)
+        count = max(int(math.ceil(length / spacing - 1e-6)), 1)
         for k in range(1, count + 1):
             out.append(a + (b - a) * (k / count))
     return out
 
 
-def add_route(scene, name, points, height=0.0, spacing=10.0, absolute=None):
-    root = scene.root("life")
-    created = []
-    for index, point in enumerate(resample(points, spacing)):
-        if absolute is not None:
-            z = absolute(point)
+def refine(scene, a, b, out, depth=0):
+    if depth < 5 and (b.to_2d() - a.to_2d()).length > 0.25:
+        probes = []
+        for t in (0.25, 0.5, 0.75):
+            point = a.lerp(b, t)
+            probes.append(scene.surface.height(point.x, point.y, max(a.z, b.z)) - point.z)
+        if max(abs(value) for value in probes) > 0.04:
+            middle = (a + b) / 2
+            middle.z = scene.surface.height(middle.x, middle.y, max(a.z, b.z))
+            refine(scene, a, middle, out, depth + 1)
+            refine(scene, middle, b, out, depth + 1)
+            return
+    out.append(b)
+
+
+def ground_route(scene, points, hint, spacing=2.8):
+    chain = []
+    for point in resample(points, spacing):
+        chain.append(Vector((point.x, point.y, scene.surface.height(point.x, point.y, hint(point)))))
+    out = [chain[0]]
+    for following in chain[1:]:
+        refine(scene, out[-1], following, out)
+    return out
+
+
+def split_jumps(chain):
+    pieces = [[chain[0]]]
+    for a, b in zip(chain[:-1], chain[1:]):
+        if abs(b.z - a.z) > JUMP and (b - a).to_2d().length < 2.0 * abs(b.z - a.z) + 0.6:
+            pieces.append([b])
         else:
-            z = scene.ground(point.x, point.y) + height
-        empty = new_empty(f"walk_{name}_{index:02d}", scene.collection, root, Matrix.Translation((point.x, point.y, z)))
-        created.append(empty)
-    scene.route_count += 1
-    return len(created)
+            pieces[-1].append(b)
+    return [piece for piece in pieces if sum((q - p).to_2d().length for p, q in zip(piece[:-1], piece[1:])) > 14.0]
+
+
+def add_route(scene, name, points, height=0.0, absolute=None):
+    root = scene.root("life")
+    hint = absolute if absolute is not None else (lambda point: scene.ground(point.x, point.y) + height)
+    chain = ground_route(scene, [tuple(point)[:2] for point in points], hint)
+    pieces = split_jumps(chain)
+    for index, point in enumerate(chain):
+        for eye in scene.route_eyes:
+            if (point - eye).to_2d().length < EYE_CLEARANCE and abs(point.z + 1.6 - eye.z) < 2.5:
+                raise ValueError(f"route {name} passes {round((point - eye).to_2d().length, 2)} m from a camera")
+    for number, piece in enumerate(pieces):
+        label = name if len(pieces) == 1 else f"{name}-{'abcdefghijklmnopqrstuvwxyz'[number]}"
+        for index, point in enumerate(piece):
+            new_empty(f"walk_{label}_{index:02d}", scene.collection, root, Matrix.Translation(point))
+        for a, b in zip(piece[:-1], piece[1:]):
+            steps = max(int((b - a).length / 0.5), 1)
+            scene.route_samples.extend(a.lerp(b, k / steps).to_2d() for k in range(steps))
+        scene.route_samples.append(piece[-1].to_2d())
+        scene.route_count += 1
+        scene.route_points += len(piece)
+    scene.route_splits += len(pieces) - 1
+    return len(chain)
 
 
 def grid_points(pairs):
@@ -1122,15 +1264,11 @@ def build_routes(scene, layout, gate_frames, basin_frame):
     add_route(scene, "forum-est", forum_points([(31.5, -26.0), (31.5, 54.0)]), absolute=lambda point: 0.45)
     add_route(scene, "forum-ouest", forum_points([(-31.5, 54.0), (-31.5, -26.0)]), absolute=lambda point: 0.45)
     add_route(scene, "forum-portique-sud", forum_points([(-30.0, -27.5), (30.0, -27.5)]), absolute=lambda point: 0.45)
-    add_route(scene, "forum-centre", forum_points([(12.0, 54.0), (12.0, 26.0), (-12.0, 26.0), (-12.0, 54.0)]),
+    add_route(scene, "forum-centre", forum_points([(14.0, 54.0), (14.0, 26.0), (-5.0, 26.0), (-5.0, 38.0)]),
               absolute=lambda point: 0.02)
     front = layout.front
-    stair = [(2.2, front + 8.0, 0.02), (2.2, front + 0.1, 0.05), (2.2, front - 4.4, 2.85), (2.2, front - 9.0, 2.85)]
-    root = scene.root("life")
-    for index, (x, y, z) in enumerate(stair):
-        new_empty(f"walk_marches-temple_{index:02d}", scene.collection, root,
-                  Matrix.Translation((*rotate(x, y, GRID), z)))
-    scene.route_count += 1
+    add_route(scene, "marches-temple", forum_points([(2.2, front + 8.0), (2.2, front + 0.1), (2.2, front - 4.4),
+                                                     (2.2, front - 9.0)]), absolute=lambda point: 3.0)
     cx, cy, angle, arena_z = amphitheatre_frame(scene)
     a, b = AMPHITHEATRE_AXES
     for name, (t0, t1) in (("arenes-nord", (0.15, math.pi - 0.15)),
@@ -1140,7 +1278,7 @@ def build_routes(scene, layout, gate_frames, basin_frame):
             px, py = ellipse_point(a + 7.0, b + 7.0, t)
             wx, wy = rotate(px, py, angle)
             ring.append((cx + wx, cy + wy))
-        add_route(scene, name, ring, spacing=11.0, absolute=lambda point: arena_z + 0.07)
+        add_route(scene, name, ring, absolute=lambda point: arena_z + 0.07)
     north_gate = bearing_point(SITES["amphitheatre"], scene.north_bearing,
                                amphitheatre_radius(scene.north_bearing) + 4.0)
     approach_v = to_grid(*north_gate)[1]
@@ -1150,7 +1288,7 @@ def build_routes(scene, layout, gate_frames, basin_frame):
     add_route(scene, "cardo-nord", grid_points([(-39.4, 90.0), (-39.4, 300.0)]), 0.36)
     add_route(scene, "rue-des-propylees", grid_points([(-60.0, 302.9), (-420.0, 302.9)]), 0.36)
     level = basin_frame.translation.z
-    portico = [tuple((basin_frame @ Vector((x, -43.5, 0.0))).to_2d()) for x in (-44.0, 44.0)]
+    portico = [tuple((basin_frame @ Vector((x, -42.0, 0.0))).to_2d()) for x in (-44.0, 44.0)]
     add_route(scene, "fontaine-portique", portico, absolute=lambda point: level + 0.45)
     walk = [tuple((basin_frame @ Vector((x, y, 0.0))).to_2d()) for x, y in ((-26.0, -16.0), (26.0, -16.0),
                                                                            (26.0, 15.5), (-26.0, 15.5))]
@@ -1205,11 +1343,13 @@ def forum_life(scene, rng, layout):
     origin = placement(0.0, 0.0, 0.0, GRID)
     front = layout.front
     altar_y = front + 6.5
-    for _ in range(18):
+    eye = (-12.0, layout.axis_front + 36.0)
+    for _ in range(14):
         x, y = 0.0, 0.0
         for _attempt in range(30):
             x, y = rng.uniform(-24.0, 24.0), rng.uniform(-20.0, 52.0)
-            if not (abs(x) < 9.5 and y < altar_y + 9.0) and not (abs(abs(x) - 21.0) < 2.5):
+            if not (abs(x) < 9.5 and y < altar_y + 9.0) and not (abs(abs(x) - 21.0) < 2.5) \
+                    and math.hypot(x - eye[0], y - eye[1]) > 8.0:
                 break
         cluster(scene, rng, origin, x, y, 0.02, int(rng.integers(1, 6)), CITIZENS)
     for _ in range(14):
@@ -1243,17 +1383,17 @@ def street_life(scene, rng, sidewalks, fountain_frames):
 
     def crowd(axis, line, along):
         x, y = from_grid(*((along, line) if axis == "v" else (line, along)))
-        near = min(math.hypot(x - bx, y - by) for bx, by in busy) < 260.0
-        return int(rng.integers(1, 5)) if near else int(rng.integers(0, 2))
+        near = min(math.hypot(x - bx, y - by) for bx, by in busy) < 220.0
+        return int(rng.integers(0, 3)) if near else int(rng.random() < 0.1)
 
     entries = [entry for entry in sidewalks for _ in range(crowd(*entry))]
     for axis, line, along in entries:
         side = float(rng.choice([-1.0, 1.0]))
         position = along + rng.uniform(-6.0, 6.0)
-        offset = side * rng.uniform(3.0, 3.9)
+        offset = side * rng.uniform(2.0, 2.3)
         u, v = (position, line + offset) if axis == "v" else (line + offset, position)
         x, y = from_grid(u, v)
-        walk_z = scene.ground(*from_grid(*((position, line) if axis == "v" else (line, position)))) + 0.36
+        walk_z = scene.ground(*from_grid(*((position, line) if axis == "v" else (line, position)))) + 0.12
         heading = GRID + (0.0 if axis == "u" else -math.pi / 2) + float(rng.choice([0.0, math.pi]))
         roll = rng.random()
         if roll < 0.08:
@@ -1283,7 +1423,7 @@ def road_life(scene, rng, gate_frames):
     side_vector = Vector((-direction.y, direction.x))
     inward = facing(0.0, 0.0, -direction.x, -direction.y)
     outward = inward + math.pi
-    scene.add("ox_cart", gate @ placement(2.55, 10.5, 0.12, math.pi))
+    scene.add("ox_cart", gate @ placement(3.9, 10.5, 0.12, math.pi))
     scene.add("fig_rural", gate @ placement(-2.4, 7.0, 0.12, math.pi))
     for key, along, lane, heading in (("ox_cart", 150.0, -1.4, outward), ("mule_wagon", 95.0, 1.4, inward),
                                       ("pack_mule", 60.0, -1.6, outward), ("pack_donkey", 180.0, 1.5, inward),
@@ -1316,7 +1456,8 @@ def amphitheatre_life(scene, rng):
         x, y = cx + wx, cy + wy
         scene.add("market_stall_a" if index % 2 else "market_stall_b",
                   placement(x, y, arena_z + 0.07, facing(x, y, cx, cy) + math.pi))
-    for _ in range(42):
+        scene.stall_spots.append((x, y))
+    for _ in range(24):
         t = rng.uniform(0, 2 * math.pi)
         grow = rng.uniform(4.0, 19.0)
         px, py = ellipse_point(a + grow, b + grow, t)
@@ -1326,17 +1467,37 @@ def amphitheatre_life(scene, rng):
         px, py = ellipse_point(a + 10, b + 10, rng.uniform(0, 2 * math.pi))
         wx, wy = rotate(px, py, angle)
         scene.add("animal_dog", placement(cx + wx, cy + wy, arena_z + 0.07, rng.uniform(0, 6.28)))
+    center = SITES["amphitheatre"]
+    eye_bearing = scene.north_bearing - 12.0
+    eye = Vector(bearing_point(center, eye_bearing, amphitheatre_radius(eye_bearing) + 75.0))
+    aim = Vector(bearing_point(center, scene.north_bearing - 14.0, amphitheatre_radius(scene.north_bearing - 14.0)))
+    placed = 0
+    for _ in range(80):
+        if placed >= 11:
+            break
+        bearing = scene.north_bearing + rng.uniform(-45.0, 25.0)
+        point = Vector(bearing_point(center, bearing, amphitheatre_radius(bearing) + rng.uniform(9.0, 55.0)))
+        along = max(0.0, min(1.0, (point - eye).dot(aim - eye) / (aim - eye).length_squared))
+        if (point - eye).length < 16.0 or (point - eye.lerp(aim, along)).length < 7.0:
+            continue
+        cluster(scene, rng, Matrix.Identity(4), point.x, point.y, arena_z + 0.07, int(rng.integers(1, 5)), COMMONERS)
+        placed += 1
+    for bearing, reach, key in ((scene.north_bearing - 30.0, 30.0, "market_stall_a"),
+                                (scene.north_bearing + 8.0, 24.0, "market_stall_b")):
+        point = Vector(bearing_point(center, bearing, amphitheatre_radius(bearing) + reach))
+        scene.add(key, placement(point.x, point.y, arena_z + 0.07, facing(point.x, point.y, *center) + math.pi))
+        scene.stall_spots.append((point.x, point.y))
 
 
 def sanctuary_life(scene, rng, basin_frame):
-    for _ in range(16):
+    for _ in range(12):
         if rng.random() < 0.7:
             x, y = rng.uniform(-24.0, 24.0), float(rng.choice([-16.8, 16.8]))
         else:
             x, y = float(rng.choice([-25.0, 25.0])), rng.uniform(-14.0, 14.0)
         cluster(scene, rng, basin_frame, x, y, 0.05, int(rng.integers(1, 4)), CITIZENS)
-    for _ in range(6):
-        cluster(scene, rng, basin_frame, rng.uniform(-40, 40), -43.0, 0.45, int(rng.integers(1, 3)), CITIZENS)
+    for index in rng.choice(10, 6, replace=False):
+        cluster(scene, rng, basin_frame, -36.0 + 8.0 * float(index), -44.4, 0.45, int(rng.integers(1, 3)), CITIZENS)
     scene.add("fig_priest", basin_frame @ placement(0.0, -2.6, 1.5, 0.0))
     kx, ky = SITES["castellum"]
     for local in ((-8.5, -9.0), (-9.5, -8.0), (9.0, -9.5)):
@@ -1376,9 +1537,14 @@ def build_life(scene, layout, gate_frames, basin_frame, fountain_frames, sidewal
     tx, ty = from_grid(*THERMAE_GRID)
     smokes.append(placement(tx, ty, scene.ground(tx, ty), GRID) @ Vector((24.0, 22.0, 16.0)))
     near = sorted(rows_dense, key=lambda row: math.hypot(row[0] - 200.0, row[1] + 50.0))[:260]
+    ridges = {}
     for index in sorted(rng.choice(len(near), min(10, len(near)), replace=False)):
-        x, y, z, _ = near[int(index)]
-        smokes.append(Vector((x, y, z + 10.5)))
+        x, y, z, key, matrix = near[int(index)]
+        if key not in ridges:
+            ridges[key] = HOUSES[key]()
+        top = max((matrix @ Vector(position)).z for position in ridges[key].positions
+                  if abs(position[0]) < 7.0 and abs(position[1]) < 1.0)
+        smokes.append(Vector((x, y, top + 0.5)))
     for x, y in farms[:3]:
         smokes.append(Vector((x, y + 6, scene.ground(x, y) + 6.0)))
     for index, point in enumerate(smokes):
@@ -1387,31 +1553,80 @@ def build_life(scene, layout, gate_frames, basin_frame, fountain_frames, sidewal
               (SITES["basin"], 45.0), ((820.0, 40.0), 35.0)]
     for index, ((x, y), height) in enumerate(flocks):
         new_empty(f"birds_{index}", scene.collection, root, Matrix.Translation((x, y, scene.ground(x, y) + height)))
-    for index, (key, spec) in enumerate(life.WALKERS.items()):
-        mesh = scene.library.mesh(key, lambda spec=spec: life.figure(spec), ground_occlusion=False)
+    for index, (key, spec) in enumerate(nimes_figures.WALKERS.items()):
+        mesh = scene.library.mesh(key, lambda spec=spec: nimes_figures.person(spec), ground_occlusion=False)
         created = new_object(key, mesh, scene.collection, root, placement(6000.0 + index * 3.0, 0.0, 0.0))
         created["cast_shadow"] = True
-    return {"smoke_sources": len(smokes), "bird_flocks": len(flocks), "walker_variants": len(life.WALKERS)}
+    return {"smoke_sources": len(smokes), "bird_flocks": len(flocks), "walker_variants": len(nimes_figures.WALKERS)}
 
 
-LIFE_BUILDS = {key: (lambda spec=spec: life.figure(spec)) for key, spec in life.FIGURES.items()}
+LIFE_BUILDS = {key: (lambda spec=spec: nimes_figures.person(spec)) for key, spec in nimes_figures.FIGURES.items()}
 LIFE_BUILDS.update({
-    "animal_ox": lambda: life.animal("ox"),
-    "animal_dog": lambda: life.animal("dog"),
-    "animal_goat": lambda: life.animal("goat"),
-    "pack_mule": lambda: life.pack_animal("mule"),
-    "pack_donkey": lambda: life.pack_animal("donkey"),
-    "ox_cart": life.ox_cart,
-    "mule_wagon": life.mule_wagon,
-    "market_stall_a": lambda: life.market_stall(0),
-    "market_stall_b": lambda: life.market_stall(2, (0.72, 0.36, 0.26)),
-    "statue_bronze": lambda: life.honorific_statue(True),
-    "statue_marble": lambda: life.honorific_statue(False),
+    "animal_ox": lambda: nimes_figures.beast("ox"),
+    "animal_dog": lambda: nimes_figures.beast("dog"),
+    "animal_goat": lambda: nimes_figures.beast("goat"),
+    "pack_mule": lambda: nimes_figures.pack_beast("mule"),
+    "pack_donkey": lambda: nimes_figures.pack_beast("donkey"),
+    "ox_cart": nimes_figures.ox_cart,
+    "mule_wagon": nimes_figures.mule_wagon,
+    "market_stall_a": lambda: nimes_figures.market_stall(0),
+    "market_stall_b": lambda: nimes_figures.market_stall(3, (0.72, 0.36, 0.26)),
+    "statue_bronze": lambda: nimes_figures.honorific_statue(True),
+    "statue_marble": lambda: nimes_figures.honorific_statue(False),
 })
+FOOTPRINTS = {
+    "animal_ox": (0.35, -0.8, 0.8, True), "animal_goat": (0.12, -0.3, 0.3, True), "animal_dog": (0.1, -0.28, 0.28, True),
+    "pack_mule": (0.25, -0.55, 0.55, True), "pack_donkey": (0.22, -0.45, 0.45, True),
+    "ox_cart": (0.9, -1.9, 3.3, True), "mule_wagon": (0.85, -2.0, 3.0, True),
+    "market_stall_a": (1.2, -0.5, 0.9, False), "market_stall_b": (1.2, -0.5, 0.9, False),
+    "statue_bronze": (0.6, -0.5, 0.5, False), "statue_marble": (0.6, -0.5, 0.5, False),
+}
+
+
+def grounded(scene, matrix, footprint=None):
+    location, rotation, scale = matrix.decompose()
+    if footprint is None:
+        return Matrix.Translation((0.0, 0.0, scene.surface.height(location.x, location.y, location.z) - location.z))             @ matrix
+    half, back, front, tilt = footprint
+    heights = {}
+    for side in (-1, 1):
+        for end, along in ((-1, back), (1, front)):
+            corner = matrix @ Vector((side * half, along, 0.0))
+            heights[(side, end)] = scene.surface.height(corner.x, corner.y, location.z)
+    level = sum(heights.values()) / 4
+    centre = (back + front) / 2
+    turn = rotation.to_matrix().to_4x4()
+    if not tilt:
+        return Matrix.Translation((location.x, location.y, level)) @ turn @ Matrix.Diagonal((*scale, 1.0))
+    pitch = math.atan2((heights[(-1, 1)] + heights[(1, 1)] - heights[(-1, -1)] - heights[(1, -1)]) / 2, front - back)
+    roll = -math.atan2((heights[(1, -1)] + heights[(1, 1)] - heights[(-1, -1)] - heights[(-1, 1)]) / 2, 2 * half)
+    pivot = Matrix.Translation((0.0, centre, 0.0))
+    return (Matrix.Translation((location.x, location.y, level)) @ turn @ pivot @ Matrix.Rotation(pitch, 4, "X")
+            @ Matrix.Rotation(roll, 4, "Y") @ pivot.inverted() @ Matrix.Diagonal((*scale, 1.0)))
+
+
+def thin_far_figures(scene, eyes, keep=0.12, reach=140.0):
+    prng = random.Random(9)
+    for key in list(scene.placements):
+        if not key.startswith("fig_") or key == "fig_priest":
+            continue
+        scene.placements[key] = [matrix for matrix in scene.placements[key]
+                                 if min((matrix.translation.to_2d() - eye).length for eye in eyes) < reach
+                                 or prng.random() < keep]
 
 
 def place_life(scene):
     counts = {}
+    tree = route_tree(scene)
+    for key in list(scene.placements):
+        if key.startswith(("fig_", "animal_", "pack_")):
+            scene.placements[key] = clear_of(tree, scene.placements[key], 0.6)
+        elif key in ("ox_cart", "mule_wagon", "market_stall_a", "market_stall_b"):
+            scene.placements[key] = clear_of(tree, scene.placements[key], 1.0)
+        elif key.startswith("statue"):
+            scene.placements[key] = clear_of(tree, scene.placements[key], 0.9)
+    for key in list(scene.placements):
+        scene.placements[key] = [grounded(scene, matrix, FOOTPRINTS.get(key)) for matrix in scene.placements[key]]
     for key, matrices in scene.placements.items():
         group = "statues" if key.startswith("statue") else "life"
         scene.instances(group, key, LIFE_BUILDS[key], matrices, cast_shadow=key.startswith(("fig_", "ox_cart",
@@ -1419,6 +1634,167 @@ def place_life(scene):
                         occlusion=key.startswith("statue"))
         counts[key] = len(matrices)
     return counts
+
+
+def camera_eyes(points, scene):
+    eyes = [Vector(eye).to_2d() for key, (eye, _) in points.items() if key != "vue-d-ensemble"]
+    eyes.append(Vector(preview_points(points, scene)["rue"][0]).to_2d())
+    return eyes
+
+
+def place_fountains(scene, spots):
+    tree = route_tree(scene)
+    frames = []
+    for index, candidates in enumerate(spots):
+        shift = index % len(candidates)
+        for x, y, turn in candidates[shift:] + candidates[:shift]:
+            if inside_city(x, y) and not tree.find_range((x, y, 0.0), 2.4):
+                frames.append(grounded(scene, placement(x, y, scene.ground(x, y) + 0.36, turn)))
+                break
+    scene.instances("streets", "street_fountain", nimes_detail.street_fountain, frames, occlusion=False)
+    return frames
+
+
+def route_tree(scene):
+    tree = KDTree(len(scene.route_samples))
+    for index, point in enumerate(scene.route_samples):
+        tree.insert((point.x, point.y, 0.0), index)
+    tree.balance()
+    return tree
+
+
+def clear_of(tree, matrices, radius):
+    return [matrix for matrix in matrices
+            if not tree.find_range((matrix.translation.x, matrix.translation.y, 0.0), radius)]
+
+
+def build_props(scene, rows_dense, gate_frames, points, layout):
+    prng = random.Random(5)
+    eyes = camera_eyes(points, scene)
+    goods, pots, weeds = [], [], []
+    for x, y, _, key, matrix in rows_dense:
+        reach = min((Vector((x, y)) - eye).length for eye in eyes)
+        if reach > 220.0:
+            continue
+        if key.startswith("row_tabernae") and reach < 150.0:
+            for unit in range(2):
+                for index in range(3):
+                    if prng.random() > 0.45:
+                        continue
+                    spacing = 16.0 / 3
+                    middle = -16.0 + 16.0 * unit + spacing * (index + 0.5)
+                    gx = middle + 0.72 if index % 2 == 0 else middle - 1.16
+                    goods.append(grounded(scene, matrix @ placement(gx, -5.94, 0.0, prng.choice([0.0, math.pi]))))
+        for gx in (-15.45, 15.45, -0.3):
+            if reach < 110.0 and prng.random() < 0.12:
+                pots.append(grounded(scene, matrix @ placement(gx, -5.9, 0.0, prng.uniform(0, 6.28))))
+    origin = placement(0.0, 0.0, 0.0, GRID)
+    for x, y in [(side * 6.4, layout.front + 1.2) for side in (-1, 1)] + [
+            (side * 26.9, y) for side in (-1, 1) for y in (-10.0, 2.0, 14.0, 26.0, 38.0, 50.0)]:
+        pots.append(grounded(scene, origin @ placement(x, y, 0.02, prng.uniform(0, 6.28))))
+    gate = gate_frames["porte_auguste"]
+    ccw = signed_area(WALL_TRACE) > 0
+    for start, end, _ in trace_walk(WALL_TRACE, 4.0)[0]:
+        middle = (start + end) / 2
+        if (middle.to_2d() - gate.translation.to_2d()).length > 140.0:
+            continue
+        normal = outward_normal((end - start).normalized(), ccw)
+        for _ in range(2):
+            reach = prng.uniform(1.8, 4.5)
+            point = middle + normal * reach + (end - start).normalized() * prng.uniform(-2, 2)
+            if (point.to_2d() - gate.translation.to_2d()).length < 18.0:
+                continue
+            weeds.append((point.x, point.y))
+    road = ROADS[0]
+    direction = (Vector(road[1]) - Vector(road[0])).normalized()
+    side_vector = Vector((-direction.y, direction.x))
+    for along in np.arange(20.0, 260.0, 3.5):
+        for side in (-1, 1):
+            if prng.random() < 0.55:
+                point = Vector(road[0]) + direction * along + side_vector * side * prng.uniform(4.1, 7.0)
+                weeds.append((point.x, point.y))
+    kx, ky = SITES["castellum"]
+    for _ in range(36):
+        angle = prng.uniform(0, 2 * math.pi)
+        radius = 9.5 + prng.expovariate(1 / 7.0)
+        weeds.append((kx + radius * math.cos(angle), ky + radius * math.sin(angle)))
+    cx, cy, angle, _ = amphitheatre_frame(scene)
+    a, b = AMPHITHEATRE_AXES
+    for k in range(70):
+        t = 2 * math.pi * k / 70 + prng.uniform(-0.02, 0.02)
+        px, py = ellipse_point(a + prng.uniform(0.8, 2.6), b + prng.uniform(0.8, 2.6), t)
+        wx, wy = rotate(px, py, angle)
+        weeds.append((cx + wx, cy + wy))
+    weed_frames = [grounded(scene, placement(x, y, scene.ground(x, y), prng.uniform(0, 6.28),
+                                             prng.uniform(0.7, 1.3))) for x, y in weeds]
+    tree = route_tree(scene)
+    goods = clear_of(tree, goods, 0.7)
+    pots = clear_of(tree, pots, 0.6)
+    weed_frames = clear_of(tree, weed_frames, 1.2)
+    scene.instances("streets", "shop_goods", lambda: nimes_detail.shop_goods(0), goods, cast_shadow=False,
+                    occlusion=False)
+    scene.instances("streets", "potted_plant", lambda: nimes_detail.potted_plant(3), pots, cast_shadow=False)
+    scene.instances("vegetation", "weeds", lambda: nimes_detail.weeds(2), weed_frames, cast_shadow=False,
+                    occlusion=False)
+    spots = []
+    heading = math.atan2(direction.y, direction.x)
+    for along in np.arange(4.0, 230.0, 2.2):
+        if prng.random() < 0.6:
+            point = Vector(road[0]) + direction * along + side_vector * prng.uniform(-2.3, 2.3)
+            level = scene.surface.height(point.x, point.y, scene.ground(point.x, point.y) + 0.15)
+            spots.append((point.x, point.y, level, heading))
+    for x, y in scene.stall_spots:
+        for _ in range(3):
+            px, py = x + prng.uniform(-3.0, 3.0), y + prng.uniform(-3.0, 3.0)
+            spots.append((px, py, scene.surface.height(px, py, scene.ground(px, py)), prng.uniform(0, 6.28)))
+    center = Vector(SITES["amphitheatre"])
+    entrance = Vector(bearing_point(center, scene.north_bearing, amphitheatre_radius(scene.north_bearing) + 3.0))
+    outward = (entrance - center).normalized()
+    for spread in (-1.0, 1.0):
+        start = entrance + outward * 70.0 + Vector((-outward.y, outward.x)) * spread * 14.0
+        for t in np.linspace(0.08, 0.95, 14):
+            point = start.lerp(entrance, float(t)) + Vector((prng.uniform(-1, 1), prng.uniform(-1, 1)))
+            way = entrance - start
+            spots.append((point.x, point.y, scene.surface.height(point.x, point.y, scene.ground(point.x, point.y)),
+                          math.atan2(way.y, way.x)))
+    for local in ((0.0, 6.0), (1.5, 12.0), (-1.2, 18.0), (0.8, 25.0), (-0.6, 32.0)):
+        point = gate @ Vector((local[0], local[1], 0.0))
+        spots.append((point.x, point.y, scene.surface.height(point.x, point.y, point.z), heading))
+    builder = nimes_detail.litter(MeshBuilder(), spots, prng)
+    unique_object("litter", builder, scene.collection, scene.root("litter"), scene.tiles, cast_shadow=False,
+                  ground_occlusion=False)
+    return {"shop_goods": len(goods), "potted_plants": len(pots), "weeds": len(weed_frames), "litter": len(spots)}
+
+
+STONE_ROOTS = ("city", "walls", "gates", "tour_magne", "forum", "fontaine", "castellum", "amphitheatre", "necropolis",
+               "streets")
+OCCLUDED_ROOTS = ("city", "walls", "gates", "tour_magne", "forum", "fontaine", "castellum", "amphitheatre")
+
+
+def weather_all(scene):
+    done = set()
+    for name in STONE_ROOTS + ("vegetation",):
+        root = scene.roots.get(name)
+        if root is None:
+            continue
+        for item in root.children_recursive:
+            if item.type != "MESH" or item.data.name in done:
+                continue
+            mesh = item.data
+            done.add(mesh.name)
+            seed = sum(ord(character) for character in mesh.name) % 97
+            if name == "vegetation":
+                nimes_detail.weather(mesh, seed=seed, walls=False, roofs=False, foliage=True)
+                continue
+            if name in OCCLUDED_ROOTS:
+                nimes_detail.occlusion(mesh, seed)
+            heights = None
+            if item.parent is root:
+                co = np.empty(len(mesh.vertices) * 3, dtype=np.float64)
+                mesh.vertices.foreach_get("co", co)
+                co = co.reshape(-1, 3)
+                heights = co[:, 2] - (scene.field.sample(co[:, 0], co[:, 1]) - scene.datum)
+            nimes_detail.weather(mesh, heights, seed)
 
 
 def preview_points(points, scene):
@@ -1444,9 +1820,9 @@ def render_previews(options, scene_points):
         return {}
     names = list(scene_points) if wanted == "all" else wanted.split(",")
     stage = ensure_collection("Stage")
-    evening_world(SUN_AZIMUTH, SUN_ELEVATION, 0.16, aerosol=0.35)
-    sun_lamp(stage, SUN_AZIMUTH, SUN_ELEVATION, 7.0, (1.0, 0.68, 0.42), 0.8)
-    haze_volume(stage, 45000.0, 600.0, 0.00007, (0.78, 0.84, 0.95), 0.3)
+    evening_world(SUN_AZIMUTH, SUN_ELEVATION, 0.1, aerosol=0.35)
+    sun_lamp(stage, SUN_AZIMUTH, SUN_ELEVATION, 9.0, (1.0, 0.62, 0.36), 0.8)
+    haze_volume(stage, 45000.0, 600.0, 0.00006, (0.96, 0.86, 0.72), 0.3)
     configure_render(1280, 720, options["samples"], exposure=0.0, volumetric_end=40000.0)
     timings = {}
     lenses = {"aerial": 30.0, "forum": 28.0, "amphitheatre": 32.0, "porte_auguste": 24.0, "fontaine": 24.0,
@@ -1473,6 +1849,7 @@ def main():
         return
     started = time.perf_counter()
     bpy.ops.wm.read_factory_settings(use_empty=True)
+    materials.TEXTURED["paving"] = PAVING
     tiles, credits = build_library(CACHE)
     field, far_field, dem_urls = build_terrain()
     level, arena_level = flatten_sites(field)
@@ -1481,18 +1858,23 @@ def main():
     scene = Scene(tiles, field, datum)
     scene.arena_level = arena_level
     scene.route_count = 0
+    scene.route_points = 0
+    scene.route_samples = []
+    scene.route_splits = 0
+    scene.stall_spots = []
     terrain_objects(field, far_field, plain_level, datum, scene.collection, scene.root("terrain"))
     layout = build_maison_carree(scene)
     build_forum(scene, layout)
     scene.north_bearing = build_amphitheatre(scene)
     gate_frames, wall_counts = build_walls(scene)
     sanctuary_trees, plane_points, basin_frame = build_sanctuary(scene)
-    build_roads(scene)
+    build_roads(scene, gate_frames)
     points = viewpoints(scene, layout, gate_frames, basin_frame, scene.north_bearing)
     place_markers(scene, points)
     exclusions = site_exclusions()
     camera_exclusions(exclusions, points)
-    street_counts, fountain_frames, sidewalks = build_streets(scene, exclusions, plain_level)
+    scene.shadow_eyes = [Vector(eye).to_2d() for key, (eye, _) in points.items() if key != "vue-d-ensemble"]
+    street_counts, fountain_spots, sidewalks = build_streets(scene, exclusions, plain_level)
     rng = np.random.default_rng(7)
     city_trees, house_counts, rows_dense = build_city(scene, exclusions, plain_level, rng)
     counts, farms = build_landscape(scene, exclusions, plain_level, city_trees, sanctuary_trees, plane_points, rng)
@@ -1502,23 +1884,34 @@ def main():
     def castellum_hole(xs, ys):
         u = (xs - kx) * math.cos(GRID) + (ys - ky) * math.sin(GRID)
         v = -(xs - kx) * math.sin(GRID) + (ys - ky) * math.cos(GRID)
-        return (np.abs(u) < 7.1) & (np.abs(v) < 7.1)
+        return (np.abs(u) < 5.8) & (np.abs(v) < 5.8)
 
-    patches = [("ground_amphitheatre", *SITES["amphitheatre"], 132.0, None),
-               ("ground_castellum", kx, ky, 60.0, castellum_hole),
-               ("ground_porte_auguste", gate_out.x, gate_out.y, 55.0, None)]
-    for name, x, y, radius, hole in patches:
-        ground_patch(scene, name, x, y, radius, plain_level, hole=hole)
+    patches = [("ground_amphitheatre", *SITES["amphitheatre"], 132.0, None, (1.04, 0.98, 0.9)),
+               ("ground_castellum", kx, ky, 60.0, castellum_hole, (1.0, 1.0, 1.0)),
+               ("ground_porte_auguste", gate_out.x, gate_out.y, 55.0, None, (1.0, 1.0, 1.0))]
+    for name, x, y, radius, hole, tint in patches:
+        ground_patch(scene, name, x, y, radius, plain_level, hole=hole, tint=tint)
+    scene.flush()
+    scene.surface = Surface([scene.roots[name] for name in WALKABLE if name in scene.roots])
+    scene.route_eyes = [eye for key, (eye, _) in points.items() if key != "vue-d-ensemble"]
     build_routes(scene, layout, gate_frames, basin_frame)
+    fountain_frames = place_fountains(scene, fountain_spots)
+    street_counts["fountains"] = len(fountain_frames)
     life_counts = build_life(scene, layout, gate_frames, basin_frame, fountain_frames, sidewalks, rows_dense, farms,
                              rng)
+    thin_far_figures(scene, camera_eyes(points, scene))
     placed = place_life(scene)
+    prop_counts = build_props(scene, rows_dense, gate_frames, points, layout)
     scene.flush()
+    weather_all(scene)
     counts.update(wall_counts)
     counts["streets"] = street_counts
     counts["houses"] = house_counts
     counts["life"] = dict(placed, **life_counts)
     counts["walk_routes"] = scene.route_count
+    counts["walk_points"] = scene.route_points
+    counts["walk_splits"] = scene.route_splits
+    counts["props"] = prop_counts
     roots = list(scene.roots.values())
     statistics = group_statistics(roots)
     stored = sum(value.get("stored_triangles", 0) for key, value in statistics.items() if key != "total")
