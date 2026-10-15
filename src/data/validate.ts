@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { FIRST_YEAR, LAST_YEAR } from '../core/dates.ts'
-import { eraSchema, eventSchema, personSchema, placeSchema, sceneSchema, trackSchema } from './schema.ts'
+import { citySchema, eraSchema, eventSchema, personSchema, placeSchema, itinerarySchema, sceneSchema, trackSchema } from './schema.ts'
 
 export interface Dataset {
   eras: unknown[]
@@ -9,6 +9,8 @@ export interface Dataset {
   places: unknown[]
   people: unknown[]
   scenes: unknown[]
+  cities: unknown[]
+  itineraries: unknown[]
 }
 
 const forbiddenDash = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`)
@@ -78,6 +80,15 @@ function referenceErrors(data: {
   })
 }
 
+function cityErrors(cities: z.infer<typeof citySchema>[], sceneIds: Set<string>): string[] {
+  return cities.flatMap((city) => {
+    const errors: string[] = []
+    if (city.to !== undefined && city.to < city.from) errors.push(`city ${city.id}: to is before from`)
+    if (city.scene && !sceneIds.has(city.scene)) errors.push(`city ${city.id}: unknown scene ${city.scene}`)
+    return errors
+  })
+}
+
 export function validateDataset(dataset: Dataset): string[] {
   const schemaProblems = [
     ...schemaErrors('era', eraSchema, dataset.eras),
@@ -86,6 +97,8 @@ export function validateDataset(dataset: Dataset): string[] {
     ...schemaErrors('place', placeSchema, dataset.places),
     ...schemaErrors('person', personSchema, dataset.people),
     ...schemaErrors('scene', sceneSchema, dataset.scenes),
+    ...schemaErrors('city', citySchema, dataset.cities),
+    ...schemaErrors('itinerary', itinerarySchema, dataset.itineraries),
   ]
   const textProblems = dashErrors(dataset, 'data')
   if (schemaProblems.length > 0) return [...schemaProblems, ...textProblems]
@@ -96,6 +109,8 @@ export function validateDataset(dataset: Dataset): string[] {
     places: dataset.places.map((item) => placeSchema.parse(item)),
     people: dataset.people.map((item) => personSchema.parse(item)),
     scenes: dataset.scenes.map((item) => sceneSchema.parse(item)),
+    cities: dataset.cities.map((item) => citySchema.parse(item)),
+    itineraries: dataset.itineraries.map((item) => itinerarySchema.parse(item)),
   }
   return [
     ...textProblems,
@@ -105,6 +120,9 @@ export function validateDataset(dataset: Dataset): string[] {
     ...duplicateErrors('place', data.places),
     ...duplicateErrors('person', data.people),
     ...duplicateErrors('scene', data.scenes),
+    ...duplicateErrors('city', data.cities),
+    ...duplicateErrors('itinerary', data.itineraries),
+    ...cityErrors(data.cities, new Set(data.scenes.map((scene) => scene.id))),
     ...eraContinuityErrors(data.eras),
     ...referenceErrors(data),
   ]

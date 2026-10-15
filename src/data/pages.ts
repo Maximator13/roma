@@ -93,6 +93,9 @@ Les bornes des époques sont des conventions d'historiens, expliquées pour chac
 
 - Polices : Cinzel (Natanael Gama) et EB Garamond (Georg Duffner et Octavio Pardo), sous licence SIL Open Font License 1.1.
 - Bibliothèques : React, three.js, React Three Fiber, drei, Zustand et marked (licence MIT), postprocessing (licence zlib), GSAP (licence gratuite propre à Webflow).
+- Relief et fonds marins : NOAA NCEI, ETOPO 2022 (domaine public), [doi:10.25921/fd45-gt74](https://doi.org/10.25921/fd45-gt74).
+- Traits de côte et lacs : Made with Natural Earth (domaine public).
+- Lieux antiques : [Pleiades](https://pleiades.stoa.org), © les contributeurs, CC BY 3.0.
 
 La liste complète des ressources, avec leurs auteurs, licences et modifications, est tenue à jour dans le fichier [CREDITS.md](https://github.com/Maximator13/roma/blob/main/CREDITS.md) du dépôt.`,
   },

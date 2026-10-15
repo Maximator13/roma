@@ -31,4 +31,10 @@ Les textes des événements, des époques et des pistes sont rédigés pour le p
 
 ## Données géographiques
 
-Aucune en phase 1. Les sources retenues pour la carte (Cliopatria, AWMC, Itiner-e, Pleiades, Natural Earth, ETOPO 2022) et leurs obligations sont décrites dans `docs/ARCHITECTURE.md` ; chacune sera ajoutée ici, avec sa ligne d'attribution exacte et ses modifications, au moment de son intégration.
+| Données | Source et licence | Attribution | Fichiers et modifications |
+|---|---|---|---|
+| Relief et bathymétrie | NOAA NCEI, ETOPO 2022, version 60 secondes d'arc, altitude de surface ; CC0 1.0 (domaine public des États-Unis) | NOAA National Centers for Environmental Information. 2022: ETOPO 2022 15 Arc-Second Global Relief Model. https://doi.org/10.25921/fd45-gt74 | `public/geo/relief.webp` : extrait régional (13° O à 53° E, 22° à 59° N) moyenné vers 2048 x 1152 px, altitude encodée sur un octet (racine carrée signée) ; script `scripts/geo/relief.ts` |
+| Terres et lacs | Natural Earth 1:10m Land et Lakes, v5.1.2 ; domaine public | Made with Natural Earth. Free vector and raster map data @ naturalearthdata.com. | Rastérisés en masque terre et eau sur la grille du relief ; lacs de barrage modernes exclus (anachroniques) |
+| Lieux et villes | Pleiades, A Gazetteer of Past Places (R. Bagnall et al., éd.) ; CC BY 3.0 | Pleiades: A Gazetteer of Past Places, https://pleiades.stoa.org, © les contributeurs, CC BY 3.0, données modifiées | Identifiants et coordonnées vérifiés lieu par lieu pour `src/data/places.ts` et `src/data/cities.ts` |
+
+Les autres sources retenues pour la carte (Cliopatria, AWMC, Itiner-e) et leurs obligations sont décrites dans `docs/ARCHITECTURE.md` ; chacune sera ajoutée ici au moment de son intégration.

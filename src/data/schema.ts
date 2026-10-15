@@ -103,6 +103,40 @@ export const personSchema = z.strictObject({
   certainty: z.enum(CERTAINTIES),
 })
 
+export const citySchema = z.strictObject({
+  id: slug,
+  name: label,
+  ancientName: label.optional(),
+  lat: z.number().min(-90).max(90),
+  lon: z.number().min(-180).max(180),
+  pleiadesId: z.number().int().positive().optional(),
+  from: anyYear,
+  to: anyYear.optional(),
+  importance: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+  note: label,
+  scene: slug.optional(),
+})
+
+export const waypointSchema = z.strictObject({
+  lon: z.number().min(-180).max(180),
+  lat: z.number().min(-90).max(90),
+  label: label.optional(),
+  year: anyYear,
+  month: z.number().int().min(1).max(12).optional(),
+  certainty: z.enum(CERTAINTIES),
+  note: label.optional(),
+})
+
+export const itinerarySchema = z.strictObject({
+  id: slug,
+  title: label,
+  summary: label,
+  from: projectYear,
+  to: projectYear,
+  waypoints: z.array(waypointSchema).min(2),
+  sources: z.array(label).min(1),
+})
+
 export const sceneSchema = z.strictObject({
   id: slug,
   title: label,
@@ -120,3 +154,6 @@ export type Track = z.infer<typeof trackSchema>
 export type Place = z.infer<typeof placeSchema>
 export type Person = z.infer<typeof personSchema>
 export type Scene = z.infer<typeof sceneSchema>
+export type City = z.infer<typeof citySchema>
+export type Waypoint = z.infer<typeof waypointSchema>
+export type Itinerary = z.infer<typeof itinerarySchema>
