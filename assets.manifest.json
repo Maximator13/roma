@@ -1,4 +1,12 @@
 {
   "version": 1,
-  "assets": []
+  "assets": [
+    {
+      "path": "scenes/nimes/nimes.glb",
+      "bytes": 6536920,
+      "sha256": "9fd08ace715fca2c0e74b846be617319ed1d5824ce788255d6322193022b7884",
+      "release": "assets-v1",
+      "file": "9fd08ace715f-nimes.glb"
+    }
+  ]
 }

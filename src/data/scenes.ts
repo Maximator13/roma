@@ -6,7 +6,7 @@ export const scenes: Scene[] = [
   {
     "id": "nimes",
     "title": "Nîmes romaine (Nemausus)",
-    "status": "planned",
+    "status": "ready",
     "year": 130,
     "lat": 43.8382,
     "lon": 4.3561,
