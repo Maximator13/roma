@@ -21,6 +21,9 @@ Dépendances npm utilisées sans modification ; leurs licences accompagnent leur
 | drei | 10.7.9 | MIT | https://github.com/pmndrs/drei |
 | @react-three/postprocessing | 3.2.0 | MIT | https://github.com/pmndrs/react-postprocessing |
 | postprocessing | 6.39.5 | zlib | https://github.com/pmndrs/postprocessing |
+| N8AO (occlusion ambiante des scènes) | 2.0.1 | ISC | https://github.com/N8python/n8ao |
+| meshoptimizer (décodeur des modèles 3D) | inclus dans three.js | MIT | https://github.com/zeux/meshoptimizer |
+| Basis Universal (transcodeur KTX2) | inclus dans three.js | Apache 2.0 | https://github.com/BinomialLLC/basis_universal |
 | GSAP | 3.15.0 | GSAP Standard « No Charge » License (gratuite, non libre, propriété de Webflow) | https://gsap.com/standard-license |
 | Zustand | 5.0.15 | MIT | https://github.com/pmndrs/zustand |
 | marked | 18.1.1 | MIT | https://github.com/markedjs/marked |
