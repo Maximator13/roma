@@ -123,6 +123,13 @@ Tests : 60 tests unitaires, 12 tests Playwright (6 sur ordinateur, 6 sur mobile)
   - cartel de musée par point d'intérêt, avec sources, étapes et touches fléchées ; feuille basse sur téléphone ;
   - accès par un anneau doré cliquable sur la ville, par la liste « À visiter en 3D » sous l'époque, et par un bouton dans les fiches liées.
 - **Scène de Nîmes vers 130, en ligne** (`#/scene/nimes`) : reconstruite par script (`blender/nimes.py`) sur le relief IGN, avec la Maison Carrée et sa dédicace, le forum, les Arènes, l'enceinte, la porte d'Auguste, la tour Magne, le sanctuaire de la Fontaine, le castellum, 2 267 maisons et boutiques, 724 personnages ; passants animés, fumée et oiseaux dans le site. Modèle optimisé de 6,5 Mo publié dans la release `assets-v1` ; prête en 13 s sur le site en ligne (rendu logiciel de test). Captures dans `docs/screenshots/nimes/`. Environ 1,36 million de triangles affichés : fluidité à mesurer sur ton portable.
+- **Nuit du 15 au 16 octobre 2026, en autonomie** (demande de l'utilisateur) : quatre scènes en ligne avec Nîmes.
+  - **Panthéon d'Hadrien** (`#/scene/pantheon`, release `assets-v2`, 7,8 Mo) : 21 avril 129 à midi, rayon de l'oculus et tache de soleil calculée, lumière d'ambiance atténuée dans la rotonde.
+  - **Arles vers 160** (`#/scene/arles`, `assets-v4`, 6,1 Mo) : forum, théâtre, amphithéâtre, cirque, port et Trinquetaille.
+  - **Pont du Gard vers 130** (`#/scene/pont-du-gard`, `assets-v5`, 3,6 Mo) : pont sur relief IGN, canal et dalles, carrière de l'Estel, Gardon.
+  - **Nîmes plus réaliste** (`assets-v3`, 7,6 Mo) : personnages détaillés, objets des boutiques, usure ; passants posés sur le sol (correction du site et des trajets).
+  - **Son d'ambiance** libre, coupé par défaut ; **ombres de contact** (N8AO) en qualité moyenne et haute ; **6 événements de frise** qui ouvrent les scènes.
+  - Captures dans `docs/screenshots/<scène>/`. Restent hors périmètre : vidéos pré-rendues, bataille de Cannes (carte de session proposée), netteté de la carte au zoom (carte de session proposée).
 - **Propositions de scènes vérifiées** : Nîmes vers 130 (validée, option A2 : le pont du Gard devient une scène à part) et Arles vers 160 (`docs/scenes/arles.md`, à valider).
 
 ### En cours
