@@ -104,6 +104,15 @@ Les graduations de la frise tombent sur des années historiques rondes des deux 
 - Passage carte vers scène : la caméra plonge vers le lieu, un voile de brume monte pendant 300 à 500 ms, la scène remplace la carte avec une pose qui prolonge le mouvement, puis le voile retombe. Carte et scène gardent chacune leur origine (précision des flottants). Avec `prefers-reduced-motion`, il ne reste que le fondu.
 - Budget par scène : le code de la scène hors premier écran, plus ses fichiers (gzip pour les types que Pages compresse, taille brute pour KTX2, MP4, WebP).
 
+### Implémentation (phase 2)
+
+- **Données** : une scène de `src/data/scenes.ts` passe au statut `ready` seulement avec sa date (`year`), son lieu (`lat`, `lon`), son résumé et ses points d'intérêt (`points` : identifiant, titre, cartel, sources). `npm run validate` refuse une scène prête sans `src/scenes/<id>/index.tsx` ni `blender/<id>.py`, et tout dossier de scène sans entrée de données.
+- **Registre** : `src/scenes/registry.ts` découvre les modules par `import.meta.glob('./*/index.tsx')` ; `isPlayable` exige le statut `ready` et le module.
+- **Bascule** : `src/stage/useSceneSwap.ts` attend la plongée de la carte (1,3 s, zéro en mouvement réduit) et le module, lève le voile (0,45 s), monte la scène, attend `compileAsync` (4 s au plus), puis baisse le voile (0,9 s). Un échec de chargement ramène à la carte et l'affiche dans le cartel.
+- **Kit glTF** (`src/scenes/kit/`) : `useSceneModel` charge `assets/<chemin>.glb` avec meshopt et KTX2 et repère les nœuds vides `poi_<id>` ; `Atmosphere` pose ciel, brume, lumière d'ambiance et soleil (ombres qui suivent la caméra) ; `GuidedRail` déplace la caméra entre la vue d'ensemble et les points d'intérêt sur une courbe en arc (2,4 à 6,5 s), avec un regard libre limité (environ 26° de côté, 13° en hauteur). Une scène simple tient en une configuration (`ModelScene`) : modèle, soleil, brume, vue d'ensemble.
+- **Repères dans Blender** : un nœud vide `poi_<id>` par point d'intérêt, placé à la position de la caméra et orienté vers le sujet (axe -Z local après export glTF, +Y en haut). L'optimisation garde ces nœuds (`prune` avec `keepLeaves`).
+- **Fichiers** : `npm run assets` optimise `.cache/scenes/<id>/<id>.glb` vers `.cache/build/scenes/<id>/<id>.glb` ; `npm run assets:publish` les publie ; `npm run assets:pull` les place dans `public/assets/` (ignoré par git), en CI avant le build.
+
 ## 8. Routage, état et pages de partage
 
 - **Routes** : `#/`, `#/evenement/<slug>`, `#/mentions-legales`, `#/confidentialite`, `#/conditions`, `#/sources` ; toute autre adresse affiche « Page introuvable ». Le titre du document suit la route.
