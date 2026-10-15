@@ -52,3 +52,20 @@ Les autres sources retenues pour la carte (AWMC, Itiner-e) et leurs obligations 
 | Lettres de bronze des dédicaces | Cinzel (SIL OFL 1.1), déjà livrée avec le site | The Cinzel Project Authors | Converties en volumes pour CIL XII 3156 et CIL XII 3151 |
 
 La frise de rinceaux de la Maison Carrée est générée par le script ; ce n'est pas une copie de la frise conservée.
+
+## Sons d'ambiance
+
+Boucles de 45 s faites pour le projet dans `public/audio/` (mono, recadrées, filtrées, fondu enchaîné à la boucle, volume normalisé à -20 LUFS, Ogg Vorbis et MP3). Coupées par défaut sur le site.
+
+| Fichier | Source | Auteur | Licence |
+|---|---|---|---|
+| `evening-city` (foule lointaine, filtrée pour rester inintelligible) | https://commons.wikimedia.org/wiki/File:360703_eguobyte_large-crowd-medium-distance-stereo.wav | eguobyte | CC0 1.0 |
+| `summer-evening` (cigales) | https://commons.wikimedia.org/wiki/File:Cicada_orni.ogg | DavidDelon | domaine public |
+| `summer-evening` (martinets) | https://xeno-canto.org/819689 | Sonothèque ADVL, enregistrement de Léa Lefrou | CC0 1.0 |
+| `fountain` | https://commons.wikimedia.org/wiki/File:Fountain_in_toulouse.ogg | aldor | domaine public |
+| `river` | https://commons.wikimedia.org/wiki/File:Sanna_river_rapids.ogg | Jarrod Stanley | CC0 1.0 |
+| `harbour` (vagues) | https://commons.wikimedia.org/wiki/File:WWS_Smallwaves.ogg | « Smallwaves » par Torsten Nilsson, Work With Sounds | CC BY 4.0, modifié |
+| `harbour` (goéland) | https://xeno-canto.org/707075 | Sonothèque ADVL | CC0 1.0 |
+| `harbour` (craquements de bois) | https://opengameart.org/content/tree-creaking | AntumDeluge, d'après Department64 | CC0 1.0 |
+| `wind` (vent synthétisé) | https://opengameart.org/content/wind1 | Luke.RUSTLTD | CC0 1.0 |
+
