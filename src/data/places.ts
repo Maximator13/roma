@@ -34,6 +34,14 @@ export const places: Place[] = [
     "pleiadesId": 501428
   },
   {
+    "id": "arles",
+    "name": "Arles",
+    "ancientName": "Arelate",
+    "lat": 43.677616,
+    "lon": 4.630799,
+    "pleiadesId": 148217
+  },
+  {
     "id": "arta",
     "name": "Arta",
     "ancientName": "Ambracia (Ambrakia)",
@@ -154,6 +162,14 @@ export const places: Place[] = [
     "pleiadesId": 511337
   },
   {
+    "id": "nimes",
+    "name": "Nîmes",
+    "ancientName": "Nemausus",
+    "lat": 43.8431,
+    "lon": 4.3542,
+    "pleiadesId": 148142
+  },
+  {
     "id": "palmyre",
     "name": "Palmyre",
     "ancientName": "Palmyra (Tadmor)",
@@ -176,6 +192,13 @@ export const places: Place[] = [
     "lat": 40.7494,
     "lon": 14.4854,
     "pleiadesId": 433032
+  },
+  {
+    "id": "pont-du-gard",
+    "name": "Pont du Gard (Vers-Pont-du-Gard, Gard)",
+    "lat": 43.94725,
+    "lon": 4.53529,
+    "pleiadesId": 149496
   },
   {
     "id": "pont-milvius",

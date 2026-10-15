@@ -793,6 +793,63 @@ export const events: HistoricalEvent[] = [
     ]
   },
   {
+    "id": "fondation-colonie-arles",
+    "title": "Fondation de la colonie d'Arles",
+    "start": -45,
+    "precision": "year",
+    "certainty": "attested",
+    "certaintyNote": "46 av. J.-C. est l'année retenue par le musée départemental Arles antique ; d'autres auteurs placent la fondation en 45 av. J.-C. Suétone, qui rapporte le rôle de Tiberius Claudius Nero, ne donne pas l'année.",
+    "era": "republique",
+    "track": "rome",
+    "category": "politics",
+    "importance": 3,
+    "placeId": "arles",
+    "people": [
+      "jules-cesar"
+    ],
+    "summary": "Sur l'ordre de César, Tiberius Claudius Nero, père du futur empereur Tibère, établit à Arles une colonie de citoyens romains pour les vétérans de la VIe légion, d'où son surnom de Sextanorum. Bâtie au sommet du delta du Rhône, la ville devient un grand port entre la Méditerranée et l'intérieur de la Gaule.",
+    "body": "Le rocher de l'Hauture, qui domine le sommet du delta du Rhône, porte une agglomération commerçante dès les premières décennies du VIe siècle av. J.-C. ; le poète Aviénus rapporte qu'elle s'appelait Theline au temps où des Grecs y vivaient. En 49 av. J.-C., pendant la guerre civile, **César** y fait construire douze navires de guerre pour le siège de Marseille : selon son propre récit, ils sont armés trente jours après la coupe du bois.\n\nQuelques années plus tard, **Tiberius Claudius Nero**, envoyé par César, y installe des vétérans, comme le rapporte Suétone dans sa *Vie de Tibère*, dont il est le père. Pline l'Ancien et Pomponius Mela désignent la colonie par le nom de la légion d'origine de ses colons, la VIe : Arelate Sextanorum, la ville « des hommes de la Sixième ».\n\nL'année exacte reste incertaine : 46 av. J.-C. selon le musée départemental Arles antique, 45 selon d'autres auteurs. L'identité précise de la légion, souvent rapprochée de la VI Ferrata, est elle aussi discutée. Placée à la jonction du fleuve et de la mer, la colonie devient l'un des ports majeurs de la future province de Narbonnaise.",
+    "sources": [
+      {
+        "kind": "ancient",
+        "author": "Suétone",
+        "work": "Vie de Tibère",
+        "locus": "4, 1"
+      },
+      {
+        "kind": "ancient",
+        "author": "Pline l'Ancien",
+        "work": "Histoire naturelle",
+        "locus": "III, 36"
+      },
+      {
+        "kind": "ancient",
+        "author": "Pomponius Mela",
+        "work": "Chorographie",
+        "locus": "II, 75"
+      },
+      {
+        "kind": "ancient",
+        "author": "César",
+        "work": "Guerre civile",
+        "locus": "I, 36"
+      },
+      {
+        "kind": "ancient",
+        "author": "Aviénus",
+        "work": "Ora maritima",
+        "locus": "v. 689 à 691"
+      },
+      {
+        "kind": "modern",
+        "author": "Musée départemental Arles antique",
+        "work": "Dossier enseignant Jean-Claude Golvin, 2011",
+        "url": "https://www.arretetonchar.fr/wp-content/uploads/2024/10/Arles-MDAA-13-Dossier-enseignant-Jean-Claude-Golvin-2011.pdf"
+      }
+    ],
+    "scene": "arles"
+  },
+  {
     "id": "assassinat-de-cesar",
     "title": "Assassinat de César",
     "start": -43,
@@ -972,6 +1029,107 @@ export const events: HistoricalEvent[] = [
     ]
   },
   {
+    "id": "enceinte-de-nemausus",
+    "title": "Auguste donne portes et murs à Nemausus",
+    "start": -15,
+    "end": -14,
+    "precision": "year",
+    "certainty": "attested",
+    "certaintyNote": "L'inscription de la porte d'Auguste date le don de la huitième puissance tribunicienne d'Auguste, soit 16 ou 15 av. J.-C. Le chantier de l'enceinte se prolonge bien après, sans doute jusque vers 25 ou 30 apr. J.-C. selon les fouilles récentes.",
+    "era": "haut-empire",
+    "track": "rome",
+    "category": "building",
+    "importance": 3,
+    "placeId": "nimes",
+    "people": [
+      "auguste"
+    ],
+    "summary": "En 16 ou 15 av. J.-C., Auguste offre à la colonie de Nemausus ses portes et ses murs, comme le rappelle l'inscription de la porte d'Auguste. Longue d'environ 6 km et flanquée de plus de 80 tours, l'enceinte enferme près de 220 hectares : c'est l'une des plus vastes de la Gaule romaine.",
+    "body": "Ancien chef-lieu des Volques Arécomiques, Nemausus est devenue une colonie qui porte le nom d'**Auguste**. Sur la porte qui ouvre la ville vers l'est, là où arrive la voie Domitienne, une inscription placée au-dessus des arches rappelle que l'empereur, consul pour la onzième fois et revêtu de sa huitième puissance tribunicienne, donne à la colonie ses portes et ses murs. Cette titulature situe le don en 16 ou 15 av. J.-C.\n\nLe rempart court sur environ 6 km et englobe près de 220 hectares, y compris les collines du nord, mont Cavalier, Montaury et Canteduc, restées peu bâties. La courtine, haute d'environ 9 mètres et bordée d'un chemin de ronde crénelé, est rythmée par plus de 80 tours aux plans variés, rondes, octogonales ou rectangulaires, et percée d'une dizaine de portes. La pierre vient surtout de la carrière de Roquemaillère.\n\nLa dédicace ne marque pas la fin des travaux. Les fouilles de Montaury, menées de 2014 à 2019, et l'étude des monnaies montrent un chantier étalé sur plusieurs décennies, jusque vers 25 ou 30 apr. J.-C. selon R. Pellé (Inrap). Parmi les portes, seules la porte d'Auguste et la porte de France subsistent aujourd'hui, avec la tour Magne et plusieurs tronçons de mur.",
+    "sources": [
+      {
+        "kind": "ancient",
+        "author": "Inscription de la porte d'Auguste à Nîmes",
+        "work": "Corpus Inscriptionum Latinarum, XII",
+        "locus": "3151"
+      },
+      {
+        "kind": "modern",
+        "author": "Office de tourisme de Nîmes",
+        "work": "L'enceinte romaine",
+        "url": "https://nimes-tourisme.com/en/explorer/nimes/monuments-et-sites/lenceinte-romaine/"
+      },
+      {
+        "kind": "modern",
+        "author": "APHG et Inrap",
+        "work": "Dossier pédagogique sur Nîmes, 2024",
+        "locus": "p. 3",
+        "url": "https://www.aphg.fr/IMG/pdf/dossier2_inrap_aphg.pdf"
+      },
+      {
+        "kind": "modern",
+        "author": "F. Cabane",
+        "work": "Résumé de communication, Académie de Nîmes, 2024",
+        "url": "https://www.academiedenimes.org/site/wp-content/uploads/Resume-F-Cabane-22-mars.pdf"
+      },
+      {
+        "kind": "modern",
+        "author": "Objectif Gard",
+        "work": "Nîmes : sixième campagne de fouille et énième bonne surprise, 29 août 2019",
+        "url": "http://www.objectifsud.fr/a-la-une/nimes-sixieme-campagne-de-fouille-et-enieme-bonne-surprise-30523.php"
+      }
+    ],
+    "scene": "nimes"
+  },
+  {
+    "id": "dedicace-maison-carree",
+    "title": "Dédicace de la Maison Carrée à Caius et Lucius César",
+    "start": 2,
+    "end": 5,
+    "precision": "year",
+    "certainty": "debated",
+    "certaintyNote": "Le Musée de la Romanité donne deux fourchettes, de 2 à 4 et 4 ou 5 apr. J.-C., la Ville de Nîmes une construction entre 10 av. J.-C. et le début du Ier siècle. J. C. Anderson (2001) voit dans le temple une reconstruction du IIe siècle, hypothèse minoritaire.",
+    "era": "haut-empire",
+    "track": "rome",
+    "category": "building",
+    "importance": 3,
+    "placeId": "nimes",
+    "people": [
+      "auguste"
+    ],
+    "summary": "Au forum de Nemausus, un temple corinthien élevé sur un podium est dédié à Caius et Lucius César, petits-fils et héritiers d'Auguste, tous deux morts jeunes. Construit entre 10 av. J.-C. et le début du Ier siècle apr. J.-C., il reçoit sa dédicace entre 2 et 5 apr. J.-C. Presque intact, il est inscrit au patrimoine mondial depuis 2023.",
+    "body": "La Maison Carrée occupe le côté sud du forum, sa façade principale tournée vers le nord. C'est un temple pseudo-périptère : six colonnes corinthiennes en façade, un porche à colonnes libres, puis des colonnes à demi engagées dans les murs de la cella, soit trente colonnes cannelées d'environ 9 mètres. Un escalier de quinze marches conduit au podium ; l'édifice mesure environ 26 mètres de long, 15 de large et 17 de haut.\n\nSon plan reprend celui du temple d'Apollon *in Circo* à Rome, et son décor s'inspire du temple de Mars Ultor et de l'Ara Pacis : denticules, modillons et frise de rinceaux d'acanthe peuplée d'oiseaux courent sur trois côtés. La dédicace était faite de lettres de bronze fixées sur la frise et l'architrave de la façade. Les lettres ont disparu, mais l'érudit J.-F. Séguier en a restitué le texte au milieu du XVIIIe siècle d'après les trous de fixation.\n\nLa date fine reste discutée : le Musée de la Romanité place la dédicace entre 2 et 5 apr. J.-C., et une dédicace faite après la mort des deux princes, en 4 ou 5, n'est pas exclue. En 2001, J. C. Anderson a proposé d'y voir un temple reconstruit dans la première moitié du IIe siècle, hypothèse restée minoritaire. Restaurée de 2006 à 2010, la Maison Carrée nous est parvenue presque intacte.",
+    "sources": [
+      {
+        "kind": "ancient",
+        "author": "Dédicace de la Maison Carrée",
+        "work": "Corpus Inscriptionum Latinarum, XII",
+        "locus": "3156"
+      },
+      {
+        "kind": "modern",
+        "author": "Ville de Nîmes",
+        "work": "La Maison Carrée de Nîmes, patrimoine mondial de l'UNESCO",
+        "locus": "p. 5 à 10",
+        "url": "https://nimes-tourisme.com/app/uploads/2026/03/la-maison-carree-de-nimes.pdf"
+      },
+      {
+        "kind": "modern",
+        "author": "Musée de la Romanité",
+        "work": "Dossier pédagogique sur l'architecture publique",
+        "locus": "p. 4, 8 et 9",
+        "url": "https://museedelaromanite.fr/content/uploads/2021/08/DOSSIER-PEDAGOGIQUE-ARCHI-PUBLIQUE-bd.pdf"
+      },
+      {
+        "kind": "modern",
+        "author": "J. C. Anderson Jr.",
+        "work": "Anachronism in the Roman Architecture of Gaul: The Date of the Maison Carrée at Nîmes, Journal of the Society of Architectural Historians 60, 1, 2001",
+        "locus": "p. 68 à 79"
+      }
+    ],
+    "scene": "nimes"
+  },
+  {
     "id": "desastre-de-varus",
     "title": "Le désastre de Varus",
     "start": 9,
@@ -1030,6 +1188,50 @@ export const events: HistoricalEvent[] = [
         "url": "https://www.kalkriese-varusschlacht.de/en/the-varus-battle.html"
       }
     ]
+  },
+  {
+    "id": "construction-du-pont-du-gard",
+    "title": "Construction de l'aqueduc de Nîmes et du pont du Gard",
+    "start": 40,
+    "end": 60,
+    "precision": "decade",
+    "certainty": "attested",
+    "certaintyNote": "Sans inscription de construction, l'ouvrage est daté par l'archéologie : céramique des couches de chantier, postérieure à l'époque augustéenne, et phases de la carrière de l'Estel. L'attribution traditionnelle à Agrippa, vers 19 av. J.-C., est abandonnée.",
+    "era": "haut-empire",
+    "track": "rome",
+    "category": "building",
+    "importance": 2,
+    "placeId": "pont-du-gard",
+    "summary": "Vers le milieu du Ier siècle apr. J.-C., Nemausus capte la source d'Eure, près d'Uzès, et l'amène jusqu'à la ville par un aqueduc d'environ 50 km. Pour franchir le Gardon, les bâtisseurs élèvent en quelques années le pont du Gard, trois rangs d'arches superposés hauts de 48,77 mètres.",
+    "body": "Le chantier de l'aqueduc dure près de quinze ans, de 40 à 60 environ selon le site du Pont du Gard. Le canal maçonné et couvert, enterré sur 90 % de son parcours, suit le relief avec une pente moyenne de 24 à 25 centimètres par kilomètre : entre la source d'Eure et le bassin de distribution (castellum) de Nîmes, il ne descend que d'un peu plus de 12 mètres. Il franchit les vallées par dix-sept ouvrages aériens et passe par trois tunnels.\n\nLe pont du Gard, bâti en cinq ans environ, superpose trois ponts de grand appareil posé presque entièrement à sec : six arches au premier étage, dont la plus grande s'ouvre sur 24,50 mètres, onze au deuxième et quarante-sept petites arches au troisième, qui portent le canal couvert de dalles. Le calcaire coquillier vient de la carrière de l'Estel, quelques centaines de mètres en aval, et certains blocs pèsent jusqu'à 6 tonnes ; des pierres laissées en saillie servaient d'appui aux échafaudages.\n\nAucune inscription ne commémore les travaux : la date repose sur la céramique des couches de chantier et sur l'étude de la carrière. L'ancienne attribution à **Agrippa**, gendre d'Auguste, vers 19 av. J.-C., est aujourd'hui abandonnée. L'aqueduc livre en moyenne environ 20 000 mètres cubes d'eau par jour ; mal entretenu à partir du IIIe siècle, il est abandonné au début du VIe.",
+    "sources": [
+      {
+        "kind": "modern",
+        "author": "Site du Pont du Gard",
+        "work": "Dossier de presse",
+        "locus": "p. 4 à 6 et 14",
+        "url": "https://pontdugard.fr/sites/default/files/2023-02/Dossier%20de%20presse%20Pont%20du%20Gard.pdf"
+      },
+      {
+        "kind": "modern",
+        "author": "Site du Pont du Gard",
+        "work": "Le Pont du Gard (mémento)",
+        "url": "https://pontdugard.fr/sites/default/files/2023-05/lepontdugard.pdf"
+      },
+      {
+        "kind": "modern",
+        "author": "Site du Pont du Gard",
+        "work": "The monument",
+        "url": "https://pontdugard.fr/en/discover/monument"
+      },
+      {
+        "kind": "modern",
+        "author": "M. Vacca-Goutoulli",
+        "work": "Étude archéologique diachronique de la carrière de l'Estel sud, Archéologies. Sociétés, réseaux, matériaux 2, 2024",
+        "url": "https://doi.org/10.46298/asrm.13671"
+      }
+    ],
+    "scene": "pont-du-gard"
   },
   {
     "id": "incendie-de-rome",
@@ -1237,6 +1439,49 @@ export const events: HistoricalEvent[] = [
     ]
   },
   {
+    "id": "amphitheatre-de-nimes",
+    "title": "Construction de l'amphithéâtre de Nîmes",
+    "start": 100,
+    "precision": "decade",
+    "certainty": "debated",
+    "certaintyNote": "Une monnaie probablement frappée en 88 ou 89, retrouvée dans les fondations, et la datation radiocarbone des queues d'aronde placent le chantier entre les années 90 et 130 ; selon la Ville de Nîmes, Nerva (de 96 à 98) ne l'a pas vu achevé.",
+    "era": "haut-empire",
+    "track": "rome",
+    "category": "building",
+    "importance": 3,
+    "placeId": "nimes",
+    "summary": "Vers 100 apr. J.-C., une vingtaine d'années après le Colisée, Nemausus se dote d'un amphithéâtre elliptique de 133 mètres sur 101, prévu pour environ 22 000 spectateurs. Bien conservé, il accueille encore aujourd'hui des spectacles.",
+    "body": "L'édifice suit le modèle du Colisée : une façade de 21 mètres de haut, faite de deux étages de soixante arcades et d'un attique, enveloppe trente-quatre rangées de gradins réparties en quatre zones (*maeniana*). Galeries, escaliers et vomitoires distribuent un public placé selon son rang social ; au sommet, des consoles recevaient les mâts du *velum*, la toile tendue au-dessus des gradins. Sous la piste, longue de 68 mètres et large de 38, s'étendent des galeries et une salle en forme de croix.\n\nLe chantier est daté par l'archéologie. Une monnaie probablement frappée en 88 ou 89, sans doute perdue au début des années 90, a été retrouvée dans les fondations, et la datation radiocarbone des doubles queues d'aronde montre que la construction est antérieure à 130. Selon la Ville de Nîmes, l'empereur Nerva, qui règne de 96 à 98, ne l'a pas vu achevé.\n\nDes inscriptions du podium réservaient des places à des corporations, dont quarante aux bateliers du Rhône et de la Saône. À l'époque wisigothique, l'amphithéâtre devient une forteresse, puis un village fortifié qui compte jusqu'à 150 maisons ; son dégagement, décidé en 1786, commence en 1809. Sa capacité, estimée à 22 000 places par le Musée de la Romanité, varie selon les sources.",
+    "sources": [
+      {
+        "kind": "modern",
+        "author": "Musée de la Romanité",
+        "work": "Dossier pédagogique sur l'architecture publique",
+        "locus": "p. 12 à 15",
+        "url": "https://museedelaromanite.fr/content/uploads/2021/08/DOSSIER-PEDAGOGIQUE-ARCHI-PUBLIQUE-bd.pdf"
+      },
+      {
+        "kind": "modern",
+        "author": "Ville de Nîmes",
+        "work": "Webdocumentaire des Arènes : When was the amphitheater built?",
+        "url": "https://arenes-webdoc.nimes.fr/en/construction/build/in-all-its-splendor/when-was-the-amphitheater-built"
+      },
+      {
+        "kind": "modern",
+        "author": "Ville de Nîmes",
+        "work": "Webdocumentaire des Arènes : Seating spectators",
+        "url": "https://arenes-webdoc.nimes.fr/en/construction/design/terms-of-the-contract/seating-spectators/"
+      },
+      {
+        "kind": "modern",
+        "author": "Ministère de la Culture et Inrap",
+        "work": "Communiqué de presse sur la fouille de la salle cruciforme, 5 mars 2020",
+        "url": "https://www.culture.gouv.fr/Media/Medias-creation-rapide/Communique-de-presse5"
+      }
+    ],
+    "scene": "nimes"
+  },
+  {
     "id": "pantheon-d-hadrien",
     "title": "Le Panthéon d'Hadrien",
     "start": 113,
@@ -1357,6 +1602,49 @@ export const events: HistoricalEvent[] = [
         "url": "https://roman-emperors.sites.luc.edu/trajan.htm"
       }
     ]
+  },
+  {
+    "id": "construction-cirque-arles",
+    "title": "Construction du cirque d'Arles",
+    "start": 149,
+    "end": 150,
+    "precision": "year",
+    "certainty": "attested",
+    "certaintyNote": "Date établie par la dendrochronologie des pieux de fondation, dont les arbres ont été abattus durant l'hiver de 148 à 149.",
+    "era": "haut-empire",
+    "track": "rome",
+    "category": "building",
+    "importance": 3,
+    "placeId": "arles",
+    "summary": "En 149 et 150, sous Antonin le Pieux, Arles se dote hors de ses murs, au bord du Rhône, d'un cirque d'environ 450 mètres de long pour les courses de chars. Ses fondations reposent sur plus de 30 000 pieux, taillés dans des arbres abattus durant l'hiver de 148 à 149.",
+    "body": "Le cirque s'élève au sud-ouest de la ville, hors les murs, sur un terrain marécageux en bordure du fleuve. Pour l'asseoir, les bâtisseurs creusent des tranchées de fondation de 2,60 mètres sur 1,20 et y plantent plus de 30 000 pieux de chêne et de résineux, longs de 2 à 3,5 mètres, associés à du gravier et à un blocage.\n\nL'étude des cernes de ce bois, la dendrochronologie, date le chantier avec une rare précision : les arbres ont été abattus durant l'hiver de 148 à 149, et la construction se place en 149 et 150. L'édifice mesure environ 450 mètres sur 101 et peut accueillir environ 20 000 spectateurs. Ses gradins reposent sur des voûtes ouvertes vers l'extérieur par des arcades ; au milieu de la piste, la *spina*, ornée de statues et de bassins, se termine à chaque extrémité par des bornes (*metae*).\n\nLe monument est remanié au IVe siècle, époque où la *spina* reçoit aussi un placage de marbre et un obélisque, puis démantelé vers le milieu du VIe siècle. Une partie des fondations est visible devant le musée départemental Arles antique ; l'extrémité de la piste et les stalles de départ, jamais fouillées, se trouvent sous l'autoroute et le quartier de la Roquette.",
+    "sources": [
+      {
+        "kind": "modern",
+        "author": "Musée départemental Arles antique",
+        "work": "Dossier pédagogique Urbanisme et romanisation, fiche Le cirque romain d'Arles"
+      },
+      {
+        "kind": "modern",
+        "author": "Musée départemental Arles antique",
+        "work": "Dossier enseignant Jean-Claude Golvin, 2011",
+        "locus": "p. 13",
+        "url": "https://www.arretetonchar.fr/wp-content/uploads/2024/10/Arles-MDAA-13-Dossier-enseignant-Jean-Claude-Golvin-2011.pdf"
+      },
+      {
+        "kind": "modern",
+        "author": "Ministère de la Culture",
+        "work": "Base Mérimée, notice PA00081516 : Cirque romain de la presqu'île",
+        "url": "https://pop.culture.gouv.fr/notice/merimee/PA00081516"
+      },
+      {
+        "kind": "modern",
+        "author": "Site régional du tourisme Provence-Alpes-Côte d'Azur",
+        "work": "Le cirque romain, Arles",
+        "url": "https://provence-alpes-cotedazur.com/que-faire/culture-et-patrimoine/lieux/le-cirque-romain-arles-fr-2890827/"
+      }
+    ],
+    "scene": "arles"
   },
   {
     "id": "edit-de-caracalla",
