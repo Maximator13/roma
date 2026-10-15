@@ -17,6 +17,9 @@
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "assets": "node scripts/assets.ts",
+    "assets:publish": "node scripts/assets-publish.ts",
+    "assets:pull": "node scripts/assets-pull.ts",
     "check": "npm run check:style && npm run lint && npm run typecheck && npm run test"
   },
   "dependencies": {

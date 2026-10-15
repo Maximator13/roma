@@ -25,6 +25,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      - uses: actions/cache@v6
+        with:
+          path: public/assets
+          key: assets-${{ hashFiles('assets.manifest.json') }}
+          restore-keys: assets-
+      - run: npm run assets:pull
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
