@@ -13,7 +13,7 @@ import { eraIndexAt } from './timeline/keys.ts'
 import { isVisibleAt } from './timeline/layout.ts'
 import { Timeline } from './timeline/Timeline.tsx'
 import { animateView, viewForEvent } from './timeline/viewAnimation.ts'
-import { viewAround, xToYear } from './timeline/viewport.ts'
+import { clampViewport, viewAround, type Viewport } from './timeline/viewport.ts'
 import { ConsentBanner } from './ui/ConsentBanner.tsx'
 import { findScene, isPlayable } from './scenes/registry.ts'
 import { EraCaption, EventPanel, NotFoundPanel, PagePanel, ScenePanel, SceneShortcuts } from './ui/panels.tsx'
@@ -85,16 +85,29 @@ function useEraAccent() {
   }, [])
 }
 
-function useFocusOnSelectedEvent() {
+const FOCUS_TOLERANCE = 0.04
+const SCENE_SPAN = 60
+
+function focusTarget(route: Route): { view: Viewport; visible: (span: number) => boolean } | null {
+  if (route.name === 'event') {
+    const event = events.find((candidate) => candidate.id === route.id)
+    return event ? { view: viewForEvent(event), visible: (span) => isVisibleAt(event.importance, span) } : null
+  }
+  if (route.name === 'scene') {
+    const year = findScene(route.id)?.year
+    return year === undefined ? null : { view: clampViewport({ center: year, span: SCENE_SPAN }), visible: () => true }
+  }
+  return null
+}
+
+function useFocusOnSelection() {
   const route = useApp((state) => state.route)
   useEffect(() => {
-    if (route.name !== 'event') return
-    const event = events.find((candidate) => candidate.id === route.id)
-    if (!event) return
+    const target = focusTarget(route)
+    if (!target) return
     const { view } = useApp.getState()
-    const width = window.innerWidth
-    const inView = event.start >= xToYear(width * 0.1, view, width) && event.start <= xToYear(width * 0.6, view, width)
-    if (!inView || !isVisibleAt(event.importance, view.span)) animateView(viewForEvent(event), 1)
+    const centered = Math.abs(view.center - target.view.center) <= view.span * FOCUS_TOLERANCE
+    if (!centered || !target.visible(view.span)) animateView(target.view, 1)
   }, [route])
 }
 
@@ -151,7 +164,7 @@ export function App() {
   const eraIndex = useApp((state) => eraIndexAt(state.view.center, eras))
   useHashRoute()
   useEraAccent()
-  useFocusOnSelectedEvent()
+  useFocusOnSelection()
   useSceneKeys()
   const inScene = route.name === 'scene' && isPlayable(findScene(route.id))
   return (

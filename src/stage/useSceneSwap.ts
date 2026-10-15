@@ -3,13 +3,10 @@ import { useEffect, useState, type RefObject } from 'react'
 import { EASE, motionDuration } from '../core/motion.ts'
 import { findScene, isPlayable, preloadScene } from '../scenes/registry.ts'
 import { useApp } from '../store.ts'
-import { animateView } from '../timeline/viewAnimation.ts'
-import { clampViewport } from '../timeline/viewport.ts'
 
 const DIVE_SECONDS = 1.3
 const VEIL_IN_SECONDS = 0.45
 const VEIL_OUT_SECONDS = 0.9
-const SCENE_SPAN = 60
 
 function wait(seconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, seconds * 1000))
@@ -52,10 +49,6 @@ export function useSceneSwap(veil: RefObject<HTMLDivElement | null>) {
     if (shown === null || ready === shown) void fadeVeil(veil.current, 0, VEIL_OUT_SECONDS)
   }, [wanted, shown, ready, veil])
 
-  useEffect(() => {
-    const year = wanted ? findScene(wanted)?.year : undefined
-    if (year !== undefined) animateView(clampViewport({ center: year, span: SCENE_SPAN }), 1.2)
-  }, [wanted])
 
   return { shown, loading: shown !== null && ready !== shown, onReady: setReady }
 }

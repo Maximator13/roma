@@ -246,13 +246,13 @@ function EventMarker({ height }: { height: HeightSampler }) {
         <ringGeometry args={[0.45, 0.6, 48]} />
         <meshBasicMaterial color="#ffd27a" transparent opacity={0} side={DoubleSide} blending={AdditiveBlending} depthWrite={false} />
       </mesh>
-      <Billboard position={[0, 1.3, 0]}>
+      <Billboard position={[0, 2.1, 0]}>
         <Text
           ref={label}
           font={garamondItalicUrl}
-          fontSize={1.25}
+          fontSize={1.1}
           color="#ffe3a8"
-          outlineWidth={0.07}
+          outlineWidth={0.06}
           outlineColor="#1b130c"
           anchorX="center"
           anchorY="bottom"
