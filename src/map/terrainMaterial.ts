@@ -134,6 +134,10 @@ void main() {
   color += territoryColor * (romanLine * 1.5 + romanGlow * 0.3) * pulse * landBorder;
   color += secondaryColor * (rivalLine * 1.1 + (1.0 - smoothstep(0.0, 0.35, abs(rival - 0.5))) * 0.2) * landBorder;
 
+  vec2 cloudUv = vWorld.xz * 0.11 + vec2(time * 0.012, time * 0.004);
+  float clouds = noise(cloudUv) * 0.6 + noise(cloudUv * 2.3 + 7.0) * 0.3 + noise(cloudUv * 5.1 - 3.0) * 0.1;
+  color *= 1.0 - smoothstep(0.5, 0.78, clouds) * 0.28 * detail;
+
   vec2 edge = min(vUv, 1.0 - vUv) * vec2(${MAP_SIZE.width.toFixed(2)}, ${MAP_SIZE.depth.toFixed(2)});
   float mapEdge = smoothstep(0.0, 2.5, min(edge.x, edge.y));
 

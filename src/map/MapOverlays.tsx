@@ -10,7 +10,8 @@ import { cities } from '../data/cities.ts'
 import { events } from '../data/events.ts'
 import { itineraries } from '../data/itineraries.ts'
 import { places } from '../data/places.ts'
-import type { City, Itinerary } from '../data/schema.ts'
+import type { City, HistoricalEvent, Itinerary } from '../data/schema.ts'
+import { isVisibleAt } from '../timeline/layout.ts'
 import { useApp } from '../store.ts'
 import { project } from './geo.ts'
 import type { HeightSampler } from './reliefSampler.ts'
@@ -171,6 +172,79 @@ function EventMarker({ height }: { height: HeightSampler }) {
   )
 }
 
+const PIN_WINDOW = 0.07
+
+function EventPin({ event, lon, lat, height }: { event: HistoricalEvent; lon: number; lat: number; height: HeightSampler }) {
+  const group = useRef<Group>(null)
+  const label = useRef<{ fillOpacity: number; outlineOpacity: number } | null>(null)
+  const pin = useRef<Mesh>(null)
+  const opacity = useRef(0)
+  const position = useMemo(() => pointOnMap(lon, lat, height), [lon, lat, height])
+  const reducedMotion = useMemo(() => prefersReducedMotion(), [])
+
+  useFrame(({ camera }, delta) => {
+    const { view, route } = useApp.getState()
+    const selected = route.name === 'event' && route.id === event.id
+    const near = Math.abs(event.start - view.center) <= Math.max(3, view.span * PIN_WINDOW)
+    const target = !selected && near && isVisibleAt(event.importance, view.span) ? 1 : 0
+    opacity.current = fade(opacity.current, target, delta, reducedMotion)
+    const current = group.current
+    if (!current) return
+    current.visible = opacity.current > 0.01
+    current.scale.setScalar(camera.position.distanceTo(position) * LABEL_SCALE)
+    if (label.current) {
+      label.current.fillOpacity = opacity.current
+      label.current.outlineOpacity = opacity.current * 0.8
+    }
+    if (pin.current) (pin.current.material as MeshBasicMaterial).opacity = opacity.current
+  })
+
+  return (
+    <group ref={group} position={position} visible={false}>
+      <mesh ref={pin} rotation-x={-Math.PI / 2} rotation-z={Math.PI / 4}>
+        <planeGeometry args={[0.32, 0.32]} />
+        <meshBasicMaterial color="#ffc978" transparent opacity={0} side={DoubleSide} depthWrite={false} />
+      </mesh>
+      <Billboard position={[0, -0.35, 0]}>
+        <Text
+          ref={label}
+          font={garamondItalicUrl}
+          fontSize={0.72}
+          maxWidth={9}
+          textAlign="center"
+          color="#ffe7bd"
+          outlineWidth={0.06}
+          outlineColor="#1b130c"
+          anchorX="center"
+          anchorY="top"
+          fillOpacity={0}
+          outlineOpacity={0}
+        >
+          {event.title}
+        </Text>
+      </Billboard>
+    </group>
+  )
+}
+
+function EventPins({ height }: { height: HeightSampler }) {
+  const located = useMemo(
+    () =>
+      events.flatMap((event) => {
+        const place = places.find((candidate) => candidate.id === event.placeId)
+        return place ? [{ event, lon: place.lon, lat: place.lat }] : []
+      }),
+    [],
+  )
+  return (
+    <>
+      {located.map(({ event, lon, lat }) => (
+        <EventPin key={event.id} event={event} lon={lon} lat={lat} height={height} />
+      ))}
+    </>
+  )
+}
+
 function waypointTime(waypoint: Itinerary['waypoints'][number]): number {
   return waypoint.year + ((waypoint.month ?? 6) - 0.5) / 12
 }
@@ -282,6 +356,7 @@ export function MapOverlays({ height }: { height: HeightSampler }) {
   return (
     <>
       <CityLabels height={height} />
+      <EventPins height={height} />
       <EventMarker height={height} />
       {itineraries.map((itinerary) => (
         <ItineraryPath key={itinerary.id} itinerary={itinerary} height={height} />

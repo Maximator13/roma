@@ -20,6 +20,7 @@ test('capture the main screens', async ({ page }, testInfo) => {
   await showEra(page, 'République')
   await capture(page, 'republique', project)
   await page.keyboard.press('PageDown')
+  await capture(page, 'transition', project, 1300)
   await capture(page, 'haut-empire', project)
   await page.keyboard.press('PageDown')
   await capture(page, 'crise', project)
