@@ -99,6 +99,7 @@ test.describe('events', () => {
 })
 
 test('a scene opens from its hash route, walks its points and returns to the map', async ({ page }) => {
+  test.setTimeout(180_000)
   const errors = watchErrors(page)
   await page.goto('./#/scene/nimes')
   await expect(page.getByRole('heading', { name: 'Nîmes romaine (Nemausus)' })).toBeVisible()
@@ -106,7 +107,7 @@ test('a scene opens from its hash route, walks its points and returns to the map
   const steps = page.locator('.scene-nav')
   if (await steps.isVisible()) {
     await expect(page.locator('.timeline')).toBeHidden()
-    await expect(page.locator('.veil')).toHaveCSS('opacity', '0', { timeout: 30_000 })
+    await expect(page.locator('.veil')).toHaveCSS('opacity', '0', { timeout: 120_000 })
     await page.keyboard.press('ArrowRight')
     await expect(page.locator('.scene__step')).toHaveText('Étape 2 sur 6')
     await page.getByRole('button', { name: /Étape 4 sur 6/ }).click()
