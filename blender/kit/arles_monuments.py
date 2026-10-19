@@ -5,6 +5,7 @@ import random
 import bpy
 from mathutils import Matrix, Vector
 
+from .arles_details import raking_cornice, side_antefixes
 from .buildings import ASHLAR, TILES, VOID, WEATHERED, arched_wall, straight_moulding
 from .geometry import MeshBuilder, newell_normal, placement
 from .materials import linear_color, poly_haven_asset, principled_material, recolored
@@ -70,8 +71,12 @@ def weather(builder, seed=0, strength=0.14, low=1.6):
             factor *= 0.84 + 0.16 * min(max(bottom, 0.0) / max(low, 0.1), 1.0)
         streak = 0.5 + 0.5 * math.sin(sum(corner[0] + corner[1] for corner in corners) / len(corners) * 0.9 + seed)
         factor *= 0.95 + 0.05 * streak
+        green, blue = 0.98, 0.94
+        if bottom < low * 0.35 and abs(normal.z) < 0.5 and rng.random() < 0.6:
+            factor *= 0.9
+            green, blue = 1.02, 0.86
         current = builder.polygon_colors[index] or (1.0, 1.0, 1.0)
-        builder.polygon_colors[index] = (current[0] * factor, current[1] * factor * 0.98, current[2] * factor * 0.94)
+        builder.polygon_colors[index] = (current[0] * factor, current[1] * factor * green, current[2] * factor * blue)
     return builder
 
 
@@ -165,14 +170,38 @@ def theatre_cavea():
                 tinted(builder, (0.8, 0.77, 0.72), lambda frame=frame, width=width, z=z: builder.centered_box(
                     (0.0, 0.0, z + 0.1), (width, TREAD * 0.5, 0.2), WEATHERED, matrix=frame, bottom=False))
         angle += sweep
-    half_disc = [(ORCHESTRA * math.cos(math.pi + math.pi * i / 24), ORCHESTRA * math.sin(math.pi + math.pi * i / 24),
-                  0.0) for i in range(25)]
-    tinted(builder, (0.93, 0.86, 0.84), lambda: builder.oriented(half_disc, (0, 0, 1), "paving"))
-    tinted(builder, (0.93, 0.86, 0.84), lambda: builder.box((-ORCHESTRA, 0.0, -0.6), (ORCHESTRA, 1.2, 0.0), "paving",
-                                                              bottom=False))
+    for outer, inner, colour in ((8.0, 0.0, (0.64, 0.7, 0.6)), (14.5, 8.0, (0.9, 0.7, 0.66)),
+                                 (ORCHESTRA, 14.5, (0.97, 0.95, 0.9))):
+        first = len(builder.polygons)
+        for k in range(24):
+            a0, a1 = math.pi + math.pi * k / 24, math.pi + math.pi * (k + 1) / 24
+            quad = [(r * math.cos(a), r * math.sin(a), 0.03) for r, a in ((outer, a0), (outer, a1), (inner, a1),
+                                                                          (inner, a0))]
+            quad = quad if inner > 0 else quad[:3]
+            builder.face(builder.points(quad), "paving", False, [(x, y) for x, y, _ in quad])
+        builder.tint(first, colour)
+    tinted(builder, (0.8, 0.58, 0.54), lambda: builder.box((-ORCHESTRA, 0.0, -0.6), (ORCHESTRA, 1.2, 0.0), "paving",
+                                                             bottom=False))
+    start = (ORCHESTRA, 1.6)
+    slope = max((z + 0.6 - start[1]) / (r - start[0]) for r, z in profile if r > start[0] + 0.5)
+    crest = (top_radius, start[1] + slope * (top_radius - start[0]))
     for side in (-1, 1):
-        wall = [(side * r, 0.0, z) for r, z in outline]
-        builder.oriented(wall, (0, 1, 0), ROUGH)
+        for outline_wall in ([start, crest, (top_radius, -2.5), (ORCHESTRA, -2.5)],
+                             [(top_radius, top_z), (CAVEA - 1.0, top_z), (CAVEA - 1.0, -2.5), (top_radius, -2.5)]):
+            wall = [(side * r, 0.0, z) for r, z in outline_wall]
+            builder.oriented(wall, (0, 1, 0), ROUGH)
+            builder.oriented(list(reversed(wall)), (0, -1, 0), ROUGH)
+        (r0, z0), (r1, z1) = start, crest
+        top = [(side * r0, 0.35, z0 + 0.3), (side * r1, 0.35, z1 + 0.3), (side * r1, -0.85, z1 + 0.3),
+               (side * r0, -0.85, z0 + 0.3)]
+        builder.oriented(top, (0, 0, 1), ASHLAR)
+        for y in (0.35, -0.85):
+            face = [(side * r0, y, z0 - 0.05), (side * r1, y, z1 - 0.05), (side * r1, y, z1 + 0.3),
+                    (side * r0, y, z0 + 0.3)]
+            builder.oriented(face, (0, 1 if y > 0 else -1, 0), ASHLAR)
+        end = [(side * r1, 0.35, z1 + 0.3), (side * r1, -0.85, z1 + 0.3), (side * r1, -0.85, top_z),
+               (side * r1, 0.35, top_z)]
+        builder.oriented(end, (side, 0, 0), ROUGH)
     roof = [(top_radius - 0.2, top_z + 3.6), (CAVEA + 0.4, FACADE_TOP + 0.3)]
     for points in (roof, list(reversed(roof))):
         tinted(builder, (0.82, 0.74, 0.62), lambda points=points: builder.lathe(points, 28, TILES, smooth=False,
@@ -338,13 +367,13 @@ def arena_bay(width):
     half = width / 2
     opening = (width - 2.2) / 2
     lower, upper = ARENA_STOREY, ARENA_TOP
-    arched_wall(builder, -half, half, -1.2, 0.0, 0.0, lower - 1.1, [(0.0, opening, 6.6)], ROUGH, segments=7,
+    arched_wall(builder, -half, half, -1.2, 0.0, 0.0, lower - 1.1, [(0.0, opening, 6.6)], ROUGH, segments=12,
                 foundation=3.0)
     builder.merge(pilaster(1.1, lower - 1.4, 0.22, ASHLAR), placement(-half, 0.0, 0.3))
     builder.box((-half, -1.2, lower - 1.1), (half, -0.4, lower), WEATHERED, bottom=False)
     straight_moulding(builder, -half, half, lower - 1.1, simple_entablature_profile(1.1, 0.4), ASHLAR)
-    arched_wall(builder, -half, half, -1.2, 0.0, lower, upper - 1.1, [(0.0, opening, lower + 6.4)], ROUGH, segments=7,
-                sill=lower + 1.0)
+    arched_wall(builder, -half, half, -1.2, 0.0, lower, upper - 1.1, [(0.0, opening, lower + 6.4)], ROUGH,
+                segments=12, sill=lower + 1.0)
     builder.merge(column("corinthian", 0.85, upper - lower - 2.2, detail="low", material=ASHLAR, arc=ENGAGED_HALF),
                   placement(-half, 0.05, lower + 1.0))
     builder.box((-half, -1.2, upper - 1.1), (half, -0.4, upper), WEATHERED, bottom=False)
@@ -354,18 +383,19 @@ def arena_bay(width):
     for x in (-width / 4, width / 4):
         builder.box((x - 0.22, 0.0, ATTIC_TOP - 1.05), (x + 0.22, 0.6, ATTIC_TOP - 0.45), ASHLAR)
         builder.box((x - 0.18, 0.0, upper + 0.15), (x + 0.18, 0.42, upper + 0.45), ASHLAR)
-        builder.lathe([(0.09, upper + 0.45), (0.07, MAST_TOP)], 5, "dark_wood", smooth=True,
-                      matrix=placement(x, 0.34, 0.0))
+        tinted(builder, (0.5, 0.36, 0.25), lambda x=x: builder.lathe([(0.09, upper + 0.45), (0.07, MAST_TOP)], 5,
+                                                                      WEATHERED, smooth=True,
+                                                                      matrix=placement(x, 0.34, 0.0)))
     vault = [(-3.2 + 2.0 * math.cos(math.pi * i / 8), 7.0 + 2.0 * math.sin(math.pi * i / 8)) for i in range(9)]
     builder.surface([[(x, y, z) for y, z in vault] for x in (-half, half)], WEATHERED)
-    builder.box((-half, -5.2, -0.2), (half, -1.2, 0.0), "paving", bottom=False)
+    builder.box((-half, -5.2, -0.2), (half, -1.2, 0.0), WEATHERED, bottom=False)
     builder.box((-half, -5.2, lower - 0.3), (half, -1.2, lower), WEATHERED, bottom=False)
     builder.box((-half, -5.2, upper - 0.6), (half, -1.2, upper), WEATHERED)
     arched_wall(builder, -half, half, -6.4, -5.2, 0.0, lower - 0.3, [(0.0, 1.3, 3.4)], WEATHERED, segments=4)
     arched_wall(builder, -half, half, -6.4, -5.2, lower - 0.3, upper, [(0.0, 1.2, lower + 3.0)], WEATHERED, segments=4)
     builder.box((-1.4, -7.0, 0.0), (1.4, -6.3, 4.7), VOID, bottom=False)
     builder.box((-1.3, -7.0, lower), (1.3, -6.3, lower + 4.2), VOID, bottom=False)
-    builder.box((-half, -6.4, ATTIC_TOP - 1.3), (half, -1.0, ATTIC_TOP - 1.0), "paving", bottom=False)
+    builder.box((-half, -6.4, ATTIC_TOP - 1.3), (half, -1.0, ATTIC_TOP - 1.0), WEATHERED, bottom=False)
     builder.box((-half, -6.4, upper), (half, -5.2, ATTIC_TOP - 1.3), WEATHERED, bottom=False, top=False)
     return weather(builder, 11)
 
@@ -543,10 +573,19 @@ def temple(width=15.0, length=27.0, column_height=9.6, podium_height=3.0):
                       y=front_row + 0.7)
     rise = hw * math.tan(math.radians(15))
     gable_roof(builder, back + 0.2, front_row + 1.0, hw + 0.5, top + 1.6, top + 1.6 + rise, TILES, along_axis="y",
-               imbrex=False)
+               imbrex=True)
     for y, facing in ((front_row + 1.0, 1), (back + 0.2, -1)):
         tri = [(-hw - 0.3, y, top + 1.6), (hw + 0.3, y, top + 1.6), (0.0, y, top + 1.6 + rise)]
         builder.oriented(tri, (0, facing, 0), STONE)
+        inner = [(-hw + 0.6, y + facing * 0.02, top + 1.85), (hw - 0.6, y + facing * 0.02, top + 1.85),
+                 (0.0, y + facing * 0.02, top + 1.45 + rise)]
+        tinted(builder, (0.82, 0.8, 0.76), lambda inner=inner, facing=facing: builder.oriented(inner, (0, facing, 0),
+                                                                                              STONE))
+        raking_cornice(builder, hw + 0.45, y + facing * 0.05, top + 1.55, top + 1.75 + rise, facing)
+    for side in (-1, 1):
+        side_antefixes(builder, side * (hw + 0.5), back + 0.2, front_row + 1.0, top + 1.6, side)
+    for z in (top + 0.35, top + 0.7):
+        builder.box((-hw - 0.1, front_row + 0.7, z), (hw + 0.1, front_row + 0.74, z + 0.04), STONE, bottom=False)
     return weather(builder, 13), frames, column_height, column_d
 
 
@@ -583,15 +622,28 @@ def augustus_gate():
     return weather(builder, 17)
 
 
-def horreum(length=42.0, depth=14.0, height=7.0, seed=0, doors_both=False):
+def horreum(length=42.0, depth=14.0, height=7.0, seed=0, doors_both=False, portico=False, wall=None):
     rng = random.Random(seed)
     builder = MeshBuilder()
     hl, hd = length / 2, depth / 2
     builder.box((-hl, -hd, -2.5), (hl, hd, 1.2), ROUGH, bottom=False, top=False)
-    wall = rng.choice(["plaster", "plaster_cream", "plaster_ochre"])
+    wall = wall or rng.choice(["plaster", "plaster_cream", "plaster_ochre"])
     builder.box((-hl, -hd, 1.2), (hl, hd, height), wall, bottom=False, top=False)
     rise = hd * 0.42
     gable_roof(builder, -hl - 0.4, hl + 0.4, hd + 0.6, height, height + rise, TILES, along_axis="x", imbrex=False)
+    if portico:
+        front = -hd - 3.6
+        slope = [(-hl, -hd, 4.7), (hl, -hd, 4.7), (hl, front - 0.4, 3.75), (-hl, front - 0.4, 3.75)]
+        builder.oriented(slope, (0, -0.3, 1), TILES)
+        first = len(builder.polygons)
+        builder.oriented(list(reversed(slope)), (0, 0.3, -1), TILES)
+        builder.tint(first, (0.5, 0.42, 0.36))
+        builder.box((-hl, front - 0.25, 3.4), (hl, front + 0.25, 3.8), ROUGH, bottom=True)
+        builder.box((-hl, front - 0.3, -0.6), (hl, -hd, 0.12), ROUGH, bottom=False)
+        count = int(length / 4.2)
+        for index in range(count + 1):
+            x = -hl + 0.25 + (length - 0.5) * index / count
+            builder.box((x - 0.25, front - 0.25, 0.12), (x + 0.25, front + 0.25, 3.4), ROUGH, bottom=False, top=False)
     builder.paint(TILES, rng.choice([(1.0, 1.0, 1.0), (0.92, 0.86, 0.8), (0.86, 0.78, 0.72)]))
     for x in (-hl, hl):
         tri = [(x, -hd, height), (x, hd, height), (x, 0.0, height + rise)]
@@ -600,13 +652,13 @@ def horreum(length=42.0, depth=14.0, height=7.0, seed=0, doors_both=False):
     for index in range(count):
         x = -hl + length * (index + 0.5) / count
         builder.box((x - 1.1, -hd - 0.04, 0.0), (x + 1.1, -hd, 3.0), VOID, bottom=False)
-        builder.box((x - 1.35, -hd - 0.08, 3.0), (x + 1.35, -hd - 0.02, 3.3), ASHLAR, bottom=False)
+        builder.box((x - 1.35, -hd - 0.08, 3.0), (x + 1.35, -hd - 0.02, 3.3), ROUGH, bottom=False)
         builder.box((x - 0.35, hd, height - 2.0), (x + 0.35, hd + 0.04, height - 1.2), VOID, bottom=False)
         if doors_both and index % 2 == 0:
             builder.box((x - 1.1, hd, 0.0), (x + 1.1, hd + 0.04, 3.0), VOID, bottom=False)
         if index < count - 1:
             bx = x + length / count / 2
-            builder.box((bx - 0.35, -hd - 0.45, -0.5), (bx + 0.35, -hd, height - 0.3), ASHLAR, bottom=False)
+            builder.box((bx - 0.35, -hd - 0.45, -0.5), (bx + 0.35, -hd, height - 0.3), ROUGH, bottom=False)
     return builder
 
 

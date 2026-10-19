@@ -12,6 +12,8 @@ from mathutils import Matrix, Vector
 
 from kit import pantheon_architecture as arch
 from kit import pantheon_city as city
+from kit import pantheon_detail as detail
+from kit import pantheon_refine as refine
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.life import LEATHER
 from kit.nimes_figures import WALKERS, Look, person
@@ -29,6 +31,10 @@ SHADOWLESS = {"rotonde_sol", "porche_sol", "place_sol", "ville_eau"}
 OCCLUSION_FLOOR = 0.55
 OCCLUSION_DECADES = 2.2
 BAKED = ("rotonde", "rotonde_sol", "porche", "porche_sol")
+FAR_RATIO = 0.35
+PROP_RATIO = 0.5
+LIGHTER = {"prop_lectica", "prop_lectica_parked", "prop_musicians", "prop_children_hoop", "prop_children_ball",
+           "prop_donkey", "fig_seller"}
 P = arch.PIAZZA
 F = arch.PORTICO_FLOOR
 
@@ -96,6 +102,11 @@ class Scene:
         if matrices:
             self.library.place(key, build, self.collection, self.root(group), matrices, cast_shadow, occlusion)
 
+    def reduced(self, key, build, ratio, occlusion=True):
+        target = f"{key}_lod"
+        decimated(self.library, target, self.library.mesh(key, build, occlusion), ratio)
+        return target
+
     def add(self, key, matrix):
         self.placements.setdefault(key, []).append(matrix)
 
@@ -106,7 +117,7 @@ def axis(point):
 
 def build_architecture(scene):
     walls, floor, columns, statues, aediculae, small_statues, dome_info = arch.interior()
-    scene.unique("rotonde", walls, W)
+    scene.unique("rotonde", detail.rotunda_trim(walls), W)
     scene.unique("rotonde_sol", floor, W, occlusion=False)
     builds = {
         "column_giallo": lambda: arch.roman_column(arch.INNER_D, arch.ORDER_TOP, "giallo", flutes=24),
@@ -115,8 +126,8 @@ def build_architecture(scene):
         "aedicula_segmental": lambda: arch.aedicula(True, "porphyry"),
         "porch_grey": lambda: arch.roman_column(arch.PORCH_D, arch.PORCH_COLUMN, "granite_grey", segments=20),
         "porch_rose": lambda: arch.roman_column(arch.PORCH_D, arch.PORCH_COLUMN, "granite_rose", segments=20),
-        "portico_column": lambda: arch.roman_column(arch.PORTICO_D, arch.PORTICO_COLUMN, "granite_grey", detail="low",
-                                                    segments=8),
+        "portico_column": lambda: arch.roman_column(arch.PORTICO_D, arch.PORTICO_COLUMN, "granite_grey", detail="medium",
+                                                    segments=12),
     }
     scene.instances("rotonde", "column_giallo", builds["column_giallo"], [W @ frame for frame in columns["giallo"]])
     scene.instances("rotonde", "column_pavonazzetto", builds["column_pavonazzetto"],
@@ -130,19 +141,23 @@ def build_architecture(scene):
     outside = MeshBuilder()
     arch.exterior_dome(outside)
     scene.unique("exterieur", outside, W)
-    porch, porch_floor, porch_columns, porch_statues = arch.porch()
-    scene.unique("porche", porch, W)
+    porch, porch_floor, porch_columns, porch_statues = refine.porch()
+    scene.unique("porche", detail.door_detail(porch), W)
+    scene.unique("porche", refine.niche_pedestals(), W)
     scene.unique("porche_sol", porch_floor, W, occlusion=False)
     letters, inscription_info = arch.inscription_builder()
     scene.unique("porche", letters, W, occlusion=False)
     for key, frames in porch_columns.items():
         scene.instances("porche", key, builds[key], [W @ frame for frame in frames])
     for frame in porch_statues:
-        scene.add("statue_colossal_a", W @ frame @ Matrix.Scale(2.0, 4))
-    square, square_floor, portico_frames = arch.piazza()
+        scene.add("statue_colossal_a", W @ Matrix.Translation((0.0, 0.0, 1.2)) @ frame @ Matrix.Scale(2.7, 4))
+    square, square_floor, portico_frames = refine.piazza()
     scene.unique("place", square, W)
     scene.unique("place_sol", square_floor, W, occlusion=False)
-    scene.instances("place", "portico_column", builds["portico_column"], [W @ frame for frame in portico_frames])
+    scene.instances("place", scene.reduced("portico_column", builds["portico_column"], 0.55), None,
+                    [W @ frame for frame in portico_frames])
+    scene.instances("place", "prop_antefix", detail.antefix, [W @ frame for frame in detail.antefix_frames()],
+                    cast_shadow=False, occlusion=False)
     spots = [(frame.translation.x, frame.translation.y, arch.INNER_D / 2) for frames in columns.values() for frame in frames]
     spots += [(frame.translation.x, frame.translation.y, arch.PORCH_D / 2) for frames in porch_columns.values()
               for frame in frames]
@@ -161,11 +176,12 @@ def build_city(scene, rng):
     zones = city.site_zones(AXIS)
     insulae = city.insula_frames(zones, rng)
     for key, frames in insulae.items():
-        scene.instances("ville", key, city.INSULAE[key], frames, cast_shadow=True)
+        scene.instances("ville", key, detail.dressed(city.INSULAE[key], len(key)), frames, cast_shadow=True)
     trees = city.tree_frames(zones, rng)
     for key, frames in trees.items():
-        scene.instances("vegetation", key, city.TREES[key], frames, cast_shadow=not key.startswith("tree_far"),
-                        occlusion=False)
+        far = key.startswith("tree_far")
+        name = key if far else scene.reduced(key, city.TREES[key], 0.6, occlusion=False)
+        scene.instances("vegetation", name, city.TREES[key], frames, cast_shadow=not far, occlusion=False)
     return insulae, {"monuments": names, "insulae": {key: len(value) for key, value in insulae.items()},
                      "trees": {key: len(value) for key, value in trees.items()}}
 
@@ -174,9 +190,9 @@ def markers():
     niche_eye = arch.polar(9.5, math.radians(60.0), 1.7)
     niche_target = arch.polar(20.6, math.radians(79.0), 5.6)
     local = {
-        "le-porche": ((-3.5, 41.0, 1.7), (-6.0, 30.0, 12.0)),
+        "le-porche": ((0.0, 92.5, P + 1.7), (0.0, 44.0, 9.0)),
         "la-rotonde": ((0.0, 9.0, 1.7), (0.0, -1.5, arch.OCULUS_HEIGHT)),
-        "l-oculus": ((-2.0, 5.0, 1.7), (2.0, 24.0, 4.5)),
+        "l-oculus": ((-2.0, -6.0, 1.7), (1.0, 18.0, 9.0)),
         "les-niches": (tuple(niche_eye), tuple(niche_target)),
         "vue-d-ensemble": ((150.0, 265.0, 150.0), (0.0, 30.0, 8.0)),
     }
@@ -311,7 +327,7 @@ def segment_distance(point, a, b):
     return math.hypot(point[0] - ax - t * dx, point[1] - ay - t * dy)
 
 
-def crowd_area(scene, rng, count, sample, z_of, clear, face=None, cluster=(1, 4)):
+def crowd_area(scene, rng, count, sample, z_of, clear, face=None, cluster=(1, 4), variant=lambda x, y: ""):
     placed = 0
     attempts = 0
     while placed < count and attempts < count * 60:
@@ -328,7 +344,7 @@ def crowd_area(scene, rng, count, sample, z_of, clear, face=None, cluster=(1, 4)
             if not clear(px, py):
                 continue
             turn = math.atan2(-(x - px), y - py) if size > 1 else heading
-            scene.add(pick(rng, FESTIVE), W @ placement(px, py, z_of(px, py), turn + rng.uniform(-0.35, 0.35)))
+            scene.add(pick(rng, FESTIVE) + variant(px, py), W @ placement(px, py, z_of(px, py), turn + rng.uniform(-0.35, 0.35)))
             placed += 1
     return placed
 
@@ -336,7 +352,7 @@ def crowd_area(scene, rng, count, sample, z_of, clear, face=None, cluster=(1, 4)
 def build_life(scene, rng, points):
     lines = [((eye.x, eye.y), (target.x, target.y)) for eye, target in
              ((W.inverted() @ eye, W.inverted() @ target) for key, (eye, target) in points.items()
-              if key in ("le-porche", "la-rotonde", "les-niches"))]
+              if key in ("le-porche", "la-rotonde", "l-oculus", "les-niches"))]
     eyes = [(eye.x, eye.y) for eye in (W.inverted() @ value[0] for value in points.values())]
     cones = [((eye.x, eye.y), math.atan2(target.y - eye.y, target.x - eye.x)) for eye, target in
              ((W.inverted() @ value[0], W.inverted() @ value[1]) for value in points.values())]
@@ -358,17 +374,99 @@ def build_life(scene, rng, points):
         return True
     porch_columns = [(x, y) for x in arch.FRONT_X for y in (arch.ROWS[0],)] + [(x, y) for x in arch.INNER_X
                                                                                for y in arch.ROWS[1:]]
+    obstacles = []
+
+    def fits(x, y, radius):
+        if y < arch.BLOCK_SLAB and not (math.hypot(x, y) < arch.R - 0.9 or abs(x) < arch.HALF_OPENING - 0.4):
+            return False
+        if any(segment_distance((x, y), a, b) < radius + 1.0 for a, b in lines):
+            return False
+        if any(math.hypot(x - ex, y - ey) < radius + 3.0 for ex, ey in eyes):
+            return False
+        for line in route_lines:
+            for a, b in zip(line[:-1], line[1:]):
+                if segment_distance((x, y), a[:2], b[:2]) < radius + 0.5:
+                    return False
+        return all(math.hypot(x - ox, y - oy) > radius + r for ox, oy, r in obstacles)
+
+    def put(key, x, y, z, turn, radius):
+        if not fits(x, y, radius):
+            return 0
+        scene.add(key + (far(x, y) if key in LIGHTER else ""), W @ placement(x, y, z, turn))
+        obstacles.append((x, y, radius))
+        return 1
+
+    def facing(x, y, cx, cy):
+        return math.atan2(-(cx - x), cy - y)
+
+    def far(x, y):
+        return "_far" if min(math.hypot(x - ex, y - ey) for ex, ey in eyes) > 14.0 else ""
+
+    def clear(x, y):
+        return open_space(x, y) and all(math.hypot(x - ox, y - oy) > r + 0.45 for ox, oy, r in obstacles)
     counts = {}
+    props = 0
+    stalls = [(27.6, y) for y in (58.0, 66.0, 92.0, 100.0, 126.0)] + [(-27.6, y) for y in (62.0, 70.0, 104.0, 112.0)]
+    for index, (x, y) in enumerate(stalls):
+        side = 1 if x > 0 else -1
+        if put(("prop_stall_a", "prop_stall_b", "prop_stall_c")[index % 3], x, y, P, -side * math.pi / 2, 2.0):
+            props += 1
+            props += put("prop_goods_a" if index % 2 else "prop_goods_b", x + side * 0.2, y + 3.7, P,
+                         -side * math.pi / 2 + rng.uniform(-0.3, 0.3), 1.3)
+            if index % 3 == 1:
+                props += put("prop_donkey", x - side * 1.2, y - 3.4, P, math.pi / 2 * side + rng.uniform(-0.3, 0.3), 1.0)
+    for key, x, y, turn, radius in (("prop_lectica", -3.5, 122.0, math.pi, 2.6), ("prop_lectica", 11.0, 84.0, 0.2, 2.6),
+                                    ("prop_lectica_parked", -12.5, 53.5, math.pi / 2, 2.6),
+                                    ("prop_musicians", -7.0, 64.0, 0.0, 1.8),
+                                    ("prop_children_hoop", 8.0, 74.0, 0.5, 1.4),
+                                    ("prop_children_hoop", -14.0, 96.0, -2.0, 1.4),
+                                    ("prop_children_ball", 13.0, 112.0, 0.3, 1.6),
+                                    ("prop_children_ball", -23.0, 84.0, 1.0, 1.6),
+                                    ("prop_dog", 3.5, 58.0, 1.0, 0.6), ("prop_dog_dark", -2.5, 102.0, -2.0, 0.6),
+                                    ("prop_dog", 14.0, 128.0, 0.4, 0.6), ("prop_dog_dark", -24.0, 120.0, 2.0, 0.6),
+                                    ("prop_pigeons", 4.0, 90.0, 0.0, 1.7), ("prop_pigeons", -12.0, 138.0, 1.0, 1.7),
+                                    ("prop_pigeons", 21.0, 72.0, 2.0, 1.7),
+                                    ("fig_seller", 5.0, 66.0, -2.4, 0.5), ("fig_seller", -10.0, 88.0, 1.3, 0.5),
+                                    ("fig_seller", 20.0, 104.0, 2.2, 0.5), ("fig_seller", -4.0, 140.0, -0.6, 0.5)):
+        props += put(key, x, y, P, turn, radius)
+    audience = 0
+    for k in range(7):
+        angle = math.radians(-60 + 20 * k)
+        x, y = -7.0 + 3.0 * math.sin(angle), 64.0 + 3.0 * math.cos(angle)
+        if clear(x, y):
+            scene.add(pick(rng, FESTIVE) + far(x, y), W @ placement(x, y, P, facing(x, y, -7.0, 64.0) + rng.uniform(-0.2, 0.2)))
+            audience += 1
+    for side in (-1, 1):
+        for door in range(45, 136, 18):
+            for offset in (-1.75, 1.75):
+                props += put("prop_laurel", side * 37.45, door + offset, F, rng.uniform(0, 2 * math.pi), 0.35)
+    counts["props"] = props
+    counts["audience"] = audience
     counts["place"] = crowd_area(scene, rng, 110, lambda: (rng.uniform(-27.0, 27.0), rng.uniform(50.0, 160.0)),
-                                 lambda x, y: P, open_space,
+                                 lambda x, y: P, clear,
                                  lambda x, y: math.atan2(x, 44.0 - y) + rng.uniform(-1.2, 1.2),
-                                 (1, 5))
-    counts["portiques"] = crowd_area(scene, rng, 18, lambda: (float(rng.choice([-1, 1])) * rng.uniform(33.2, 36.8),
-                                                              rng.uniform(36.0, 160.0)), lambda x, y: F, open_space)
+                                 (1, 5), far)
+    counts["portiques"] = crowd_area(scene, rng, 20, lambda: (float(rng.choice([-1, 1])) * rng.uniform(33.2, 36.8),
+                                                              rng.uniform(36.0, 160.0)), lambda x, y: F,
+                                     lambda x, y: clear(x, y) and abs(abs(x) - arch.PORTICO_LINE) > 1.0
+                                     and abs(x) < arch.PORTICO_BACK - 0.5, variant=far)
     counts["porche"] = crowd_area(
-        scene, rng, 22, lambda: (rng.uniform(-15.5, 15.5), rng.uniform(32.6, 44.6)), lambda x, y: 0.0,
+        scene, rng, 24, lambda: (rng.uniform(-15.5, 15.5), rng.uniform(32.6, 44.6)), lambda x, y: 0.0,
         lambda x, y: open_space(x, y) and min(math.hypot(x - cx, y - cy) for cx, cy in porch_columns) > 1.25
-        and not (abs(abs(x) - 11.125) < 2.4 and y < 33.0), None, (1, 3))
+        and not (abs(abs(x) - 11.125) < 2.4 and y < 33.0), None, (1, 3), far)
+    worship = 0
+    for key, x, y, turn in (("fig_priest", 0.0, -19.8, math.pi), ("fig_orans", -1.4, -18.6, math.pi + 0.1),
+                            ("fig_orans", 1.4, -18.5, math.pi - 0.1), ("fig_toga", -0.6, -14.8, math.pi),
+                            ("fig_matron", 0.9, -14.6, math.pi + 0.2), ("fig_girl", 1.8, -15.2, math.pi)):
+        worship += put(key, x, y, 0.0, turn, 0.35)
+    gazers = ["fig_gazer_toga", "fig_gazer_point", "fig_gazer_woman", "fig_gazer_girl"]
+    for index, (x, y, cx, cy) in enumerate(((-3.2, 20.5, 0.0, 0.0), (-2.2, 21.5, 0.0, 0.0), (3.6, 19.8, 0.0, 0.0),
+                                            (3.9, 20.2, 0.0, 0.0), (5.5, -2.0, 0.0, 0.0), (-4.8, 3.5, 0.0, 0.0),
+                                            (2.0, -6.0, 0.0, 0.0), (-6.0, -4.0, 0.0, 0.0), (6.2, -1.2, 0.0, 0.0),
+                                            (-10.5, 12.0, 0.0, 25.0), (-11.3, 12.8, 0.0, 25.0), (11.0, 9.0, 0.0, 25.0),
+                                            (-6.5, -12.0, 0.0, 0.0), (7.5, -11.0, 0.0, 0.0))):
+        worship += put(gazers[index % 4], x, y, 0.0, facing(x, y, cx, cy) + rng.uniform(-0.25, 0.25), 0.35)
+    counts["rotonde_groupes"] = worship
     stair = 0
     for j in (2, 4, 5):
         for _ in range(2):
@@ -384,17 +482,24 @@ def build_life(scene, rng, points):
         radius = math.sqrt(rng.uniform(4.0 ** 2, 17.0 ** 2))
         angle = rng.uniform(0, 2 * math.pi)
         return radius * math.sin(angle), radius * math.cos(angle)
-    counts["rotonde"] = crowd_area(scene, rng, 32, rotunda_sample, lambda x, y: 0.0,
-                                   lambda x, y: open_space(x, y) and math.hypot(x, y) < 17.5,
-                                   lambda x, y: math.atan2(x, -y) + rng.uniform(-0.8, 0.8), (1, 3))
+    counts["rotonde"] = crowd_area(scene, rng, 24, rotunda_sample, lambda x, y: 0.0,
+                                   lambda x, y: clear(x, y) and math.hypot(x, y) < 17.5,
+                                   lambda x, y: math.atan2(x, -y) + rng.uniform(-0.8, 0.8), (1, 3), far)
     for x, y in ((1.8, 26.0), (-1.2, 27.5), (2.9, 23.0)):
         scene.add(pick(rng, FESTIVE), W @ placement(x, y, 0.0, math.pi + rng.uniform(-0.5, 0.5)))
     counts["passage"] = 3
     builds = {key: (lambda spec=spec: person(spec)) for key, spec in {**CROWD, **STATUES}.items()}
+    builds.update({**detail.FIGURES, **detail.PROPS, **detail.FLAT_PROPS})
     placed = {}
     for key, matrices in scene.placements.items():
-        group = "statues" if key.startswith("statue") else "foule"
-        scene.instances(group, key, builds[key], matrices, cast_shadow=True, occlusion=key.startswith("statue"))
+        group = "statues" if key.startswith("statue") else ("decor" if key.startswith("prop") else "foule")
+        flat = key in detail.FLAT_PROPS
+        occlusion = (key.startswith("statue") or group == "decor") and not flat
+        if key.endswith("_far"):
+            base = key.removesuffix("_far")
+            decimated(scene.library, key, scene.library.mesh(base, builds[base], occlusion),
+                      PROP_RATIO if base in LIGHTER else FAR_RATIO)
+        scene.instances(group, key, builds.get(key), matrices, cast_shadow=not flat, occlusion=occlusion)
         placed[key] = len(matrices)
     root = scene.root("life")
     for index, (key, spec) in enumerate(WALKERS.items()):
@@ -404,6 +509,21 @@ def build_life(scene, rng, points):
     triangles = {key: scene.library.builders[key].triangle_count() for key in list(CROWD)[:3] + list(WALKERS)[:2]
                  if key in scene.library.builders}
     return counts, placed, triangles
+
+
+def decimated(library, key, source, ratio):
+    if key in library.meshes:
+        return library.meshes[key]
+    holder = bpy.data.objects.new(f"{key}_source", source)
+    bpy.context.scene.collection.objects.link(holder)
+    modifier = holder.modifiers.new("lod", "DECIMATE")
+    modifier.ratio = ratio
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    mesh = bpy.data.meshes.new_from_object(holder.evaluated_get(depsgraph))
+    mesh.name = key
+    bpy.data.objects.remove(holder)
+    library.meshes[key] = mesh
+    return mesh
 
 
 def place_atmosphere(scene, insulae, rng):
@@ -421,7 +541,7 @@ def place_atmosphere(scene, insulae, rng):
 
 
 def weathering(scene):
-    settings = {"exterieur": (0.14, 0.18), "porche": (0.08, 0.12), "place": (0.1, 0.16), "ville": (0.16, 0.0),
+    settings = {"exterieur": (0.14, 0.05), "porche": (0.08, 0.12), "place": (0.1, 0.05), "ville": (0.16, 0.0),
                 "rotonde": (0.05, 0.0), "place_sol": (0.07, 0.0), "porche_sol": (0.06, 0.0)}
     for group, (strength, grime) in settings.items():
         if group in scene.statics:
@@ -568,7 +688,8 @@ def render_previews(options, views, sun):
     settings = {"aerial": (30.0, 0.0, False, 1.0), "porche": (16.0, 0.6, False, 1.0), "place": (22.0, 0.0, False, 1.0),
                 "facade": (24.0, 0.0, False, 1.0), "rotonde": (17.0, 0.9, True, 1.0), "oculus": (20.0, 0.9, True, gloom),
                 "niches": (20.0, 0.9, True, 0.7), "abside": (15.0, 0.9, True, 0.7),
-                "entree": (22.0, 0.9, True, gloom), "porte": (22.0, 0.3, True, 1.0)}
+                "entree": (22.0, 0.9, True, gloom), "porte": (22.0, 0.3, True, 1.0),
+                "portique": (24.0, 0.0, False, 1.0)}
     timings = {}
     for name in names:
         eye, target = views[name]
@@ -598,6 +719,7 @@ def preview_views(points):
         "porte": (axis((0.5, 26.0, 1.7)), axis((0.5, 60.0, 4.0))),
         "facade": (axis((5.0, 96.0, P + 1.7)), axis((0.0, 44.0, 16.5))),
         "abside": (axis((4.0, 15.0, 1.7)), axis((-3.0, -21.0, 13.5))),
+        "portique": (axis((-20.0, 66.0, P + 1.7)), axis((-32.25, 84.0, 9.0))),
     }
     return views
 
@@ -613,6 +735,7 @@ def main():
         return
     started = time.perf_counter()
     bpy.ops.wm.read_factory_settings(use_empty=True)
+    refine.install_marbles()
     tiles, credits = build_library(CACHE)
     scene = Scene(tiles)
     rng = np.random.default_rng(129)

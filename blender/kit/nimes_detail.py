@@ -15,6 +15,8 @@ WALL_MATERIALS = {"plaster", "weathered_ashlar", "lens_ashlar", "lens_smooth", "
 ROOF_MATERIALS = {"terracotta_tiles", "roof_flat", "roof_tiles"}
 CUTS = (0.1, 1.25)
 DIRT = np.array([0.66, 0.58, 0.48])
+MOSS = np.array([0.70, 0.78, 0.56])
+WET = np.array([0.66, 0.66, 0.64])
 TERRACOTTA_POT = (0.70, 0.42, 0.28)
 LEAF = (0.36, 0.46, 0.22)
 SHOP_INSIDE = (0.22, 0.17, 0.12)
@@ -26,7 +28,7 @@ HEMISPHERE = np.array([(0.0, 0.0, 1.0)] + [(math.cos(a) * 0.82, math.sin(a) * 0.
 SKIP_OCCLUSION = {"water", "shadow_void", "velum_linen"}
 
 
-def split_vertical(builder, cuts=CUTS, materials=WALL_MATERIALS, min_width=1.6):
+def split_vertical(builder, cuts=CUTS, materials=WALL_MATERIALS, min_width=1.6, spacing=None):
     slots = {index for index, name in enumerate(builder.materials) if name in materials}
     polygons, materials_out, smooth_out, uvs_out, colors_out = [], [], [], [], []
     for indices, material, smooth, uvs, color in zip(builder.polygons, builder.polygon_materials,
@@ -36,7 +38,7 @@ def split_vertical(builder, cuts=CUTS, materials=WALL_MATERIALS, min_width=1.6):
         if material in slots and len(indices) == 4 and uvs is None:
             corners = [builder.positions[index] for index in indices]
             if abs(newell_normal(corners).z) < 0.05:
-                replaced = split_quad(builder, indices, cuts, min_width)
+                replaced = split_quad(builder, indices, cuts, min_width, spacing)
         for piece in replaced or [indices]:
             polygons.append(piece)
             materials_out.append(material)
@@ -51,11 +53,11 @@ def split_vertical(builder, cuts=CUTS, materials=WALL_MATERIALS, min_width=1.6):
     return builder
 
 
-def split_quad(builder, indices, cuts, min_width):
+def split_quad(builder, indices, cuts, min_width, spacing=None):
     zs = [builder.positions[index][2] for index in indices]
     low, high = min(zs), max(zs)
     inner = [cut for cut in cuts if low + 0.05 < cut < high - 0.05]
-    if not inner:
+    if not inner and spacing is None:
         return None
     for shift in range(4):
         order = [indices[(shift + k) % 4] for k in range(4)]
@@ -75,7 +77,17 @@ def split_quad(builder, indices, cuts, min_width):
         rights.append(builder.point(b.lerp(c, t)))
     lefts.append(order[3])
     rights.append(order[2])
-    return [(lefts[k], rights[k], rights[k + 1], lefts[k + 1]) for k in range(len(lefts) - 1)]
+    columns = max(int(math.ceil((b - a).length / spacing)), 1) if spacing else 1
+    if columns == 1:
+        if not inner:
+            return None
+        return [(lefts[k], rights[k], rights[k + 1], lefts[k + 1]) for k in range(len(lefts) - 1)]
+    rows = []
+    for left, right in zip(lefts, rights):
+        start, end = Vector(builder.positions[left]), Vector(builder.positions[right])
+        rows.append([left] + [builder.point(start.lerp(end, j / columns)) for j in range(1, columns)] + [right])
+    return [(rows[k][j], rows[k][j + 1], rows[k + 1][j + 1], rows[k + 1][j]) for k in range(len(rows) - 1)
+            for j in range(columns)]
 
 
 def smooth_noise(points, scale, seed):
@@ -118,6 +130,10 @@ def weather(mesh, heights=None, seed=0, walls=True, roofs=True, foliage=False):
         t = 1.0 - (1.0 - t) * upright
         stain = 1.0 + 0.09 * (smooth_noise(points, 0.6, seed) - 0.5)
         factor = (DIRT[None, :] + (1 - DIRT[None, :]) * t[:, None]) * stain[:, None]
+        damp = np.clip(1.0 - height / 0.7, 0.0, 1.0) * upright
+        patch = np.clip((smooth_noise(points, 1.3, seed + 11) - 0.42) * 5.0, 0.0, 1.0)
+        moss = (damp * patch * 0.6)[:, None]
+        factor *= 1.0 - moss * (1.0 - MOSS[None, :])
         rgb[mask] *= factor[mask]
     if roofs:
         mask = np.isin(corner_slot, [index for index, name in enumerate(names) if name in ROOF_MATERIALS])
@@ -135,6 +151,47 @@ def weather(mesh, heights=None, seed=0, walls=True, roofs=True, foliage=False):
                                 light * (1.05 - 0.12 * relative)])
         rgb[green] *= warm[green]
     colours[:, :3] = np.clip(rgb, 0.0, 1.0)
+    attribute.data.foreach_set("color_srgb", colours.ravel())
+    mesh.update()
+
+
+def wet_edges(mesh, reach=0.8, above=0.5, below=0.8):
+    attribute = mesh.color_attributes.get("Col")
+    names = [material.name if material else "" for material in mesh.materials]
+    if attribute is None or "water" not in names or len(mesh.loops) == 0:
+        return
+    water = names.index("water")
+    count = len(mesh.loops)
+    vertex = np.empty(count, dtype=np.int64)
+    mesh.loops.foreach_get("vertex_index", vertex)
+    positions = np.empty(len(mesh.vertices) * 3, dtype=np.float64)
+    mesh.vertices.foreach_get("co", positions)
+    positions = positions.reshape(-1, 3)
+    totals = np.empty(len(mesh.polygons), dtype=np.int64)
+    mesh.polygons.foreach_get("loop_total", totals)
+    slots = np.empty(len(mesh.polygons), dtype=np.int64)
+    mesh.polygons.foreach_get("material_index", slots)
+    corner_slot = np.repeat(slots, totals)
+    points = positions[vertex]
+    shade = np.ones(count)
+    for polygon in mesh.polygons:
+        if polygon.material_index != water or polygon.area < 1.0 or abs(polygon.normal.z) < 0.9:
+            continue
+        corners = positions[list(polygon.vertices)]
+        low = corners.min(axis=0) - reach
+        high = corners.max(axis=0) + reach
+        level = corners[:, 2].mean()
+        inside = ((points[:, 0] > low[0]) & (points[:, 0] < high[0]) & (points[:, 1] > low[1]) & (points[:, 1] < high[1])
+                  & (points[:, 2] > level - below) & (points[:, 2] < level + above))
+        t = np.clip((points[:, 2] - level) / above, 0.0, 1.0)
+        shade = np.where(inside, np.minimum(shade, 0.68 + 0.32 * t), shade)
+    keep = corner_slot != water
+    colours = np.empty(count * 4, dtype=np.float32)
+    attribute.data.foreach_get("color_srgb", colours)
+    colours = colours.reshape(-1, 4)
+    wet = (1.0 - shade)[:, None] / 0.32
+    factor = shade[:, None] * (1.0 - wet * (1.0 - WET[None, :] / WET.max()))
+    colours[keep, :3] = np.clip(colours[keep, :3] * factor[keep], 0.0, 1.0)
     attribute.data.foreach_set("color_srgb", colours.ravel())
     mesh.update()
 
@@ -236,6 +293,7 @@ def rough_lobe(builder, center, radius, height, material, segments=6, seed=0, fl
 
 def cloth_awning(builder, x0, x1, hd, rng, rows=2):
     light, dark = CLOTH[rng.randrange(len(CLOTH))]
+    light = tuple(min(1.0, 0.35 + 0.65 * value) for value in light)
     front = -hd - 2.1
     columns = 8
     grid = []
@@ -252,7 +310,7 @@ def cloth_awning(builder, x0, x1, hd, rng, rows=2):
         grid.append(line)
     for row in range(rows):
         for column in range(columns):
-            color = light if column % 2 else dark
+            color = light
             quad = [grid[row][column], grid[row][column + 1], grid[row + 1][column + 1], grid[row + 1][column]]
             tinted(builder, color, lambda quad=quad: builder.oriented(quad, (0, -0.2, 1), "plaster", True))
             tinted(builder, tuple(v * 0.8 for v in color),
@@ -260,13 +318,13 @@ def cloth_awning(builder, x0, x1, hd, rng, rows=2):
     edge = grid[-1]
     for column in range(columns):
         a, b = edge[column], edge[column + 1]
-        drop = 0.3 if column % 2 else 0.22
+        drop = 0.15
         quad = [a, b, (b[0], b[1], b[2] - drop), (a[0], a[1], a[2] - drop)]
-        color = light if column % 2 else dark
+        color = dark
         tinted(builder, color, lambda quad=quad: builder.oriented(quad, (0, -1, 0), "plaster"))
         tinted(builder, color, lambda quad=quad: builder.oriented(quad, (0, 1, 0), "plaster"))
     for x in (x0 + 0.2, x1 - 0.2):
-        tinted(builder, WOODS[1], lambda x=x: builder.box((x - 0.05, front + 0.25, -0.2), (x + 0.05, front + 0.35, 2.55),
+        tinted(builder, (0.55, 0.42, 0.28), lambda x=x: builder.box((x - 0.05, front + 0.25, -0.2), (x + 0.05, front + 0.35, 2.55),
                                                           "plaster", bottom=False, top=False))
 
 
@@ -308,7 +366,7 @@ def laundry(builder, x0, x1, z, front, rng):
         x += width + rng.uniform(0.1, 0.4)
 
 
-def roof(builder, x0, x1, hd, height, top, kind, tint, wall):
+def roof(builder, x0, x1, hd, height, top, kind, tint, wall, detail=True):
     eave = height - 0.16
     overhang = 0.4
     if kind == "hip" and (x1 - x0) > 2 * hd + 0.5:
@@ -321,21 +379,37 @@ def roof(builder, x0, x1, hd, height, top, kind, tint, wall):
                  (1, 0, 1): [(x1 + 0.15, -hd - overhang, eave), (x1 + 0.15, hd + overhang, eave), (ridge1, 0.0, top)]}
         for normal, quad in quads.items():
             tinted(builder, tint, lambda quad=quad, normal=normal: builder.oriented(quad, normal, TILES))
+        ridge = tuple(v * 0.8 for v in tint)
+        if not detail:
+            return
+        tube(builder, [(ridge0, 0.0, top + 0.04), (ridge1, 0.0, top + 0.04)], [0.11, 0.11], ridge, 4, TILES,
+             cap=False)
+        for corner, end in (((x0 - 0.15, -hd - overhang), ridge0), ((x0 - 0.15, hd + overhang), ridge0),
+                            ((x1 + 0.15, -hd - overhang), ridge1), ((x1 + 0.15, hd + overhang), ridge1)):
+            tube(builder, [(corner[0], corner[1], eave + 0.05), (end, 0.0, top + 0.04)], [0.08, 0.09], ridge, 4,
+                 TILES, cap=False)
         return
     for side in (-1, 1):
         quad = [(x0 - 0.15, side * (hd + overhang), eave), (x1 + 0.15, side * (hd + overhang), eave),
                 (x1 + 0.15, 0.0, top), (x0 - 0.15, 0.0, top)]
         tinted(builder, tint, lambda quad=quad, side=side: builder.oriented(quad, (0, side, 1), TILES))
+    if detail:
+        tube(builder, [(x0 - 0.2, 0.0, top + 0.04), (x1 + 0.2, 0.0, top + 0.04)], [0.11, 0.11],
+             tuple(v * 0.8 for v in tint), 4, TILES, start_cap=True)
     gable_ends(builder, x0, x1, hd, height, top, wall, along_axis="x")
 
 
 def town_unit(builder, x0, width, depth, height, wall, roof_kind, shops, windows, awning_kind, balcony, roof_tint,
-              rng, detail=True):
+              rng, detail=True, plain=False):
     hd = depth / 2
     x1 = x0 + width
     builder.box((x0, -hd, -3.0), (x1, hd, height), wall, bottom=False, top=False)
+    for side in ((-1, 1) if not plain else ()):
+        tinted(builder, tuple(v * 0.93 for v in STONE_WHITE), lambda side=side: builder.box(
+            (x0, side * hd - 0.14 if side < 0 else hd, height - 0.36), (x1, -hd if side < 0 else hd + 0.14, height - 0.16),
+            wall, top=False))
     top = height + hd * 0.4
-    roof(builder, x0, x1, hd, height, top, roof_kind, roof_tint, wall)
+    roof(builder, x0, x1, hd, height, top, roof_kind, roof_tint, wall, not plain)
     front = -hd - 0.02
     shutter = WOODS[rng.randrange(len(WOODS))]
     if shops:
@@ -378,6 +452,12 @@ def town_unit(builder, x0, width, depth, height, wall, roof_kind, shops, windows
         for index in range(windows):
             x = x0 + width * (index + 0.5) / windows
             panel(builder, x - 0.3, x + 0.3, z, z + 0.9, front, -1, VOID)
+            sill = [(x - 0.4, front, z), (x + 0.4, front, z), (x + 0.4, front - 0.09, z - 0.02),
+                    (x - 0.4, front - 0.09, z - 0.02)]
+            if not plain:
+                tinted(builder, STONE_WHITE, lambda sill=sill: builder.oriented(sill, (0, -0.3, 1), wall))
+                panel(builder, x - 0.4, x + 0.4, z - 0.12, z - 0.02, front - 0.09, -1, wall, (0.9, 0.88, 0.84))
+                panel(builder, x - 0.36, x + 0.36, z + 0.9, z + 1.02, front - 0.012, -1, wall, (0.92, 0.9, 0.86))
             state = (index + floor + rng.randrange(2)) % 3
             if state == 0:
                 panel(builder, x - 0.62, x - 0.3, z, z + 0.9, front - 0.01, -1, wall, shutter)
@@ -403,7 +483,7 @@ def town_unit(builder, x0, width, depth, height, wall, roof_kind, shops, windows
             drape(builder, LEAF, [(0.16, 3.52), (0.24, 3.72), (0.0, 3.95)], 5, folds=(2, 0.15, k), squash=1.0,
                   center=(px, -hd - 0.7), material="plaster")
         if detail and rng.random() < 0.5:
-            laundry(builder, x0 + 1.0, x1 - 1.0, 5.2, -hd + 0.4, rng)
+            laundry(builder, x0 + 1.0, x1 - 1.0, 5.2, -hd - 0.49, rng)
     elif detail and floors >= 2 and rng.random() < 0.35:
         laundry(builder, x0 + 1.5, x0 + width * 0.7, 3.2 + 2.0, front, rng)
     back = hd + 0.02
@@ -412,7 +492,7 @@ def town_unit(builder, x0, width, depth, height, wall, roof_kind, shops, windows
         panel(builder, x - 0.3, x + 0.3, height - 2.0, height - 1.2, back, 1, VOID)
 
 
-def row_template(seed, tabernae=False, depth=11.0, units=2):
+def row_template(seed, tabernae=False, depth=11.0, units=2, detail=True):
     rng = random.Random(seed)
     builder = MeshBuilder()
     width = 16.0
@@ -424,7 +504,7 @@ def row_template(seed, tabernae=False, depth=11.0, units=2):
         kind = rng.choice(["tile", "cloth", "cloth"]) if shops else None
         town_unit(builder, x0, width, depth, height, rng.choice(PLASTERS), rng.choice(["gable", "hip", "hip"]), shops,
                   3 if height > 6.5 else 2, kind, height >= 8.0 and rng.random() < 0.6, rng.choice(ROOF_TINTS), rng,
-                  tabernae)
+                  tabernae and detail, not detail)
     return split_vertical(builder) if tabernae else builder
 
 
@@ -575,7 +655,7 @@ def street_segment(paved=True, length=16.0, width=8.0):
     half = length / 2
     road = 2.6
     walk = width / 2 + 0.3
-    surface = "paving" if paved else "arena_sand"
+    surface = "street_paving" if paved else "arena_sand"
     tone = (0.84, 0.81, 0.76) if paved else (0.86, 0.8, 0.72)
     top = 0.36 if paved else 0.28
     tinted(builder, tone, lambda: builder.polygon([(-half, -road, 0.12), (half, -road, 0.12), (half, road, 0.12),

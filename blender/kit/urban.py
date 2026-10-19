@@ -280,7 +280,7 @@ def street_segment(paved=True, length=16.0, width=8.0):
 def street_node(paved=True, width=8.0):
     builder = MeshBuilder()
     half = width / 2 + 0.3
-    surface = "paving" if paved else "arena_sand"
+    surface = "street_paving" if paved else "arena_sand"
     tone = (1.0, 1.0, 1.0) if paved else (0.86, 0.8, 0.72)
     tinted(builder, tone, lambda: builder.box((-half, -half, -0.6), (half, half, 0.12), surface, bottom=False))
     if paved:

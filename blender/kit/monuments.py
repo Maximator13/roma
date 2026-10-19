@@ -322,9 +322,9 @@ def nymphaeum(radius=16.0):
     builder.lathe([(radius, 0.35), (0.0, 0.35)], 24, "water", smooth=False, start=0.0, sweep=math.pi,
                   caps=False)
     builder.box((-radius - 1.2, -0.6, -1.2), (radius + 1.2, 0.0, 0.9), STONE, bottom=False)
-    shaft = column("ionic", 0.55, 5.2, "low")
-    for index in range(9):
-        angle = math.pi * index / 8
+    shaft = column("ionic", 0.6, 5.2, "low")
+    for index in range(17):
+        angle = math.pi * index / 16
         center = Vector((math.cos(angle), math.sin(angle), 0.0)) * (radius + 0.6)
         builder.merge(shaft, placement(center.x, center.y, 1.4))
     builder.lathe([(radius + 1.0, 6.6), (radius + 1.0, 7.4), (radius + 1.25, 7.6), (radius + 1.25, 7.9),
@@ -390,7 +390,7 @@ def hillside_theatre(radius=24.0, rows=14, orchestra=7.0):
     builder.lathe(list(reversed(profile)), 24, WEATHERED, smooth=False, start=0.0, sweep=math.pi, caps=False)
     builder.lathe([(orchestra, 0.0), (0.0, 0.0)], 12, "paving", smooth=False, start=0.0, sweep=math.pi,
                   caps=False)
-    builder.box((-orchestra - 6, -5.0, -3.0), (orchestra + 6, 0.0, 3.2), ASHLAR, bottom=False)
+    builder.box((-orchestra - 6, -5.0, -3.0), (orchestra + 6, 0.0, 1.2), ASHLAR, bottom=False)
     return builder
 
 

@@ -227,8 +227,9 @@ def toga_drape(builder, spec, rng):
            folds(11, 0.07, rng.uniform(0, 6.28)), m)
     draped(builder, [(0.205, 1.0), (0.212, 1.2), (0.21, 1.34), (0.17, 1.44), (0.07, 1.47)], toga, 12,
            folds(6, 0.04, rng.uniform(0, 6.28)), m, start=math.radians(95), sweep=math.radians(215))
-    tube(builder, (0.2, 0.1, 0.9), (-0.16, 0.1, 1.42), 0.075, 0.06, toga, 6, m, scale=(1.0, 0.55))
-    tube(builder, (0.05, 0.16, 1.0), (-0.12, 0.16, 1.22), 0.05, 0.03, toga, 5, m, scale=(1.0, 0.6))
+    tube(builder, (0.2, 0.15, 0.9), (-0.16, 0.11, 1.4), 0.11, 0.09, toga, 6, m, scale=(0.32, 1.0))
+    draped(builder, [(0.215, 0.75), (0.25, 0.86), (0.235, 1.0)], toga, 6, folds(5, 0.08, rng.uniform(0, 6.28)), m,
+           start=math.radians(30), sweep=math.radians(130))
     if spec.clavi is not None:
         painted(builder, spec.colour(spec.clavi), lambda: builder.lathe([(0.259, 0.1), (0.258, 0.16)], 14, m,
                                                                         matrix=FLATTEN, caps=False))
@@ -238,8 +239,8 @@ def palla_drape(builder, spec, rng):
     m = spec.material
     palla = spec.colour(spec.palla)
     draped(builder, [(0.24, 0.6), (0.235, 0.9), (0.225, 1.15), (0.215, 1.34), (0.16, 1.44), (0.07, 1.47)], palla, 12,
-           folds(8, 0.05, rng.uniform(0, 6.28)), m, start=math.radians(110), sweep=math.radians(320))
-    tube(builder, (0.21, 0.08, 1.38), (-0.1, 0.17, 0.95), 0.06, 0.05, palla, 5, m, scale=(1.0, 0.5))
+           folds(8, 0.05, rng.uniform(0, 6.28)), m, start=math.radians(20), sweep=math.radians(320))
+    tube(builder, (0.2, 0.11, 1.37), (-0.12, 0.16, 0.95), 0.1, 0.085, palla, 5, m, scale=(0.32, 1.0))
 
 
 def cloak_drape(builder, spec, rng):
@@ -544,7 +545,8 @@ def barrel(builder, matrix, height=1.1, radius=0.42):
             [(r + 0.012, z * height - 0.03), (r + 0.012, z * height + 0.03)], 8, MATTE, matrix=matrix, caps=False))
 
 
-def seagoing_ship(length=22.0, beam=6.4, seed=0):
+def seagoing_ship(length=22.0, beam=6.4, seed=0, sail="brailed", gangplank=False):
+    rng = random.Random(seed)
     builder = MeshBuilder()
     half = length / 2
     stations = []
@@ -573,45 +575,132 @@ def seagoing_ship(length=22.0, beam=6.4, seed=0):
         builder.surface([[(a1[0], a1[1], a1[2] - 0.05), (a1[0], a1[1], a1[2] + 0.12)],
                          [(b1[0], b1[1], b1[2] - 0.05), (b1[0], b1[1], b1[2] + 0.12)]], MATTE, facing=(1, 0, 0))
     builder.tint(first, (0.62, 0.22, 0.14))
+    for station in stations[2:-2:2]:
+        for end in (station[0], station[-1]):
+            tube(builder, (end[0] * 0.98, end[1], end[2] - 0.2), (end[0] * 0.98, end[1], end[2] - 0.75), 0.05, 0.05,
+                 PITCH, 3, caps=False)
     deck = 1.55
     first = len(builder.polygons)
     builder.box((-beam / 2 * 0.86, -half * 0.78, deck - 0.1), (beam / 2 * 0.86, half * 0.72, deck), PLANK,
                 bottom=False)
     builder.tint(first, (0.74, 0.62, 0.48))
+    painted(builder, (0.16, 0.12, 0.09), lambda: builder.box((-1.0, -2.6, deck), (1.0, 0.0, deck + 0.02), MATTE,
+                                                             bottom=False))
+    for y in (-2.6, 0.0):
+        tube(builder, (-1.05, y, deck + 0.1), (1.05, y, deck + 0.1), 0.08, 0.08, HULL_WOOD, 4, PLANK)
     stern = [Vector((0.0, -half - 0.1, 2.9)), Vector((0.0, -half - 0.9, 4.0)), Vector((0.0, -half - 0.8, 4.9)),
              Vector((0.0, -half - 0.3, 5.3)), Vector((0.0, -half + 0.2, 5.0))]
     for a, b in zip(stern[:-1], stern[1:]):
         tube(builder, a, b, 0.2, 0.17, PITCH, 6, PLANK)
+    ellipsoid(builder, stern[-1] + Vector((0.0, 0.1, 0.1)), (0.16, 0.25, 0.22), (0.86, 0.82, 0.74), 5, 2)
     tube(builder, (0.0, half - 0.2, 2.6), (0.0, half + 0.9, 4.0), 0.18, 0.12, PITCH, 6, PLANK)
-    first = len(builder.polygons)
-    builder.box((-1.6, -half + 1.2, deck), (1.6, -half + 4.2, deck + 1.9), "plaster", bottom=False)
-    builder.tint(first, (0.72, 0.56, 0.4))
-    builder.oriented([(-1.9, -half + 0.9, deck + 1.9), (1.9, -half + 0.9, deck + 1.9), (1.9, -half + 4.5, deck + 2.3),
-                      (-1.9, -half + 4.5, deck + 2.3)], (0, 0, 1), "terracotta_tiles")
+    painted(builder, (0.72, 0.56, 0.4), lambda: builder.box((-1.6, -half + 1.2, deck), (1.6, -half + 4.2, deck + 1.9),
+                                                            MATTE, bottom=False))
+    for x in (-0.6, 0.6):
+        painted(builder, (0.2, 0.15, 0.12), lambda x=x: builder.box((x - 0.25, -half + 4.21, deck + 0.4),
+                                                                    (x + 0.25, -half + 4.23, deck + 1.5), MATTE,
+                                                                    bottom=False))
+    painted(builder, (0.66, 0.36, 0.25), lambda: builder.oriented(
+        [(-1.9, -half + 0.9, deck + 1.9), (1.9, -half + 0.9, deck + 1.9), (1.9, -half + 4.5, deck + 2.3),
+         (-1.9, -half + 4.5, deck + 2.3)], (0, 0, 1), MATTE))
     for side in (-1, 1):
         tube(builder, (side * 2.4, -half + 2.0, 3.4), (side * 2.7, -half - 1.2, -0.8), 0.09, 0.07, HULL_WOOD, 5, PLANK)
         frame = Matrix.Translation((side * 2.68, -half - 1.0, -0.4)) @ Matrix.Rotation(math.radians(-20), 4, "X")
         painted(builder, HULL_WOOD, lambda frame=frame: builder.centered_box((0.0, 0.0, 0.0), (0.08, 1.2, 1.6), PLANK,
                                                                              matrix=frame))
     mast_y = 1.0
-    tube(builder, (0.0, mast_y, deck), (0.0, mast_y, deck + 13.0), 0.2, 0.12, HULL_WOOD, 8, PLANK)
+    top = deck + 13.0
+    tube(builder, (0.0, mast_y, deck), (0.0, mast_y, top), 0.2, 0.12, HULL_WOOD, 8, PLANK)
+    ellipsoid(builder, (0.0, mast_y, top + 0.1), (0.16, 0.16, 0.2), HULL_WOOD, 5, 2)
     yard_z = deck + 11.8
-    tube(builder, (-6.0, mast_y + 0.25, yard_z), (6.0, mast_y + 0.25, yard_z), 0.1, 0.1, HULL_WOOD, 6, PLANK)
-    sail = Matrix.Translation((0.0, mast_y + 0.35, yard_z - 0.35)) @ Matrix.Rotation(math.pi / 2, 4, "Y")
-    painted(builder, (0.9, 0.85, 0.74), lambda: builder.lathe(
-        [(0.0, -5.9), (0.22, -5.0), (0.34, -2.0), (0.38, 0.0), (0.34, 2.0), (0.22, 5.0), (0.0, 5.9)], 6, "velum_linen",
-        smooth=True, matrix=sail @ Matrix.Diagonal((1.0, 0.7, 1.0, 1.0)), caps=False))
-    tube(builder, (0.0, half - 0.5, deck + 0.6), (0.0, half + 3.2, deck + 4.6), 0.1, 0.07, HULL_WOOD, 5, PLANK)
-    for target in ((0.0, half + 0.4, 3.4), (0.0, -half + 0.5, 4.6), (-2.6, mast_y - 0.5, 2.2), (2.6, mast_y - 0.5, 2.2),
-                   (-2.5, mast_y - 3.0, 2.2), (2.5, mast_y - 3.0, 2.2)):
-        tube(builder, (0.0, mast_y, deck + 12.6), target, 0.025, 0.025, (0.3, 0.26, 0.2), 3, MATTE, caps=False)
+    sail_colour = (0.9, 0.85, 0.72) if rng.random() < 0.6 else (0.82, 0.7, 0.55)
+    rope = (0.3, 0.26, 0.2)
+    if sail == "set":
+        yard_z = deck + 12.2
+        tube(builder, (-6.2, mast_y + 0.25, yard_z), (6.2, mast_y + 0.25, yard_z), 0.1, 0.1, HULL_WOOD, 6, PLANK)
+        rows = []
+        for k in range(5):
+            v = k / 4
+            z = yard_z - 0.2 - v * 8.2
+            row = []
+            for j in range(7):
+                u = -1.0 + 2.0 * j / 6
+                belly = 1.5 * (1 - u * u) * math.sin(math.pi * (0.15 + 0.85 * v)) + 0.3 * v
+                row.append((u * (5.9 - 0.4 * v), mast_y + 0.45 + belly, z))
+            rows.append(row)
+        painted(builder, sail_colour, lambda: builder.surface(rows, MATTE, smooth=True, facing=(0, 1, 0)))
+        painted(builder, darker(sail_colour), lambda: builder.surface(rows, MATTE, smooth=True, facing=(0, -1, 0)))
+        for x in (-5.4, 5.4):
+            tube(builder, (x, mast_y + 0.6, yard_z - 8.3), (x * 0.55, -half + 1.0, deck + 1.0), 0.02, 0.02, rope, 3,
+                 caps=False)
+        for j in range(1, 6):
+            column = [row[j] for row in rows]
+            for a, b in zip(column[:-1], column[1:]):
+                tube(builder, Vector(a) + Vector((0.0, 0.03, 0.0)), Vector(b) + Vector((0.0, 0.03, 0.0)), 0.015, 0.015,
+                     rope, 3, caps=False)
+    else:
+        tube(builder, (-6.0, mast_y + 0.25, yard_z), (6.0, mast_y + 0.25, yard_z), 0.1, 0.1, HULL_WOOD, 6, PLANK)
+        sail_frame = Matrix.Translation((0.0, mast_y + 0.35, yard_z - 0.35)) @ Matrix.Rotation(math.pi / 2, 4, "Y")
+        painted(builder, sail_colour, lambda: builder.lathe(
+            [(0.0, -5.9), (0.22, -5.0), (0.34, -2.0), (0.38, 0.0), (0.34, 2.0), (0.22, 5.0), (0.0, 5.9)], 6, MATTE,
+            smooth=True, matrix=sail_frame @ Matrix.Diagonal((1.0, 0.7, 1.0, 1.0)), caps=False))
+        for x in (-4.5, -2.25, 0.0, 2.25, 4.5):
+            tube(builder, (x, mast_y + 0.7, yard_z - 0.4), (x * 0.3, mast_y + 0.4, deck + 0.4), 0.012, 0.012, rope,
+                 3, caps=False)
+    for x in (-6.0, 6.0):
+        tube(builder, (0.0, mast_y, top - 0.3), (x, mast_y + 0.25, yard_z + 0.05), 0.015, 0.015, rope, 3, caps=False)
+        tube(builder, (x, mast_y + 0.25, yard_z), (x * 0.3, -half + 0.8, deck + 1.2), 0.015, 0.015, rope, 3,
+             caps=False)
+    bow = (0.0, half - 0.5, deck + 0.6)
+    tip = (0.0, half + 3.2, deck + 4.6)
+    tube(builder, bow, tip, 0.1, 0.07, HULL_WOOD, 5, PLANK)
+    tube(builder, (-1.6, half + 2.6, deck + 4.0), (1.6, half + 2.6, deck + 4.0), 0.05, 0.05, HULL_WOOD, 4, PLANK)
+    if sail == "set":
+        fore = [[(-1.5, half + 2.75, deck + 3.9), (1.5, half + 2.75, deck + 3.9)],
+                [(-1.4, half + 2.4, deck + 2.3), (1.4, half + 2.4, deck + 2.3)]]
+        painted(builder, sail_colour, lambda: builder.surface(fore, MATTE, facing=(0, 1, 0)))
+        painted(builder, darker(sail_colour), lambda: builder.surface(fore, MATTE, facing=(0, -1, 0)))
+    else:
+        painted(builder, sail_colour, lambda: builder.lathe([(0.0, -1.5), (0.12, 0.0), (0.0, 1.5)], 5, MATTE,
+                                                            matrix=Matrix.Translation((0.0, half + 2.7, deck + 3.85))
+                                                            @ Matrix.Rotation(math.pi / 2, 4, "Y"), caps=False))
+    tube(builder, (0.0, mast_y, top - 0.2), tip, 0.025, 0.025, rope, 3, caps=False)
+    tube(builder, (0.0, mast_y, top - 0.2), (0.0, -half + 0.5, 4.6), 0.025, 0.025, rope, 3, caps=False)
+    for side in (-1, 1):
+        for dy in (-0.5, -1.8, -3.0):
+            tube(builder, (0.0, mast_y, top - 0.4), (side * 2.6, mast_y + dy, 2.3), 0.02, 0.02, rope, 3, caps=False)
     for side in (-1, 1):
         ellipsoid(builder, (side * beam / 2 * 0.9, half * 0.78, 2.6), (0.04, 0.25, 0.15), (0.92, 0.9, 0.84), 5, 2,
                   MATTE)
-    for index in range(6):
-        center = Vector((-1.6 + (index % 3) * 1.6, -2.0 + (index // 3) * 2.5, deck))
-        amphora_shape(builder, Matrix.Translation(center), TERRACOTTA, MATTE, 6)
+    for index in range(9):
+        center = Vector((-1.6 + (index % 3) * 1.6, -5.5 + (index // 3) * 1.4, deck))
+        amphora_shape(builder, placement(center.x, center.y, center.z, rng.uniform(0, 6.28)),
+                      TERRACOTTA if index % 3 else (0.78, 0.56, 0.4), MATTE, 6)
+    for index in range(10):
+        frame = (Matrix.Translation((-0.8 + (index % 5) * 0.4, -2.3 + (index // 5) * 0.9, deck - 0.75))
+                 @ Matrix.Rotation(math.radians(-8), 4, "X"))
+        amphora_light(builder, frame, TERRACOTTA if index % 4 else (0.62, 0.38, 0.26))
+    builder.merge(person(PEOPLE["fig_sailor"]), placement(-0.4, -half + 0.6, 2.95, 0.3))
+    if sail == "set":
+        builder.merge(person(PEOPLE["fig_boatman"]), placement(0.8, -half + 5.0, deck, math.pi * 0.9))
+        return builder
+    builder.merge(person(PEOPLE["fig_porter_amphora_b"]), placement(0.4, -1.3, deck, -math.pi / 2))
+    builder.merge(person(PEOPLE["fig_merchant"]), placement(-1.5, 3.5, deck, math.pi * 0.6))
+    if gangplank:
+        start = Vector((2.3, -1.3, deck + 0.12))
+        end = Vector((6.6, -1.3, 3.3))
+        across = Vector((0.0, 0.42, 0.0))
+        quad = [start - across, start + across, end + across, end - across]
+        painted(builder, (0.66, 0.54, 0.4), lambda: builder.oriented(quad, (0, 0, 1), PLANK))
+        painted(builder, (0.5, 0.4, 0.3), lambda: builder.oriented(list(reversed(quad)), (0, 0, -1), PLANK))
+        for t, key in ((0.3, "fig_porter_amphora"), (0.72, "fig_porter_sack")):
+            spot = start.lerp(end, t)
+            builder.merge(person(PEOPLE[key]), placement(spot.x, spot.y, spot.z + 0.02, -math.pi / 2))
     return builder
+
+
+def darker(colour, factor=0.78):
+    return tuple(component * factor for component in colour)
 
 
 def small_boat(length=7.0, beam=1.8, people=None):
@@ -703,7 +792,8 @@ def block_pile(seed=0):
         first = len(builder.polygons)
         builder.centered_box((x + rng.uniform(-0.1, 0.1), (index // 3) * 1.4, z + size[2] / 2), size, "lens_ashlar",
                              bottom=False)
-        builder.tint(first, (0.98, 0.95, 0.88))
+        shade = rng.uniform(0.78, 0.9)
+        builder.tint(first, (shade, shade * 0.96, shade * 0.88))
     return builder
 
 

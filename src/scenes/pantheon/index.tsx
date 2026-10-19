@@ -9,7 +9,6 @@ const PANTHEON: ModelSceneConfig = {
   forceShadows: true,
   interior: { center: [0, -0.5, 0], radius: 21.65, height: 44, ambientScale: 0.2 },
   lightShaftRadius: 3.85,
-  views: { 'le-porche': { position: [-7, 0.3, -92], target: [0, 9, -42] } },
 }
 
 export default function Pantheon(props: SceneProps) {

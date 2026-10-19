@@ -13,7 +13,7 @@ import bpy
 import numpy as np
 from mathutils import Matrix, Vector
 
-from kit import arles_life, arles_monuments, buildings, monuments, urban
+from kit import arles_crowds, arles_details, arles_life, arles_monuments, buildings, monuments, urban
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.materials import baked_material, build_library, save_pixels
 from kit.orders import column
@@ -41,6 +41,7 @@ QUAY = 3.2
 BANK = 3.5
 CIRCUS_LEVEL = 3.6
 PITCH = 70.0
+SITE_HAZE = tuple(((channel / 255.0 + 0.055) / 1.055) ** 2.4 for channel in (0xC9, 0xD6, 0xE6))
 STREET = 7.0
 U_OFFSET = 52.0
 V_OFFSET = -40.0
@@ -362,6 +363,10 @@ class Scene:
         self.lanes = {}
         self.skipped = 0
         self.houses = {}
+        self.arena_bays = []
+        self.arena_west_t = 0.0
+        self.circus_bays = []
+        self.proedria = []
 
     def house(self, key, matrices):
         self.houses.setdefault(key, []).extend(matrices)
@@ -369,7 +374,7 @@ class Scene:
     def place_houses(self):
         for key, matrices in self.houses.items():
             build = (lambda key=key: socle_builder(key[6:])) if key.startswith("socle_") else HOUSES[key]
-            self.instances("city", key, build, matrices)
+            self.instances("city", key, build, matrices, cast_shadow=not key.startswith("socle_"))
 
     def root(self, name):
         if name not in self.roots:
@@ -562,8 +567,13 @@ def terrain_colour(grid_x, grid_y, heights, slope, river, city, roads, bank_dist
     colour = np.where((vine & rows)[..., None], np.array([0.36, 0.42, 0.24]), colour)
     edge = (np.abs((u / size_u) % 1.0 - 0.5) > 0.492) | (np.abs((v / size_v) % 1.0 - 0.5) > 0.487)
     colour = np.where(edge[..., None], np.array([0.45, 0.47, 0.30]), colour)
+    colour = colour * 0.7 + np.array([0.72, 0.65, 0.43]) * 0.3
     level = heights - WATER
     marsh = np.clip(1.0 - (level - 0.9) / 0.9, 0.0, 1.0) * np.clip((fine - 0.2) * 3, 0.3, 1.0)
+    east = ((grid_x - 850.0) / 430.0) ** 2 + ((grid_y + 170.0) / 400.0) ** 2
+    south = ((grid_x + 250.0) / 650.0) ** 2 + ((grid_y + 600.0) / 330.0) ** 2
+    lowland = np.clip((1.0 - np.minimum(east, south)) / 0.4, 0.0, 1.0) * (0.7 + 0.25 * noise)
+    marsh = np.maximum(marsh, lowland)
     marsh_colour = np.dstack([0.36 + 0.06 * fine, 0.41 + 0.05 * fine, 0.26 + 0.03 * fine])
     pools = (level < 0.35) & (noise > 0.45)
     marsh_colour = np.where(pools[..., None], np.array([0.24, 0.29, 0.26]), marsh_colour)
@@ -730,9 +740,11 @@ def build_forum(scene, levels):
         wing = origin @ frame
         scene.unique("forum", monuments.portico_wing(length, 8.0, 6.4), wing)
         doors = MeshBuilder()
-        for x in np.arange(-length / 2 + 4.0, length / 2 - 3.0, 6.5):
-            arles_monuments.wooden_door(doors, float(x), -7.98, 0.45, 2.0, 3.1, facing=1)
+        door_xs = [float(x) for x in np.arange(-length / 2 + 4.0, length / 2 - 3.0, 6.5)]
+        for x in door_xs:
+            arles_monuments.wooden_door(doors, x, -7.98, 0.45, 2.0, 3.1, facing=1)
         scene.unique("forum", doors, wing)
+        scene.unique("forum", arles_details.portico_ornament(length, 8.0, 6.4, doors=door_xs), wing)
         column_frames.extend(wing @ local for local in monuments.portico_columns(length - 1.0, 3.0, 6.4))
     scene.instances("forum", "forum_column", lambda: column("corinthian", 0.66, 6.4, "medium"), column_frames)
     temple_builder, temple_columns, height, diameter = arles_monuments.temple()
@@ -769,12 +781,15 @@ def build_theatre(scene, levels):
                         lambda height=height, tint=tint: column("corinthian", 0.62 if height > 5 else 0.5, height,
                                                                 "low").tint(0, tint),
                         [origin @ frame for frame in frames_of_level])
-    names = {"venus": "statue_venus", "toga": "statue_toga", "marble": "statue_niche"}
+    sculpted = {}
     for kind, frame in statues:
-        if kind == "augustus":
-            scene.unique("theatre", arles_life.statue("augustus"), origin @ frame @ Matrix.Scale(2.1, 4))
-        else:
-            scene.add(names[kind], origin @ frame)
+        if kind not in sculpted:
+            sculpted[kind] = arles_life.statue(kind)
+        scale = Matrix.Scale(2.1, 4) if kind == "augustus" else Matrix.Identity(4)
+        scene.unique("theatre", sculpted[kind], origin @ frame @ scale)
+    seats_builder, seats = arles_details.bisellia(16.0, 0.35, arles_monuments.cuneus_ranges())
+    scene.unique("theatre", seats_builder, origin)
+    scene.proedria = [origin @ placement(x, y, z, turn) for x, y, z, turn in seats]
     court = origin @ placement(0.0, 50.0, 0.0)
     for length, frame in ((60.0, placement(0.0, -25.0, 0.0, 0.0)), (60.0, placement(0.0, 25.0, 0.0, math.pi)),
                           (44.0, placement(30.0, 0.0, 0.0, math.pi / 2)),
@@ -785,7 +800,7 @@ def build_theatre(scene, levels):
                         [wing @ local for local in monuments.portico_columns(length - 1.0, 3.4, 4.6)], merge=True)
     garden = MeshBuilder()
     first = len(garden.polygons)
-    garden.box((-24.0, -19.0, -0.5), (24.0, 19.0, 0.06), "arena_sand", bottom=False)
+    garden.box((-24.0, -19.0, -0.5), (24.0, 19.0, 0.06), "paving", bottom=False)
     garden.tint(first, (0.95, 0.9, 0.82))
     for bx in (-12.0, 12.0):
         for by in (-9.5, 9.5):
@@ -797,7 +812,9 @@ def build_theatre(scene, levels):
     first = len(garden.polygons)
     garden.box((-6.0, -2.6, -0.1), (6.0, 2.6, 0.5), buildings.ASHLAR, bottom=False)
     garden.tint(first, (0.86, 0.83, 0.78))
-    garden.box((-5.6, -2.2, 0.3), (5.6, 2.2, 0.38), "river_water", bottom=False)
+    first = len(garden.polygons)
+    garden.box((-5.6, -2.2, 0.3), (5.6, 2.2, 0.38), "matte", bottom=False)
+    garden.tint(first, (0.24, 0.3, 0.3))
     scene.unique("theatre", garden, court)
     return origin, top_z
 
@@ -826,13 +843,16 @@ def build_arena(scene, levels):
         frames.append(placement(cx + wx, cy + wy, z, rotation + angle))
     scene.instances("arena", "arena_bay", lambda: arles_monuments.arena_bay(bay_width * 1.01), frames)
     cavea = buildings.amphitheatre_cavea(34.5, 20.0, a - 6.3, b - 6.3, arles_monuments.ATTIC_TOP - 1.0)
-    scene.unique("arena", arles_monuments.weather(cavea, 29, low=4.0), placement(cx, cy, z, angle))
+    arles_crowds.crowd_carpet(arles_monuments.weather(cavea, 29, low=4.0), 31, 4.0, 15.0)
+    scene.unique("arena", cavea, placement(cx, cy, z, angle))
     scene.unique("arena", urban.velum(a - 1.0, b - 1.0, 34.5, 20.0, arles_monuments.MAST_TOP - 2.0,
                                       arles_monuments.ATTIC_TOP + 0.4, angles), placement(cx, cy, z, angle),
                  occlusion=False)
     ring = arena_ring(APRON + 2.0, 110)
     terrace_walls(scene, ring + ring[:1], z, (cx, cy))
     west = min(range(60), key=lambda index: frames[index].translation.x)
+    scene.arena_bays = frames
+    scene.arena_west_t = angles[west]
     return frames[west], angles[west]
 
 
@@ -882,7 +902,8 @@ def build_walls(scene, levels):
     outward = Vector((ROADS["aurelia"][1][0] - gx, ROADS["aurelia"][1][1] - gy)).normalized()
     gate_angle = math.atan2(-outward.x, outward.y)
     gate_frame = placement(gx, gy, levels["gate"] - scene.datum, gate_angle)
-    scene.unique("gates", arles_monuments.augustus_gate(), gate_frame)
+    scene.unique("gates", arles_details.recast(arles_monuments.augustus_gate(),
+                                               {"paving": (arles_monuments.ASHLAR, (0.9, 0.88, 0.84))}), gate_frame)
     gate_frames = {"auguste": gate_frame}
     for index, ((x, y), road) in enumerate(zip(SECONDARY_GATES, (ROADS["ernaginum"], ROADS["circus"]))):
         heading = Vector((road[1][0] - road[0][0], road[1][1] - road[0][1])).normalized()
@@ -901,6 +922,7 @@ def build_circus(scene, circus):
         scene.unique("circus", builder, origin, occlusion=name != "track")
     scene.instances("circus", "circus_bay", lambda: arles_monuments.circus_bay(4.6, top),
                     [origin @ frame for frame in bay_frames])
+    scene.circus_bays = [(origin @ frame, frame) for frame in bay_frames]
     for index, frame in enumerate(statue_frames):
         scene.add("statue_bronze" if index % 2 else "statue_marble", origin @ frame)
     return origin
@@ -910,15 +932,16 @@ ROW_VARIANTS = 4
 HOUSES = {f"row_{index}": (lambda index=index: urban.row_template(index + 51)) for index in range(ROW_VARIANTS)}
 HOUSES.update({f"row_tabernae_{index}": (lambda index=index: urban.row_template(151 + index, tabernae=True))
                for index in range(2)})
+PLASTERED = {"matte": ("plaster", None)}
 HOUSES.update({
-    "domus_a": lambda: urban.domus(61, 32.0, 30.0, 13.0, 12.0, 6.5, "plaster_white"),
-    "domus_b": lambda: urban.domus(62, 28.0, 32.0, 11.0, 14.0, 6.0, "plaster_ochre"),
-    "domus_c": lambda: urban.domus(63, 30.0, 28.0, 12.0, 11.0, 6.8, "plaster_rose"),
-    "house_single_a": lambda: urban.single_house(71),
-    "house_single_b": lambda: urban.single_house(72, 12.0, 8.0),
-    "kitchen_garden": lambda: urban.kitchen_garden(81),
-    "horreum_long": lambda: arles_monuments.horreum(42.0, 14.0, 7.0, 3),
-    "horreum_short": lambda: arles_monuments.horreum(28.0, 12.0, 6.5, 4, True),
+    "domus_a": lambda: arles_details.recast(urban.domus(61, 32.0, 30.0, 13.0, 12.0, 6.5, "plaster_white"), PLASTERED),
+    "domus_b": lambda: arles_details.recast(urban.domus(62, 28.0, 32.0, 11.0, 14.0, 6.0, "plaster_ochre"), PLASTERED),
+    "domus_c": lambda: arles_details.recast(urban.domus(63, 30.0, 28.0, 12.0, 11.0, 6.8, "plaster_rose"), PLASTERED),
+    "house_single_a": lambda: arles_details.recast(urban.single_house(71), PLASTERED),
+    "house_single_b": lambda: arles_details.recast(urban.single_house(72, 12.0, 8.0), PLASTERED),
+    "kitchen_garden": lambda: arles_details.recast(urban.kitchen_garden(81), PLASTERED),
+    "horreum_long": lambda: arles_monuments.horreum(42.0, 14.0, 7.0, 3, portico=True, wall="plaster_cream"),
+    "horreum_short": lambda: arles_monuments.horreum(28.0, 12.0, 6.5, 4, True, wall="plaster_ochre"),
 })
 
 
@@ -1030,7 +1053,7 @@ def build_trinquetaille(scene, right_bank, exclusions, rng):
     return {key: len(value) for key, value in placements.items()}, occupied, grove
 
 
-def warehouse_rows(scene, line, inland, rng, exclusions, socles):
+def warehouse_rows(scene, line, inland, rng, exclusions, socles, avoid):
     frames = {"horreum_long": [], "horreum_short": []}
     length = polyline_length(line)
     along = 20.0
@@ -1039,13 +1062,14 @@ def warehouse_rows(scene, line, inland, rng, exclusions, socles):
         size = 42.0 if key == "horreum_long" else 28.0
         (x, y), (dx, dy) = polyline_point(line, along + size / 2)
         normal = Vector((-dy, dx)) * inland
-        center = Vector((x, y)) + normal * 46.0
+        center = Vector((x, y)) + normal * (28.5 if key == "horreum_long" else 25.0)
         angle = math.atan2(dy, dx) + (math.pi if inland < 0 else 0.0)
+        clear = (center - avoid).length > size / 2 + 12.0
         z = seat_on_ground(scene, key, center.x, center.y, angle, lambda px, py: not exclusions.blocked(px, py),
-                           socles)
+                           socles) if clear else None
         if z is not None:
-            frames[key].append(placement(center.x, center.y, z, angle))
-        along += size + rng.uniform(6.0, 14.0)
+            frames[key].append(placement(center.x, center.y, z, angle, (1.0, 1.0, rng.uniform(0.82, 1.1))))
+        along += size + rng.uniform(2.0, 6.0)
     return frames
 
 
@@ -1067,11 +1091,19 @@ def build_port(scene, left_bank, right_bank, rng, main_streets):
                              [(x, y, deck) for x, y in outer[index:index + 2]]], arles_monuments.PLANK,
                             facing=(0, 0, 1))
             builder.tint(first, (0.95 * shade, 0.9 * shade, 0.84 * shade))
+        coping = offset_line(line, -3.3 * inland)
+        first = len(builder.polygons)
+        builder.surface([[(x, y, deck + 0.07) for x, y in coping], [(x, y, deck + 0.07) for x, y in outer]],
+                        arles_monuments.ASHLAR, facing=(0, 0, 1))
+        builder.surface([[(x, y, deck + 0.07) for x, y in coping], [(x, y, deck - 0.02) for x, y in coping]],
+                        arles_monuments.ASHLAR, facing=tuple(Vector((inner[1][0] - outer[1][0],
+                                                                     inner[1][1] - outer[1][1], 0.0))))
+        builder.tint(first, (0.62, 0.6, 0.56))
         face = [[(x, y, deck) for x, y in outer], [(x, y, WATER - scene.datum - 1.2) for x, y in outer]]
         first = len(builder.polygons)
         normal = Vector((outer[1][0] - inner[1][0], outer[1][1] - inner[1][1], 0.0))
-        builder.surface(face, arles_monuments.PLANK, facing=tuple(normal))
-        builder.tint(first, (0.5, 0.4, 0.3))
+        builder.surface(face, arles_monuments.ASHLAR, facing=tuple(normal))
+        builder.tint(first, (0.48, 0.45, 0.4))
         scene.unique("port_low", builder, Matrix.Identity(4), occlusion=False)
         quays.append((name, line, inner, outer))
     jetties = []
@@ -1098,7 +1130,8 @@ def build_port(scene, left_bank, right_bank, rng, main_streets):
     warehouses = {"horreum_long": [], "horreum_short": []}
     socles = {}
     for name, line, inner, outer in quays:
-        rows = warehouse_rows(scene, line, -1.0 if name == "left" else 1.0, rng, streets, socles)
+        rows = warehouse_rows(scene, line, -1.0 if name == "left" else 1.0, rng, streets, socles,
+                              port_view(quays, deck, scene.datum)[0].to_2d())
         for key in warehouses:
             warehouses[key].extend(rows[key])
     for key, matrices in warehouses.items():
@@ -1227,7 +1260,9 @@ def build_vegetation(scene, exclusions, city, banks, river, cypresses, occupied,
     poplars = [point for index, point in enumerate(riparian) if index % 3 == 0]
     willows = [point for index, point in enumerate(riparian) if index % 3 == 1]
     ashes = [point for index, point in enumerate(riparian) if index % 3 == 2]
-    scene.instances("vegetation", "tree_poplar", lambda: riparian_tree("poplar", 1), frames(poplars, (0.85, 1.2)))
+    scene.instances("vegetation", "tree_poplar", lambda: arles_details.recast(riparian_tree("poplar", 1),
+                                                                              {"plaster": ("matte", None)}),
+                    frames(poplars, (0.85, 1.2)))
     scene.instances("vegetation", "tree_willow", lambda: riparian_tree("willow", 2), frames(willows))
     scene.instances("vegetation", "tree_ash", lambda: riparian_tree("ash", 3), frames(ashes))
     scene.instances("vegetation", "reed_clump", lambda: arles_monuments.reeds(5), frames(marsh + reed_edges,
@@ -1323,13 +1358,17 @@ def grounded(scene, x, y, angle, half_length, half_width, lift=0.0, height=None)
             @ Matrix.Rotation(-roll, 4, "Y"))
 
 
+FORUM_SPOTS = ((20.0, 6.0), (20.0, -6.0), (31.0, 1.0), (12.0, 2.6), (14.0, 2.6), (16.0, 2.6), (27.0, 8.0))
+
+
 def forum_life(scene, rng, origin):
     level = origin.translation.z + 0.02
     for _ in range(22):
         for _attempt in range(40):
             x, y = rng.uniform(-1.0, 40.0), rng.uniform(-20.0, 20.0)
             if ((abs(x - 1.5) > 6.0 or abs(y) > 5.6) and abs(abs(y) - 19.0) > 2.0
-                    and math.hypot(x - 40.0, y + 12.0) > 10.0 and math.hypot(x - 41.0, y - 9.0) > 7.0):
+                    and math.hypot(x - 40.0, y + 12.0) > 10.0 and math.hypot(x - 41.0, y - 9.0) > 7.0
+                    and all(math.hypot(x - px, y - py) > 3.0 for px, py in FORUM_SPOTS)):
                 break
         point = origin @ Vector((x, y, 0.0))
         cluster(scene, rng, point.x, point.y, int(rng.integers(1, 5)), CITIZENS, level)
@@ -1341,6 +1380,25 @@ def forum_life(scene, rng, origin):
             scene.add("market_stall_a" if index % 2 else "market_stall_b", frame)
             point = origin @ Vector((x, side * 13.9, 0.0))
             cluster(scene, rng, point.x, point.y, int(rng.integers(1, 3)), COMMONERS, level)
+    for length, frame in arles_monuments.forum_wings():
+        wing = origin @ frame
+        columns = monuments.portico_columns(length - 1.0, 3.0, 6.4)
+        for left, right in zip(columns[:-1], columns[1:]):
+            if rng.random() > 0.22:
+                continue
+            middle = (left.translation + right.translation) / 2
+            seat = wing @ placement(middle.x + rng.uniform(-0.4, 0.4), 0.5, 0.45)
+            scene.add(pick(rng, SPECTATORS), seat)
+    for local, turn in (((20.0, 6.0), 0.0), ((20.0, -6.0), math.pi), ((31.0, 1.0), math.pi / 2)):
+        frame = origin @ placement(local[0], local[1], 0.02, turn)
+        scene.unique("life_static", arles_details.mensa(int(local[0] + local[1])), frame)
+        for side in (-0.7, 0.7):
+            point = frame @ Vector((side, 1.15, 0.0))
+            scene.add(pick(rng, CITIZENS), placement(point.x, point.y, level, facing(point.x, point.y, frame.translation.x,
+                                                                                     frame.translation.y)))
+    scene.unique("life_static", arles_details.litter(1), origin @ placement(14.0, 2.5, 0.02, -math.pi / 2 + 0.1))
+    point = origin @ Vector((27.0, 8.0, 0.0))
+    cluster(scene, rng, point.x, point.y, 4, [("fig_child", 1)], level)
     altar = origin @ Vector((1.5, 0.0, 0.0))
     for local in ((4.2, 0.0), (4.8, 1.8), (4.8, -1.8)):
         point = origin @ Vector((*local, 0.0))
@@ -1356,32 +1414,29 @@ def forum_life(scene, rng, origin):
     return origin @ Vector((1.5, 0.0, 2.2))
 
 
-def theatre_life(scene, rng, origin, top_z):
+def theatre_life(scene, rng, origin, top_z, eye):
     for index in range(14):
         angle = rng.uniform(math.pi * 1.05, math.pi * 1.95)
         radius = rng.uniform(54.0, 57.0)
         point = origin @ Vector((radius * math.cos(angle), radius * math.sin(angle), 0.0))
         cluster(scene, rng, point.x, point.y, int(rng.integers(1, 4)), COMMONERS)
-    rows = [row for row in arles_monuments.theatre_rows() if row[2] is not None]
-    ranges = arles_monuments.cuneus_ranges()
-    target = origin @ Vector((0.0, 4.0, 0.0))
-    taken = []
-    for _ in range(60):
-        r, z, _ = rows[int(rng.integers(0, len(rows)))]
-        a0, a1 = ranges[int(rng.integers(0, len(ranges)))]
-        angle = rng.uniform(a0 + 0.02, a1 - 0.02)
-        radius = r + 0.3
-        if any(abs(radius - other_r) < 0.1 and abs(angle - other_a) * radius < 0.8 for other_r, other_a in taken):
-            continue
-        taken.append((radius, angle))
-        point = origin @ Vector((radius * math.cos(angle), radius * math.sin(angle), z))
-        scene.add(pick(rng, SPECTATORS), placement(point.x, point.y, point.z,
-                                                   facing(point.x, point.y, target.x, target.y)))
-    for x in (-6.0, -2.0, 3.0, 8.0):
-        point = origin @ Vector((x, 3.6, 1.35))
-        scene.add(pick(rng, [("fig_orator", 2), ("fig_lady", 1), ("fig_citizen", 1)]),
+    variants, instances, uniques, detailed = arles_crowds.theatre_crowd(arles_crowds.eye_local(origin, eye))
+    for name, matrices in instances.items():
+        scene.instances("theatre", name, lambda name=name: variants[name], [origin @ m for m in matrices],
+                        cast_shadow=False, occlusion=False)
+    for builder in uniques:
+        scene.unique("theatre", builder, origin, occlusion=False)
+    for x, y, z, turn in detailed:
+        point = origin @ Vector((x, y, z))
+        scene.add(pick(rng, SPECTATORS), placement(point.x, point.y, point.z, turn + GRID - math.pi / 2))
+    for matrix in scene.proedria:
+        scene.add("fig_seated_toga", matrix)
+    for x in (-6.0, -2.0, 3.0, 8.0, -10.0, 12.0):
+        point = origin @ Vector((x, 3.6 + abs(x) * 0.05, 1.35))
+        scene.add(pick(rng, [("fig_orator", 2), ("fig_lady", 1), ("fig_citizen", 1), ("fig_matron", 1)]),
                   placement(point.x, point.y, point.z, facing(point.x, point.y, origin.translation.x,
                                                               origin.translation.y)))
+    return sum(len(value) for value in instances.values()), len(uniques), len(detailed)
 
 
 def arena_life(scene, rng, levels):
@@ -1394,12 +1449,19 @@ def arena_life(scene, rng, levels):
         x, y = cx + wx, cy + wy
         scene.add("market_stall_a" if index % 2 else "market_stall_b",
                   placement(x, y, scene.floor(x, y), facing(x, y, cx, cy) + math.pi))
-    for _ in range(24):
-        t = rng.uniform(0, 2 * math.pi)
+    for index in range(56):
+        t = rng.uniform(0, 2 * math.pi) if index < 24 else scene.arena_west_t + rng.uniform(-0.9, 0.9)
         grow_by = rng.uniform(2.5, 11.0)
         px, py = ellipse_point(a + grow_by, b + grow_by, t)
         wx, wy = rotate(px, py, angle)
-        cluster(scene, rng, cx + wx, cy + wy, int(rng.integers(1, 4)), COMMONERS)
+        cluster(scene, rng, cx + wx, cy + wy, int(rng.integers(1, 5)), COMMONERS if index % 3 else CITIZENS)
+    for index in range(10):
+        t = scene.arena_west_t + rng.uniform(-0.7, 0.7)
+        px, py = ellipse_point(a + 1.6, b + 1.6, t)
+        wx, wy = rotate(px, py, angle)
+        key = ("animal_dog" if index % 5 == 0 else "fig_child" if index % 2 else
+               ["fig_vendor", "fig_woman_jar_b", "fig_merchant"][index % 3])
+        scene.add(key, placement(cx + wx, cy + wy, scene.floor(cx + wx, cy + wy), rng.uniform(0, 6.28)))
 
 
 def port_life(scene, rng, quays, moorings, deck, boats, view):
@@ -1414,12 +1476,12 @@ def port_life(scene, rng, quays, moorings, deck, boats, view):
         for along in np.arange(12.0, length - 10.0, 14.0):
             (x, y), (dx, dy) = polyline_point(inner, float(along))
             normal = Vector((-dy, dx)) * inland
-            spot = Vector((x, y)) + normal * rng.uniform(4.0, 14.0)
+            spot = Vector((x, y)) + normal * rng.uniform(1.5, 7.0)
             key = ["amphora_pile", "amphora_stand", "sack_pile", "barrel_group", "block_pile"][int(rng.integers(0, 5))]
             if rng.random() < 0.08:
                 key = "crane"
                 spot = Vector((x, y)) + normal * 2.0
-            if segment_distance(spot, eye_xy, sight_end) < PROP_CLEARANCE[key] + 8.0:
+            if segment_distance(spot, eye_xy, sight_end) < PROP_CLEARANCE[key] + (8.0 if key == "crane" else 1.5):
                 continue
             heading = math.atan2(-dy, dx) if key != "crane" else math.atan2(normal.x, -normal.y)
             props[key].append(grounded(scene, spot.x, spot.y, heading, 1.2, 1.2))
@@ -1434,14 +1496,33 @@ def port_life(scene, rng, quays, moorings, deck, boats, view):
                 return deck
         return scene.floor(point.x, point.y)
 
+    sight = eye_xy + (target.to_2d() - eye_xy).normalized() * 45.0
+    berths = [index for index, mooring in enumerate(moorings) if mooring[5] == "left" and mooring[6] + 38.0 < mooring[7]]
+    front = min(berths, key=lambda index: (Vector(polyline_point(moorings[index][8], moorings[index][6] + 29.0)[0])
+                                           - sight).length) if berths else -1
     for index, (x, y, dx, dy, out, name, along_m, length, outer) in enumerate(moorings):
         along = Vector((dx, dy))
         heading = math.atan2(-along.x, along.y)
         roll = rng.random()
-        if index % 3 == 1 and along_m + 38.0 < length:
+        if (index % 3 != 0 or index == front) and along_m + 38.0 < length:
             center = Vector((x, y)) + along * 29.0 + out * 5.5
             boats["ship" if name == "left" else "barge_sacks"].append(
                 placement(center.x, center.y, WATER - scene.datum - (0.9 if name == "left" else -0.05), heading))
+            if name == "left":
+                landing = center + along * -1.3 - out * 6.9
+                if index == front:
+                    for key, (o, a_) in (("amphora_stand", (1.8, 3.2)), ("sack_pile", (3.4, -3.6)),
+                                         ("amphora_pile", (6.5, 4.5)), ("barrel_group", (7.0, -4.0))):
+                        spot = landing - out * o + along * a_
+                        props[key].append(placement(spot.x, spot.y, deck, heading + rng.uniform(-0.3, 0.3)))
+                        spots.append((spot, PROP_CLEARANCE[key]))
+                for k in range(3):
+                    point = landing - out * (1.4 + 1.5 * k) + along * rng.uniform(-0.3, 0.3)
+                    if clear(point):
+                        scene.add(["fig_porter_amphora", "fig_porter_amphora_b", "fig_porter_sack"][k],
+                                  placement(point.x, point.y, deck, math.atan2(out.x, -out.y)))
+                scene.add("fig_merchant", placement(*(landing - out * 2.0 + along * 2.2), deck,
+                                                    math.atan2(along.x, -along.y)))
             for k in range(int(rng.integers(1, 3))):
                 (px, py), _ = polyline_point(outer, along_m + 29.0 + rng.uniform(-9.0, 9.0))
                 point = Vector((px, py)) - out * rng.uniform(1.5, 9.0)
@@ -1473,8 +1554,16 @@ def port_life(scene, rng, quays, moorings, deck, boats, view):
         point = Vector((px, py))
         if clear(point):
             scene.add(pick(rng, DOCKERS), placement(px, py, deck, math.atan2(-dx, dy) + rng.choice([0.0, math.pi])))
+    for k, key in enumerate(("cart_amphorae", "cart_sacks", "cart_barrels", "cart_sacks")):
+        (px, py), (dx, dy) = polyline_point(line, start + 40.0 + 21.0 * k)
+        point = Vector((px, py)) + Vector((dy, -dx)) * rng.uniform(11.5, 13.5)
+        if clear(point):
+            scene.add(key, grounded(scene, point.x, point.y, math.atan2(-dx, dy) + (math.pi if k % 2 else 0.0),
+                                    2.2, 0.8))
+            spots.append((point, 2.4))
     for key, matrices in props.items():
-        scene.instances("port", key, PROPS[key], matrices, cast_shadow=key == "crane")
+        scene.instances("port", key, PROPS[key], matrices,
+                        cast_shadow=key in ("crane", "amphora_stand", "amphora_pile", "barrel_group", "sack_pile"))
     return {key: len(value) for key, value in props.items()}
 
 
@@ -1497,13 +1586,20 @@ def river_traffic(scene, rng, left_bank, right_bank, moving):
         offset = rng.uniform(-60.0, 60.0)
         moving["ferry"].append(placement(x - dy * offset, y + dx * offset, WATER - scene.datum + 0.18,
                                          math.atan2(-dy, -dx)))
-    for along in (300.0, 680.0, 900.0, 1150.0):
+    for along in (300.0, 680.0, 900.0, 1150.0, 470.0, 820.0):
         if along > length - 20:
             continue
         (x, y), (dx, dy) = polyline_point(middle, along)
         offset = rng.uniform(-90.0, 90.0)
         moving["skiff"].append(placement(x - dy * offset, y + dx * offset, WATER - scene.datum + 0.18,
                                          rng.uniform(0, 6.28)))
+    for along, side in ((250.0, 1), (640.0, -1), (980.0, 1)):
+        if along > length - 40:
+            continue
+        (x, y), (dx, dy) = polyline_point(middle, along)
+        offset = side * rng.uniform(25.0, 45.0)
+        heading = math.atan2(-dx, dy) + (0.0 if side > 0 else math.pi)
+        moving["ship_sail"].append(placement(x - dy * offset, y + dx * offset, WATER - scene.datum - 0.9, heading))
     return middle
 
 
@@ -1533,6 +1629,13 @@ def towing(scene, rng, halage):
 
 
 def street_life(scene, rng, rows_dense, main_streets):
+    for index, (points, along) in enumerate(((main_streets[0], 60.0), (main_streets[1], 140.0))):
+        if polyline_length(points) < along + 5:
+            continue
+        (x, y), (dx, dy) = polyline_point(points, along)
+        px, py = x - dy * 2.1, y + dx * 2.1
+        scene.unique("life_static", arles_details.litter(index + 2, [(0.55, 0.16, 0.14), (0.3, 0.36, 0.5)][index]),
+                     grounded(scene, px, py, math.atan2(-dx, dy), 1.5, 0.5, 0.0))
     for points in main_streets:
         length = polyline_length(points)
         for along in np.arange(10.0, length - 5.0, 9.0):
@@ -1598,14 +1701,36 @@ def countryside_life(scene, rng, exclusions, city):
 
 
 def circus_life(scene, rng, circus):
-    for _ in range(18):
+    groups = {name: [] for name in arles_crowds.CIRCUS_BUILDS}
+    for world, local in scene.circus_bays:
+        groups[arles_crowds.circus_variant(local)].append(world)
+    for name, matrices in groups.items():
+        scene.instances("circus", name, arles_crowds.CIRCUS_BUILDS[name], matrices, cast_shadow=False,
+                        occlusion=False)
+    track = CIRCUS_LEVEL - scene.datum + 0.03
+    x, y = circus.world(-14.0, -106.0)
+    scene.unique("life_static", arles_details.race(5), placement(x, y, track, circus.angle + math.pi))
+    for local_x, local_y, faction, seed in ((-12.0, 195.0, "veneta", 21), (11.0, 193.5, "albata", 25)):
+        x, y = circus.world(local_x, local_y)
+        scene.unique("life_static", arles_details.waiting_team(faction, seed),
+                     placement(x, y, track, circus.angle + math.pi + rng.uniform(-0.1, 0.1)))
+    for index, (local_x, local_y) in enumerate(((-24.0, 236.0), (-9.0, 239.0), (6.0, 235.0), (21.0, 238.0),
+                                                (34.0, 233.0))):
+        x, y = circus.world(local_x, local_y)
+        heading = circus.angle + (math.pi / 2 if index % 2 else -math.pi / 2)
+        scene.unique("life_static", arles_details.led_horse(index), grounded(scene, x, y, heading, 1.0, 0.5))
+    for local_x, local_y in ((-20.0, 200.0), (-4.0, 199.0), (16.0, 199.5)):
+        x, y = circus.world(local_x, local_y)
+        cluster(scene, rng, x, y, 3, [("fig_worker", 2), ("fig_worker_b", 2), ("fig_merchant", 1)], track)
+    for _ in range(26):
         local_x = float(rng.choice([-1.0, 1.0])) * rng.uniform(52.0, 60.0)
         local_y = rng.uniform(-170.0, 200.0)
         x, y = circus.world(local_x, local_y)
         cluster(scene, rng, x, y, int(rng.integers(1, 3)), COMMONERS)
     for local_y in (-60.0, 20.0, 90.0):
-        x, y = circus.world(rng.uniform(-20, 20), local_y)
-        scene.add("fig_worker", placement(x, y, CIRCUS_LEVEL - scene.datum + 0.03, rng.uniform(0, 6.28)))
+        x, y = circus.world(rng.uniform(7.0, 12.0), local_y)
+        sx, sy = circus.world(0.0, local_y)
+        scene.add("fig_woman_jar" if local_y > 0 else "fig_worker", placement(x, y, track, facing(x, y, sx, sy)))
 
 
 LIFE_BUILDS = {key: (lambda spec=spec: arles_life.person(spec)) for key, spec in arles_life.PEOPLE.items()}
@@ -1627,7 +1752,8 @@ LIFE_BUILDS.update({
     "barge_towed": lambda: arles_life.barge(cargo="blocks", seed=9),
 })
 BOATS = {
-    "ship": lambda: arles_life.seagoing_ship(),
+    "ship": lambda: arles_life.seagoing_ship(gangplank=True),
+    "ship_sail": lambda: arles_life.seagoing_ship(seed=3, sail="set"),
     "barge_blocks": lambda: arles_life.barge(cargo="blocks", seed=1),
     "barge_amphorae": lambda: arles_life.barge(cargo="amphorae", seed=2),
     "barge_sacks": lambda: arles_life.barge(cargo="sacks", seed=3),
@@ -1645,14 +1771,24 @@ PROPS = {
 }
 
 
+BAKED = ("fig_magistrate", "fig_citizen", "fig_orator", "fig_citizen_b", "fig_vendor", "fig_hauler", "pack_donkey",
+         "cart_barrels")
+
+
 def place_life(scene):
     counts = {}
     for key, matrices in scene.placements.items():
+        counts[key] = len(matrices)
+        if key in BAKED:
+            builder = LIFE_BUILDS[key]()
+            for matrix in matrices:
+                scene.unique("life_static", builder, matrix, occlusion=False)
+            continue
         group = "statues" if key.startswith("statue") else "life"
         figure = key.startswith("fig_")
-        scene.instances(group, key, LIFE_BUILDS[key], matrices, cast_shadow=not key.startswith("animal_sheep"),
+        scene.instances(group, key, LIFE_BUILDS[key], matrices,
+                        cast_shadow=not key.startswith(("animal_sheep", "fig_seated")),
                         occlusion=not figure and not key.startswith(("animal", "pack")))
-        counts[key] = len(matrices)
     return counts
 
 
@@ -1693,33 +1829,36 @@ def build_markers(scene, origin, theatre_origin, arena_west, circus, quays, deck
         t = west_t + step * 0.02
         px, py = ellipse_point(a + 28.0, b + 28.0, t)
         wx, wy = rotate(px, py, angle)
-        delta = abs(scene.ground(cx + wx, cy + wy) - arena_z)
-        score = delta + abs(step) * 0.04
+        score = abs(scene.ground(cx + wx, cy + wy) - arena_z) + abs(step) * 0.04
         if best is None or score < best[0]:
             best = (score, t, cx + wx, cy + wy)
     _, eye_t, ex, ey = best
-    tx_, ty_ = rotate(*ellipse_point(a, b, eye_t - 0.32), angle)
-    points["amphitheatre"] = (Vector((ex, ey, max(scene.ground(ex, ey), arena_z) + 1.7)),
-                              Vector((cx + tx_, cy + ty_, arena_z + 10.0)))
-    left = [quay for quay in quays if quay[0] == "left"][0]
-    (x, y), (dx, dy) = polyline_point(left[2], polyline_length(left[2]) * 0.55)
-    inland = Vector((-dy, dx)) * -1.0
-    eye = Vector((x, y, deck + 7.0)) + inland.to_3d() * 16.0 - Vector((dx, dy, 0.0)) * 25.0
-    target = Vector((x, y, WATER - scene.datum)) - inland.to_3d() * 55.0 + Vector((dx, dy, 0.0)) * 40.0
-    points["port-trinquetaille"] = (eye, target)
-    eye_xy = circus.world(12.0, -128.0)
-    target_xy = circus.world(-2.0, 150.0)
-    points["cirque"] = (Vector((*eye_xy, CIRCUS_LEVEL - scene.datum + 10.0)),
-                        Vector((*target_xy, CIRCUS_LEVEL - scene.datum + 3.0)))
-    aim = Vector((120.0, 0.0, levels["forum"] - scene.datum))
-    azimuth = math.radians(230.0)
-    eye_xy = aim.to_2d() + Vector((math.sin(azimuth), math.cos(azimuth))) * 750.0
-    points["vue-d-ensemble"] = (Vector((eye_xy.x, eye_xy.y, levels["forum"] - scene.datum + 240.0)), aim)
+    tx_, ty_ = rotate(*ellipse_point(a, b, eye_t - 0.3), angle)
+    points["amphitheatre"] = (Vector((ex, ey, max(scene.floor(ex, ey), arena_z) + 1.7)),
+                              Vector((cx + tx_, cy + ty_, arena_z + 9.0)))
+    points["port-trinquetaille"] = port_view(quays, deck, scene.datum)
+    eye_xy = circus.world(9.0, -160.0)
+    target_xy = circus.world(-4.0, 0.0)
+    points["cirque"] = (Vector((*eye_xy, CIRCUS_LEVEL - scene.datum + 4.5)),
+                        Vector((*target_xy, CIRCUS_LEVEL - scene.datum + 2.0)))
+    aim = Vector((-350.0, -60.0, levels["forum"] - scene.datum))
+    azimuth = math.radians(225.0)
+    eye_xy = aim.to_2d() + Vector((math.sin(azimuth), math.cos(azimuth))) * 820.0
+    points["vue-d-ensemble"] = (Vector((eye_xy.x, eye_xy.y, levels["forum"] - scene.datum + 250.0)), aim)
     root = scene.root("markers")
     for key, (eye, target) in points.items():
         new_empty(f"poi_{key}", scene.collection, root, Matrix.Translation(eye))
         new_empty(f"poi_{key}_target", scene.collection, root, Matrix.Translation(target))
     return points
+
+
+def port_view(quays, deck, datum):
+    left = [quay for quay in quays if quay[0] == "left"][0]
+    (x, y), (dx, dy) = polyline_point(left[2], polyline_length(left[2]) * 0.55)
+    inland = Vector((-dy, dx)) * -1.0
+    eye = Vector((x, y, deck + 7.0)) + inland.to_3d() * 16.0 - Vector((dx, dy, 0.0)) * 25.0
+    target = Vector((x, y, WATER - datum)) - inland.to_3d() * 42.0 + Vector((dx, dy, 0.0)) * 60.0
+    return eye, target
 
 
 def site_exclusions(circus, quays, main_streets):
@@ -1744,7 +1883,7 @@ def site_exclusions(circus, quays, main_streets):
         exclusions.polyline(points, 3.0)
     exclusions.polyline(WALL_TRACE, 10.0)
     for name, line, inner, outer in quays:
-        exclusions.polyline(inner, 62.0)
+        exclusions.polyline(inner, 30.0)
     return exclusions
 
 
@@ -1772,9 +1911,9 @@ def trim_to(points, polygon):
 
 
 def build_life(scene, rng, origin, theatre_origin, top_z, levels, quays, moorings, deck, rows_dense, main_streets,
-               gate_frames, circus, left_bank, right_bank, farms_points, port_view, halage):
+               gate_frames, circus, left_bank, right_bank, farms_points, port_view, halage, views):
     altar_smoke = forum_life(scene, rng, origin)
-    theatre_life(scene, rng, theatre_origin, top_z)
+    crowd_counts = theatre_life(scene, rng, theatre_origin, top_z, views["theatre"][0])
     arena_life(scene, rng, levels)
     boats = {key: [] for key in BOATS}
     prop_counts = port_life(scene, rng, quays, moorings, deck, boats, port_view)
@@ -1787,6 +1926,7 @@ def build_life(scene, rng, origin, theatre_origin, top_z, levels, quays, mooring
     road_life(scene, rng, gate_frames)
     countryside_life(scene, rng, None, None)
     circus_life(scene, rng, circus)
+    tufts = ground_detail(scene, rng, quays, circus)
     root = scene.root("life")
     smokes = [altar_smoke]
     near = sorted(rows_dense, key=lambda row: math.hypot(row[0], row[1]))[:300]
@@ -1810,7 +1950,41 @@ def build_life(scene, rng, origin, theatre_origin, top_z, levels, quays, mooring
         created = new_object(key, mesh, scene.collection, root, placement(6000.0 + index * 3.0, 0.0, 0.0))
         created["cast_shadow"] = True
     return {"boats": boat_counts, "props": prop_counts, "smoke_sources": len(smokes), "bird_flocks": len(flocks),
-            "walker_variants": len(arles_life.WALKERS), "figures_skipped_near_routes": scene.skipped}
+            "walker_variants": len(arles_life.WALKERS), "figures_skipped_near_routes": scene.skipped,
+            "theatre_crowd": {"instanced_wedges": crowd_counts[0], "unique_wedges": crowd_counts[1],
+                              "near_detailed": crowd_counts[2]}, "tufts": tufts}
+
+
+def ground_detail(scene, rng, quays, circus):
+    random_state = random.Random(int(rng.integers(0, 1 << 30)))
+    points = []
+    for grow_by, keep in ((APRON + 2.9, 0.4), (APRON + 4.2, 0.2), (0.5, 0.25)):
+        ring = arena_ring(grow_by, 260)
+        points += arles_details.scatter_line(ring + ring[:1], 2.0, 0.0, random_state, 0.4, keep)
+    for side in (-1.0, 1.0):
+        points += arles_details.scatter_line(WALL_TRACE, 2.4, side * 1.9, random_state, 0.5, 0.3)
+    for name in ("aurelia", "circus", "ernaginum"):
+        road = ROADS[name][:3]
+        for side in (-1.0, 1.0):
+            points += arles_details.scatter_line(road, 2.2, side * 3.4, random_state, 0.6, 0.3)
+    tx, ty = SITES["theatre"]
+    ring = [(tx + 52.5 * math.cos(t), ty + 52.5 * math.sin(t)) for t in np.linspace(0, 2 * math.pi, 120)]
+    points += arles_details.scatter_line(ring, 2.0, 0.0, random_state, 0.4, 0.35)
+    outline = [circus.world(x, y) for x, y, _ in arles_monuments.circus_outline(arles_monuments.CIRCUS_DEPTH + 1.2)]
+    points += arles_details.scatter_line(outline, 2.4, 0.0, random_state, 0.5, 0.3)
+    for name, line, inner, outer in quays:
+        inland = -1.0 if name == "left" else 1.0
+        points += arles_details.scatter_line(inner, 2.0, inland * 1.2, random_state, 0.8, 0.45)
+    frames = []
+    for x, y in points:
+        if abs(x) > HALF - 20 or abs(y) > HALF - 20:
+            continue
+        z = scene.ground(x, y)
+        if z < 0.4:
+            continue
+        frames.append(placement(x, y, z, random_state.uniform(0, 6.28), random_state.uniform(0.7, 1.4)))
+    scene.instances("life", "tuft", arles_details.DETAIL_BUILDS["tuft"], frames, cast_shadow=False, occlusion=False)
+    return len(frames)
 
 
 def farms(scene, exclusions, city, rng):
@@ -1825,7 +1999,7 @@ def farms(scene, exclusions, city, rng):
             points.append((x, y))
         if len(points) >= 9:
             break
-    scene.instances("countryside", "farmstead", buildings.farmstead,
+    scene.instances("countryside", "farmstead", lambda: arles_details.recast(buildings.farmstead(), PLASTERED),
                     [placement(x, y, min(relief(scene, x, y, 12.0)[0]) - 0.1, GRID + rng.integers(0, 4) * math.pi / 2)
                      for x, y in points])
     return points
@@ -1837,11 +2011,11 @@ def render_previews(options, views):
         return {}
     names = list(views) if wanted == "all" else wanted.split(",")
     stage = ensure_collection("Stage")
-    evening_world(SUN_AZIMUTH, SUN_ELEVATION, 0.12, aerosol=0.3)
+    evening_world(SUN_AZIMUTH, SUN_ELEVATION, 0.12, aerosol=0.6)
     lamp = sun_lamp(stage, SUN_AZIMUTH, SUN_ELEVATION, 7.5, (1.0, 0.72, 0.47), 0.8)
     if hasattr(lamp.data, "shadow_filter_radius"):
         lamp.data.shadow_filter_radius = 2.0
-    haze_volume(stage, 45000.0, 700.0, 0.00004, (0.92, 0.85, 0.74), 0.3)
+    haze_volume(stage, 45000.0, 700.0, 0.00004, SITE_HAZE, 0.3)
     configure_render(1280, 720, options["samples"], exposure=0.15, volumetric_end=40000.0)
     timings = {}
     lenses = {"vue-d-ensemble": 30.0, "forum": 26.0, "theatre": 24.0, "amphitheatre": 24.0, "port-trinquetaille": 28.0,
@@ -2174,7 +2348,7 @@ def main():
     scene.avoid_routes([points for _, points, _ in specs])
     life_counts = build_life(scene, rng, origin, theatre_origin, top_z, levels, quays, moorings, deck, rows_dense,
                              main_streets, gate_frames, circus, left_bank, right_bank, farm_points,
-                             points["port-trinquetaille"], halage)
+                             points["port-trinquetaille"], halage, points)
     add_routes(scene, specs)
     placed = place_life(scene)
     scene.flush()

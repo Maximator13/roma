@@ -50,18 +50,18 @@ def amphitheatre_bay(width):
     builder = MeshBuilder()
     half = width / 2
     opening = (width - 2.2) / 2
-    arched_wall(builder, -half, half, -1.2, 0.0, 0.0, 7.5, [(0.0, opening, 4.9)], WEATHERED, segments=7,
+    arched_wall(builder, -half, half, -1.2, 0.0, 0.0, 7.5, [(0.0, opening, 4.9)], ASHLAR, segments=7,
                 foundation=2.5)
     builder.merge(pilaster(1.1, 7.2, 0.22, ASHLAR), placement(-half, 0.0, 0.3))
-    builder.box((-half, -1.2, 7.5), (half, -0.4, 8.4), WEATHERED, bottom=False)
+    builder.box((-half, -1.2, 7.5), (half, -0.4, 8.4), ASHLAR, bottom=False)
     straight_moulding(builder, -half, half, 7.5, simple_entablature_profile(0.9, 0.38), ASHLAR)
-    arched_wall(builder, -half, half, -1.2, 0.0, 8.4, 15.4, [(0.0, opening, 12.3)], WEATHERED, segments=7,
+    arched_wall(builder, -half, half, -1.2, 0.0, 8.4, 15.4, [(0.0, opening, 12.3)], ASHLAR, segments=7,
                 sill=9.3)
     builder.merge(column("tuscan", 0.82, 6.0, detail="low", material=ASHLAR, arc=ENGAGED_HALF),
                   placement(-half, 0.05, 9.4))
-    builder.box((-half, -1.2, 15.4), (half, -0.4, 16.4), WEATHERED, bottom=False)
+    builder.box((-half, -1.2, 15.4), (half, -0.4, 16.4), ASHLAR, bottom=False)
     straight_moulding(builder, -half, half, 15.4, simple_entablature_profile(1.0, 0.42), ASHLAR)
-    builder.box((-half, -1.0, 16.4), (half, 0.0, 20.4), WEATHERED, bottom=False)
+    builder.box((-half, -1.0, 16.4), (half, 0.0, 20.4), ASHLAR, bottom=False)
     straight_moulding(builder, -half, half, 20.4, simple_entablature_profile(0.6, 0.32), ASHLAR)
     for x in (-width / 4, width / 4):
         builder.box((x - 0.22, 0.0, 19.35), (x + 0.22, 0.6, 19.95), ASHLAR)
@@ -249,9 +249,9 @@ def augustus_gate():
     straight_moulding(builder, -10.0, 10.0, 11.6, simple_entablature_profile(0.35, 0.25), ASHLAR, y=-0.1)
     for side in (-1, 1):
         tower = MeshBuilder()
-        tower.lathe([(5.0, -3.0), (5.0, 15.3)], 20, WEATHERED, smooth=True, start=0.0, sweep=math.pi, caps=False,
+        tower.lathe([(5.0, -3.0), (5.0, 15.3)], 20, ASHLAR, smooth=True, start=0.0, sweep=math.pi, caps=False,
                     matrix=placement(0.0, -1.0, 0.0))
-        tower.box((-5.0, -12.0, -3.0), (5.0, -1.0, 15.3), WEATHERED, bottom=False)
+        tower.box((-5.0, -12.0, -3.0), (5.0, -1.0, 15.3), ASHLAR, bottom=False)
         tower.lathe([(5.0, 15.3), (5.3, 15.6), (5.3, 16.1)], 20, ASHLAR, start=0.0, sweep=math.pi, caps=False,
                     matrix=placement(0.0, -1.0, 0.0))
         tower.box((-5.3, -12.0, 15.3), (5.3, -1.0, 16.1), ASHLAR, bottom=False)
@@ -259,7 +259,7 @@ def augustus_gate():
                     matrix=placement(0.0, -1.0, 0.0))
         tower.oriented([(-5.5, -1.0, 16.1), (5.5, -1.0, 16.1), (0.0, -1.0, 19.4)], (0, -1, 0), TILES)
         gable_roof(tower, -12.3, -1.0, 5.5, 16.1, 19.4, TILES, along_axis="y", imbrex=False)
-        tower.oriented([(-5.0, -12.0, 16.1), (5.0, -12.0, 16.1), (0.0, -12.0, 19.1)], (0, -1, 0), WEATHERED)
+        tower.oriented([(-5.0, -12.0, 16.1), (5.0, -12.0, 16.1), (0.0, -12.0, 19.1)], (0, -1, 0), ASHLAR)
         tower_windows(tower, (0.0, -1.0, 0.0), 5.0, 12.5, (45, 90, 135))
         builder.merge(tower, placement(side * 15.0, 0.0, 0.0))
     for side in (-1, 1):

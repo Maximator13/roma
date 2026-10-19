@@ -3,10 +3,10 @@
   "assets": [
     {
       "path": "scenes/arles/arles.glb",
-      "bytes": 6111556,
-      "sha256": "3538ab59f493507de548986efc9277fa043a04ca644fe76dfb651539ba06cc0f",
-      "release": "assets-v4",
-      "file": "3538ab59f493-arles.glb"
+      "bytes": 7229856,
+      "sha256": "847b7352c44013172241ad8af749453579500846fe641a6eb87ab32539f5448e",
+      "release": "assets-v8",
+      "file": "847b7352c440-arles.glb"
     },
     {
       "path": "scenes/cannes/cannes.glb",
@@ -17,24 +17,24 @@
     },
     {
       "path": "scenes/nimes/nimes.glb",
-      "bytes": 7613300,
-      "sha256": "6abbac8a865a4c8b380c852a8afc197049a7cf9f3bc73bdc2ad39be72f79269c",
-      "release": "assets-v3",
-      "file": "6abbac8a865a-nimes.glb"
+      "bytes": 8397984,
+      "sha256": "e8b6723f9150ef167866020e3d6c7968508feda6859efbd92be01c27326e2c01",
+      "release": "assets-v7",
+      "file": "e8b6723f9150-nimes.glb"
     },
     {
       "path": "scenes/pantheon/pantheon.glb",
-      "bytes": 7822168,
-      "sha256": "1af410bdfec1148b0ab9b1f4d40afa952082f340a67f4a3460899fcb1acf3ed9",
-      "release": "assets-v2",
-      "file": "1af410bdfec1-pantheon.glb"
+      "bytes": 8293552,
+      "sha256": "356690e404ac6928959b50c10ba0b8d998e1740cffc5d56bd1e10a0a89c73e12",
+      "release": "assets-v10",
+      "file": "356690e404ac-pantheon.glb"
     },
     {
       "path": "scenes/pont-du-gard/pont-du-gard.glb",
-      "bytes": 3553372,
-      "sha256": "c03d1a3eb892c017a1bb54120ecd17c6481b0177d9aad581cde91907d60b88ad",
-      "release": "assets-v5",
-      "file": "c03d1a3eb892-pont-du-gard.glb"
+      "bytes": 4160392,
+      "sha256": "708fbac91203eec12526c58512f557e9ec4221be2f0feaa40404916c4a2c7d6a",
+      "release": "assets-v9",
+      "file": "708fbac91203-pont-du-gard.glb"
     }
   ]
 }

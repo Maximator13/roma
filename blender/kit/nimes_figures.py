@@ -10,6 +10,19 @@ TAU = 2 * math.pi
 FRONT = math.pi / 2
 UP = Vector((0.0, 0.0, 1.0))
 BRONZE_PIN = (0.78, 0.60, 0.32)
+LOD = [1.0]
+
+
+def detail(count, minimum=3):
+    return max(minimum, int(round(count * LOD[0])))
+
+
+def coarse(build, scale=0.4):
+    LOD[0] = scale
+    try:
+        return build()
+    finally:
+        LOD[0] = 1.0
 
 
 def perpendicular(axis, hint=None):
@@ -23,6 +36,7 @@ def perpendicular(axis, hint=None):
 
 def tube(builder, path, radii, color, sides=6, material=MATTE, cap=True, start_cap=False, squash=1.0):
     path = [Vector(point) for point in path]
+    sides = detail(sides)
     first = len(builder.polygons)
     rings = []
     u = None
@@ -49,6 +63,8 @@ def tube(builder, path, radii, color, sides=6, material=MATTE, cap=True, start_c
 
 
 def ellipsoid(builder, center, radii, color, segments=10, rings=6, material=MATTE, matrix=None):
+    segments = detail(segments)
+    rings = detail(rings, 2)
     profile = [(math.sin(math.pi * k / rings), -math.cos(math.pi * k / rings)) for k in range(rings + 1)]
     transform = Matrix.Translation(center) @ Matrix.Diagonal((*radii, 1.0))
     if matrix is not None:
@@ -61,6 +77,7 @@ def ellipsoid(builder, center, radii, color, segments=10, rings=6, material=MATT
 def drape(builder, color, profile, segments=16, start=0.0, sweep=TAU, folds=(9, 0.05, 0.0), dip=None, squash=0.74,
           center=(0.0, 0.0), material=MATTE, fade=1.0, matrix=None):
     full = abs(sweep - TAU) < 1e-6
+    segments = detail(segments)
     count = segments if full else segments + 1
     angles = [start + sweep * step / segments for step in range(count)]
     transform = matrix if matrix is not None else Matrix.Identity(4)
@@ -187,7 +204,8 @@ def torso_radius(profile, height):
     return profile[0][0] if height < profile[0][1] else profile[-1][0]
 
 
-def balteus(builder, color, profile, material, segments=12):
+def balteus(builder, color, profile, material, segments=16):
+    segments = detail(segments)
     rings = []
     for offset, push in ((-0.09, 0.03), (0.0, 0.055), (0.09, 0.03)):
         ring = []
@@ -221,8 +239,8 @@ def nose(builder, color, material):
 def hair_cap(builder, color, style, material):
     center = Vector((0.0, 0.004, 1.618))
     radii = (0.094, 0.11, 0.126)
-    segments = 10
-    rows = 3
+    segments = detail(12)
+    rows = 4
 
     def lowest(angle):
         front = 0.5 + 0.5 * math.cos(angle - FRONT)
@@ -256,19 +274,23 @@ def hair_cap(builder, color, style, material):
 
 def head_parts(spec, skin, hair, material):
     top = MeshBuilder()
-    tube(top, [(0.0, 0.0, 1.43), (0.0, 0.012, 1.535)], [0.05, 0.045], skin, 6, material, cap=False)
-    ellipsoid(top, (0.0, 0.008, 1.615), (0.086, 0.102, 0.118), skin, 10, 6, material)
+    tube(top, [(0.0, 0.0, 1.43), (0.0, 0.012, 1.535)], [0.05, 0.045], skin, 8, material, cap=False)
+    ellipsoid(top, (0.0, 0.008, 1.615), (0.086, 0.102, 0.118), skin, 12, 8, material)
+    ellipsoid(top, (0.0, 0.05, 1.535), (0.058, 0.05, 0.04), skin, 8, 4, material)
     nose(top, skin, material)
+    if spec.hood is None and not spec.veil and not spec.female:
+        for side in (-1, 1):
+            ellipsoid(top, (side * 0.088, -0.004, 1.607), (0.012, 0.022, 0.03), skin, 5, 3, material)
     if spec.hood is None:
         hair_cap(top, hair, "long" if spec.female else spec.hair_style, material)
     veil = spec.palla if (spec.veil and spec.palla) else (spec.toga if spec.veil else None)
     if veil is not None:
         drape(top, tone(spec, veil), [(0.205, 1.37), (0.155, 1.47), (0.128, 1.56), (0.126, 1.645), (0.1, 1.725),
-                                      (0.048, 1.768), (0.0, 1.78)], 12, start=FRONT + 0.7, sweep=TAU - 1.4,
+                                      (0.048, 1.768), (0.0, 1.78)], 14, start=FRONT + 0.7, sweep=TAU - 1.4,
               folds=(7, 0.035, spec.seed), squash=0.92, center=(0.0, -0.014), material=material)
     if spec.hood is not None:
         cowl = tone(spec, spec.hood)
-        drape(top, cowl, [(0.215, 1.36), (0.162, 1.46), (0.134, 1.56), (0.132, 1.66)], 12, start=FRONT + 0.62,
+        drape(top, cowl, [(0.215, 1.36), (0.162, 1.46), (0.134, 1.56), (0.132, 1.66)], 14, start=FRONT + 0.62,
               sweep=TAU - 1.24, folds=(5, 0.04, spec.seed), squash=0.92, center=(0.0, -0.02), material=material)
         drape(top, cowl, [(0.132, 1.66), (0.1, 1.74), (0.04, 1.8), (0.0, 1.83)], 10, folds=(3, 0.03, spec.seed),
               squash=0.92, center=(0.0, -0.03), material=material)
@@ -290,12 +312,17 @@ def limb_set(builder, spec, skin, sleeve, arm, material):
         shoulder = Vector((side * 0.182, 0.0, 1.38))
         covered = arm[index]
         upper_end = shoulder.lerp(elbow, 0.55 if spec.sleeves == "short" else 1.0)
-        tube(builder, [shoulder + Vector((0.0, 0.0, 0.03)), upper_end], [0.066, 0.06], sleeve[index], 5, material)
-        tube(builder, [shoulder.lerp(elbow, 0.35), elbow, wrist], [0.046, 0.04, 0.031], covered, 5, material,
-             cap=False)
+        tube(builder, [shoulder + Vector((0.0, 0.0, 0.03)), shoulder.lerp(upper_end, 0.5), upper_end],
+             [0.066, 0.068, 0.062], sleeve[index], 7, material)
+        tube(builder, [shoulder.lerp(elbow, 0.35), elbow, elbow.lerp(wrist, 0.5), wrist], [0.046, 0.04, 0.037, 0.03],
+             covered, 6, material, cap=False)
         direction = (wrist - elbow).normalized()
-        tube(builder, [wrist, wrist + direction * 0.055, wrist + direction * 0.1],
-             [0.033, 0.037, 0.016], skin, 4, material, cap=False, squash=0.6)
+        tube(builder, [wrist, wrist + direction * 0.04, wrist + direction * 0.08, wrist + direction * 0.11],
+             [0.03, 0.036, 0.032, 0.012], skin, 5, material, cap=False, squash=0.55)
+        forward = Vector((0.0, 1.0, 0.0)) - direction * direction.y
+        forward = forward.normalized() if forward.length > 1e-4 else Vector((0.0, 1.0, 0.0))
+        thumb = wrist + direction * 0.025 + forward * 0.022
+        tube(builder, [thumb, thumb + direction * 0.035 + forward * 0.018], [0.012, 0.008], skin, 4, material)
 
 
 def legs(builder, spec, skin, leather, material):
@@ -304,13 +331,13 @@ def legs(builder, spec, skin, leather, material):
         x = side * 0.085
         y = side * spec.stride
         if long:
-            tube(builder, [(x, y - 0.02, 0.038), (x, y + 0.13, 0.03)], [0.037, 0.033], leather, 5, material,
+            tube(builder, [(x, y - 0.02, 0.038), (x, y + 0.13, 0.03)], [0.037, 0.033], leather, 6, material,
                  start_cap=True)
             continue
-        tube(builder, [(x, y - 0.06, 0.04), (x, y + 0.15, 0.03)], [0.038, 0.034], leather, 5, material,
+        tube(builder, [(x, y - 0.06, 0.04), (x, y + 0.15, 0.03)], [0.038, 0.034], leather, 6, material,
              start_cap=True)
-        tube(builder, [(x, y - 0.035, 0.05), (x * 1.04, y * 0.55, 0.46), (x * 1.1, y * 0.25, spec.hem + 0.09)],
-             [0.04, 0.05, 0.064], skin, 5, material, cap=False)
+        tube(builder, [(x, y - 0.035, 0.05), (x * 1.02, y * 0.75, 0.25), (x * 1.04, y * 0.55, 0.46),
+                       (x * 1.1, y * 0.25, spec.hem + 0.09)], [0.04, 0.052, 0.05, 0.064], skin, 6, material, cap=False)
 
 
 def carried(builder, spec, material):
@@ -335,7 +362,7 @@ def carried(builder, spec, material):
         drape(builder, tone(spec, (0.85, 0.66, 0.36)), [(0.0, -0.02), (0.1, 0.0), (0.11, 0.02)], 10,
               folds=(0, 0.0, 0.0), squash=1.0, material=material, matrix=frame)
     elif spec.carry == "bundle":
-        ellipsoid(builder, (0.0, -0.21, 1.17), (0.17, 0.11, 0.21), tone(spec, (0.62, 0.55, 0.42)), 8, 5, material)
+        ellipsoid(builder, (0.0, -0.21, 1.17), (0.17, 0.11, 0.21), tone(spec, (0.62, 0.55, 0.42)), 6, 4, material)
         tube(builder, [(0.15, 0.12, 1.4), (-0.08, 0.15, 1.15), (-0.18, 0.05, 0.98)], [0.016, 0.016, 0.016],
              tone(spec, LEATHER), 4, material)
     elif spec.carry == "staff":
@@ -366,7 +393,7 @@ def person(spec):
     if spec.toga is None:
         middle = (spec.hem + waist) / 2
         skirt = [(hem_radius, spec.hem), (hem_radius * 0.93 + 0.012, middle), (0.172, waist)]
-        drape(builder, tunic, skirt, 16, folds=(4, 0.04, phase), squash=0.74, material=m,
+        drape(builder, tunic, skirt, 20, folds=(5, 0.045, phase), squash=0.74, material=m,
               dip=lambda angle: 0.03 * math.sin(angle) if spec.female else 0.0)
         if spec.stripe is not None:
             stripe = tone(spec, spec.stripe)
@@ -377,7 +404,7 @@ def person(spec):
     torso_colour = tunic
     if spec.exomis:
         torso_colour = lambda angle, height: skin if (math.cos(angle) > 0.2 and height > 1.17) else tunic
-    drape(builder, torso_colour, profile, 10, folds=(3, 0.02, phase), squash=0.66, material=m)
+    drape(builder, torso_colour, profile, 12, folds=(3, 0.02, phase), squash=0.66, material=m)
     if spec.belt is not None:
         drape(builder, tone(spec, spec.belt), [(0.177, 0.985), (0.179, 1.03)], 12, folds=(0, 0.0, 0.0),
               squash=0.68, material=m)
@@ -391,14 +418,14 @@ def person(spec):
         arm[1] = toga
         dusty = tuple(value * 0.9 for value in toga)
         hem_colour = lambda angle, height, toga=toga, dusty=dusty: dusty if height < 0.3 else toga
-        drape(builder, hem_colour, [(0.19, 0.1), (0.235, 0.45), (0.225, 0.8), (0.19, 1.03)], 18,
-              folds=(5, 0.06, phase), squash=0.76, material=m, dip=lambda angle: -0.05 * math.sin(angle))
+        drape(builder, hem_colour, [(0.19, 0.1), (0.235, 0.45), (0.225, 0.8), (0.19, 1.03)], 20,
+              folds=(7, 0.07, phase), squash=0.76, material=m, dip=lambda angle: -0.05 * math.sin(angle))
         swag = lambda angle: -0.11 * max(0.0, math.cos(angle - FRONT - 0.35))
-        drape(builder, toga, [(0.262, 0.52), (0.252, 0.78), (0.222, 1.02), (0.2, 1.14)], 10, start=FRONT - 1.25,
-              sweep=2.4, folds=(6, 0.085, phase), squash=0.8, material=m, dip=swag)
+        drape(builder, toga, [(0.262, 0.52), (0.252, 0.78), (0.222, 1.02), (0.2, 1.14)], 16, start=FRONT - 1.25,
+              sweep=2.4, folds=(8, 0.09, phase), squash=0.8, material=m, dip=swag)
         if spec.praetexta is not None:
-            drape(builder, tone(spec, spec.praetexta), [(0.266, 0.505), (0.265, 0.56)], 10, start=FRONT - 1.25,
-                  sweep=2.4, folds=(6, 0.085, phase), squash=0.8, material=m, dip=swag, fade=0.0)
+            drape(builder, tone(spec, spec.praetexta), [(0.266, 0.505), (0.265, 0.56)], 16, start=FRONT - 1.25,
+                  sweep=2.4, folds=(8, 0.09, phase), squash=0.8, material=m, dip=swag, fade=0.0)
         balteus(builder, toga, profile, m)
         strip(builder, toga, [(-0.11, 0.13, 1.43), (-0.12, 0.165, 1.08), (-0.135, 0.19, 0.7), (-0.135, 0.2, 0.34)],
               0.15, 1, m)
@@ -407,13 +434,13 @@ def person(spec):
     if spec.palla is not None:
         mantle = tone(spec, spec.palla)
         sleeve[1] = mantle
-        drape(builder, mantle, [(0.238, 0.58), (0.25, 0.86), (0.234, 1.16), (0.207, 1.34), (0.13, 1.45)], 14,
-              start=math.radians(125), sweep=math.radians(290), folds=(4, 0.05, phase), squash=0.78, material=m,
+        drape(builder, mantle, [(0.238, 0.58), (0.25, 0.86), (0.234, 1.16), (0.207, 1.34), (0.13, 1.45)], 20,
+              start=math.radians(125), sweep=math.radians(290), folds=(6, 0.06, phase), squash=0.78, material=m,
               dip=lambda angle: 0.12 * math.cos(angle))
     if spec.cloak is not None:
         sagum = tone(spec, spec.cloak)
         sleeve[1] = sagum
-        drape(builder, sagum, [(0.122, 1.475), (0.238, 1.385), (0.258, 1.0), (0.272, 0.64)], 12,
+        drape(builder, sagum, [(0.122, 1.475), (0.238, 1.385), (0.258, 1.0), (0.272, 0.64)], 16,
               start=math.radians(100), sweep=math.radians(250), folds=(4, 0.06, phase), squash=0.8, material=m,
               dip=lambda angle: -0.06 * math.sin(angle))
         ellipsoid(builder, (0.15, 0.1, 1.41), (0.025, 0.02, 0.025), tone(spec, BRONZE_PIN), 5, 3, m)

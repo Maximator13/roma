@@ -265,10 +265,13 @@ def carve_quarry(field):
         along = np.where(d < best, (travelled + t * length) / total, along)
         best = np.minimum(best, d)
         travelled += length
+    front = [QUARRY_PIT[index] for index in QUARRY_FRONT]
+    apron = QUARRY_FLOOR + 1.5 - 0.22 * polyline_distance(front, field.grid_x, field.grid_y)
+    field.heights = np.where(inside, np.maximum(field.heights, apron), field.heights)
     breach = np.zeros(field.heights.shape, dtype=bool)
     for a, b in DIKE_BREACHES:
         breach |= (along > a) & (along < b)
-    crest = QUARRY_FLOOR + 3.4 + (noise - 0.5) * 0.9
+    crest = QUARRY_FLOOR + 3.4 + (noise - 0.5) * 2.4
     bump = np.exp(-(best / 5.5) ** 2)
     raised = field.heights * (1 - bump) + crest * bump
     field.heights = np.where(~breach & (bump > 0.05), np.maximum(field.heights, raised), field.heights)
@@ -289,16 +292,18 @@ def dike_point(fraction):
 
 
 def classify(xs, ys, h, slope, water_level, near_water, quarry_inside, noise, fine, speck, maquis, far_weight,
-             roads=None):
-    rock_pale = np.array([0.70, 0.68, 0.62])
-    rock_grey = np.array([0.55, 0.54, 0.50])
+             roads=None, mottle=None):
+    rock_pale = np.array([0.62, 0.58, 0.5])
+    rock_grey = np.array([0.5, 0.48, 0.44])
     soil = np.array([0.55, 0.47, 0.35])
     dry = np.array([0.60, 0.55, 0.41])
     garrigue = np.array([0.30, 0.34, 0.21])
     wood = np.array([0.17, 0.24, 0.11])
     canopy = np.array([0.12, 0.2, 0.08])
-    gravel = np.array([0.74, 0.70, 0.62])
-    silt = np.array([0.62, 0.56, 0.43])
+    gravel = np.array([0.49, 0.46, 0.40])
+    shingle = np.array([0.55, 0.53, 0.48])
+    olive = np.array([0.22, 0.26, 0.15])
+    straw = np.array([0.62, 0.55, 0.36])
     path = np.array([0.68, 0.61, 0.48])
     colour = garrigue * (0.88 + 0.24 * fine)[..., None]
     open_ground = np.clip((noise - 0.55) * 4.0, 0, 1) * np.clip(1.2 - slope * 1.5, 0, 1) * 0.8
@@ -310,18 +315,26 @@ def classify(xs, ys, h, slope, water_level, near_water, quarry_inside, noise, fi
     blotch = np.clip((maquis - 0.42) * 4.0, 0, 1) * np.clip(1.6 - slope, 0, 1) * far_weight * 0.92
     crowns = 0.7 + 0.6 * speck
     colour = colour * (1 - blotch[..., None]) + canopy * crowns[..., None] * blotch[..., None]
+    above = h - water_level
+    if mottle is not None:
+        patches = np.clip((mottle - 0.5) * 5.0, 0, 1)
+        scrub = straw * (1 - patches[..., None]) + olive * patches[..., None]
+        weight = np.clip((above - 3.0) / 2.0, 0, 1) * (1 - quarry_inside) * 0.8
+        colour = colour * (1 - weight[..., None]) + scrub * weight[..., None]
     rock = np.clip((slope - 0.75) * 2.0, 0, 1) * np.clip(0.35 + fine, 0, 0.85)
     rock = np.maximum(rock, np.clip((slope - 0.4) * 2.5, 0, 1) * np.clip((speck - 0.58) * 6.0, 0, 1) * 0.85)
     rock_colour = rock_pale * (1 - noise[..., None] * 0.6) + rock_grey * noise[..., None] * 0.6
     colour = colour * (1 - rock[..., None]) + rock_colour * rock[..., None]
-    above = h - water_level
     shore = np.clip(1.0 - (above - 1.5) / 2.5, 0, 1) * near_water
-    shore_colour = np.where((fine > 0.5)[..., None], rock_pale, gravel)
+    shore_colour = np.where((fine > 0.5)[..., None], shingle, gravel)
     colour = colour * (1 - shore[..., None]) + shore_colour * shore[..., None]
     wet = np.clip(1.0 - above / 0.5, 0, 1) * near_water
     colour = colour * (1 - wet[..., None] * 0.45) + np.array([0.36, 0.35, 0.3]) * wet[..., None] * 0.45
     weeds = np.clip((fine - 0.45) * 3.0, 0, 1) * 0.55
-    quarry_colour = silt * (1 - weeds[..., None]) + np.array([0.45, 0.47, 0.30]) * weeds[..., None]
+    if mottle is not None:
+        weeds = 0.35 + 0.65 * np.clip((mottle - 0.35) * 2.5, 0, 1)
+    meadow = np.array([0.42, 0.45, 0.28])
+    quarry_colour = straw * (1 - weeds[..., None]) + meadow * weeds[..., None]
     colour = np.where(quarry_inside[..., None], quarry_colour * (0.9 + 0.2 * fine)[..., None], colour)
     if roads is not None:
         track = np.clip(1.0 - (roads - 0.6) / 1.0, 0, 1) * (0.55 + 0.35 * fine)
@@ -376,7 +389,7 @@ class Maps:
         arrays = {"level": self.level, "near_water": self.near_water, "quarry": self.quarry, "slope": self.slope,
                   "mask": mask.astype(float), "noise": ranked(value_noise(shape, 14, 5, 5)),
                   "fine": ranked(value_noise(shape, 70, 6, 3)), "speck": ranked(speck),
-                  "maquis": ranked(value_noise(shape, 45, 8, 4))}
+                  "maquis": ranked(value_noise(shape, 45, 8, 4)), "mottle": ranked(value_noise(shape, 120, 41, 3))}
         self.fields = {name: Field(X0, Y0, SPACING, array) for name, array in arrays.items()}
         self.roads = None
         self.trees = []
@@ -392,7 +405,7 @@ class Maps:
         colour = classify(xs, ys, self.field.sample(xs, ys), self.at("slope", xs, ys), self.at("level", xs, ys),
                           self.at("near_water", xs, ys), self.at("quarry", xs, ys) > 0.5, self.at("noise", xs, ys),
                           self.at("fine", xs, ys), self.at("speck", xs, ys), self.at("maquis", xs, ys), far_weight,
-                          roads)
+                          roads, self.at("mottle", xs, ys))
         return colour
 
     def canopy(self, colour, xs, ys):
@@ -495,7 +508,7 @@ def build_terrain(scene, maps, far_field, works):
                      uv=lambda x, y: np.column_stack([(x - X0) / SIZE, (y - Y0) / SIZE]))
     mesh.materials.append(material)
     terrain = new_object("terrain", mesh, scene.collection, root)
-    terrain["cast_shadow"] = True
+    terrain["cast_shadow"] = False
     print("TERRAIN_DECIMATED", decimate_terrain(terrain, claimed, 0.4), flush=True)
     surfaces = [terrain]
     base = np.array(GROUND_BASE)
@@ -530,6 +543,8 @@ def build_terrain(scene, maps, far_field, works):
                           np.zeros(shape, dtype=bool), ranked(value_noise(shape, 12, 23, 4)),
                           ranked(value_noise(shape, 60, 24, 3)), ranked(value_noise(shape, 200, 25, 2)),
                           ranked(value_noise(shape, 70, 26, 4)), np.ones(shape))
+    mist = (0.6 * (1.0 - np.exp(-np.hypot(tx - BRIDGE_ORIGIN.x, ty - BRIDGE_ORIGIN.y) / 4500.0)))[..., None]
+    far_colour = far_colour * (1 - mist) + np.array([0.74, 0.78, 0.84]) * mist
     far_image = save_pixels("terrain_far", far_colour, os.path.join(CACHE, "textures", "terrain_far.jpg"), quality=85)
     far_material = baked_material("terrain_far", far_image)
     inside = (fgx > X0 + 15) & (fgx < X0 + SIZE - 15) & (fgy > Y0 + 15) & (fgy < Y0 + SIZE - 15)
@@ -575,11 +590,25 @@ def stair_cap(builder, base, outward, levels, offsets, facing, tone):
     oriented(builder, points, (facing.x, facing.y, 0.0), material="quarry_face", color=tone)
 
 
-def quarry_faces(scene, ground, rng):
+def riser(builder, p0, p1, z0, top0, top1, inward, tone, along, upper, phase):
+    strips = max(1, int(round((p1 - p0).length / 0.6)))
+    for k in range(strips):
+        a, b = k / strips, (k + 1) / strips
+        q0, q1 = p0 + (p1 - p0) * a, p0 + (p1 - p0) * b
+        s = along + (p1 - p0).length * (a + b) / 2
+        streak = max(0.0, math.sin(s * 2.9 + phase) * math.sin(s * 1.13 + phase * 0.7))
+        shade = 1.0 - 0.28 * streak * upper - 0.05 * math.sin(s * 0.7 + phase)
+        oriented(builder, [(q0.x, q0.y, z0), (q1.x, q1.y, z0), (q1.x, q1.y, top0 + (top1 - top0) * b),
+                           (q0.x, q0.y, top0 + (top1 - top0) * a)], inward, material="quarry_face",
+                 color=tuple(c * shade for c in tone))
+
+
+def quarry_faces(scene, ground, rng, frames):
     builder = MeshBuilder()
     centre = Vector(QUARRY_CENTRE)
-    floor = QUARRY_FLOOR - DATUM - 0.8
-    warm = (1.05, 0.98, 0.9)
+    floor = QUARRY_FLOOR - DATUM + 0.5
+    warm = (1.0, 0.94, 0.86)
+    ledges = 0
     for index in range(len(QUARRY_FRONT) - 1):
         a = Vector(QUARRY_PIT[QUARRY_FRONT[index]])
         b = Vector(QUARRY_PIT[QUARRY_FRONT[index + 1]])
@@ -592,59 +621,53 @@ def quarry_faces(scene, ground, rng):
         inward = (-outward.x, -outward.y, 0.0)
         bases = [a + direction * (length * k / steps) + outward * 1.2 for k in range(steps + 1)]
         raw = [ground.height(*(p + outward * 6.5)) + 0.15 for p in bases]
+        shared = [floor]
+        cursor = floor + 0.9
+        while cursor < max(raw) - 0.3:
+            shared.append(cursor)
+            cursor += float(rng.uniform(0.7, 1.6))
+        offsets = []
+        depth = 0.0
+        for j in range(len(shared)):
+            depth += float(rng.uniform(0.2, 0.9)) if j else float(rng.uniform(0.0, 0.3))
+            offsets.append(depth)
+        phase = float(rng.uniform(0, 6.28))
+        tone = tuple(c * (0.95 + 0.05 * (index % 3)) for c in warm)
+        counts = [max(1, sum(1 for level in shared if level < min(raw[k], raw[k + 1]) - 0.3)) for k in range(steps)]
         for k in range(steps):
             p0, p1 = bases[k], bases[k + 1]
-            top = (raw[k] + raw[k + 1]) / 2
-            levels = [floor]
-            cursor = floor + 0.8
-            while cursor < top - 0.3:
-                levels.append(cursor)
-                cursor += float(rng.uniform(0.6, 1.8))
-            levels.append(top + float(rng.uniform(-0.35, 0.25)))
-            count = len(levels) - 1
-            offsets = []
-            depth = 0.0
-            for j in range(count):
-                depth += float(rng.uniform(0.0, 0.9)) if j else float(rng.uniform(0.0, 0.4))
-                offsets.append(depth)
-            notched = rng.random() < 0.45
-            drift = 0.97 + 0.06 * math.sin(k * 0.45 + index * 1.7) + float(rng.uniform(-0.012, 0.012))
-            tone = tuple(c * drift for c in warm)
+            count = counts[k]
+            along = length * k / steps
             for j in range(count):
                 o = outward * offsets[j]
-                q0, q1 = p0 + o, p1 + o
-                z0, z1 = levels[j], levels[j + 1]
-                if notched and j == count - 1 and z1 - z0 > 0.9:
-                    cut = outward * 0.6
-                    mid0, mid1 = q0 + (q1 - q0) * 0.25, q0 + (q1 - q0) * 0.75
-                    zc = z0 + 0.6
-                    oriented(builder, [(q0.x, q0.y, z0), (q1.x, q1.y, z0), (q1.x, q1.y, zc), (q0.x, q0.y, zc)],
-                             inward, material="quarry_face", color=tone)
-                    for start, end in ((q0, mid0), (mid1, q1)):
-                        oriented(builder, [(start.x, start.y, zc), (end.x, end.y, zc), (end.x, end.y, z1),
-                                           (start.x, start.y, z1)], inward, material="quarry_face", color=tone)
-                    r0, r1 = mid0 + cut, mid1 + cut
-                    oriented(builder, [(r0.x, r0.y, zc), (r1.x, r1.y, zc), (r1.x, r1.y, z1), (r0.x, r0.y, z1)],
-                             inward, material="quarry_face", color=tuple(c * 0.85 for c in tone))
-                    oriented(builder, [(mid0.x, mid0.y, zc), (mid1.x, mid1.y, zc), (r1.x, r1.y, zc),
-                                       (r0.x, r0.y, zc)], (0, 0, 1), material="quarry_face", color=tone)
-                    for edge, facing in ((mid0, direction), (mid1, -direction)):
-                        far_edge = edge + cut
-                        oriented(builder, [(edge.x, edge.y, zc), (far_edge.x, far_edge.y, zc),
-                                           (far_edge.x, far_edge.y, z1), (edge.x, edge.y, z1)],
-                                 (facing.x, facing.y, 0.0), material="quarry_face", color=tone)
-                else:
-                    oriented(builder, [(q0.x, q0.y, z0), (q1.x, q1.y, z0), (q1.x, q1.y, z1), (q0.x, q0.y, z1)],
-                             inward, material="quarry_face", color=tone)
                 if j < count - 1:
+                    z1 = shared[j + 1]
+                    upper = 1.0 if min(raw[k], raw[k + 1]) - z1 < 2.2 else 0.35
+                    riser(builder, p0 + o, p1 + o, shared[j], z1, z1, inward, tone, along, upper, phase)
                     r0, r1 = p0 + outward * offsets[j + 1], p1 + outward * offsets[j + 1]
+                    q0, q1 = p0 + o, p1 + o
                     oriented(builder, [(q0.x, q0.y, z1), (q1.x, q1.y, z1), (r1.x, r1.y, z1), (r0.x, r0.y, z1)],
-                             (0, 0, 1), material="quarry_face", color=tone)
-            stair_cap(builder, p0, outward, levels, offsets, -direction, tone)
-            stair_cap(builder, p1, outward, levels, offsets, direction, tone)
+                             (0, 0, 1), material="quarry_face", color=tuple(c * 0.9 for c in tone))
+                    if offsets[j + 1] - offsets[j] > 0.45 and rng.random() < 0.3:
+                        spot = (q0 + q1 + r0 + r1) / 4
+                        roll = rng.random()
+                        key = "box_shrub" if roll < 0.45 else ("fig" if roll < 0.6 else "tuft")
+                        size = float(rng.uniform(0.5, 0.8)) if key != "tuft" else float(rng.uniform(1.0, 1.8))
+                        frames[key].append((spot.x, spot.y, float(rng.uniform(0, 6.28)), size, 0.02, 0.05))
+                        ledges += 1
+                else:
+                    riser(builder, p0 + o, p1 + o, shared[j], raw[k], raw[k + 1], inward, tone, along, 1.0, phase)
+            for end_index, base, facing, neighbour in ((k, p0, -direction, counts[k - 1] if k > 0 else None),
+                                                       (k + 1, p1, direction,
+                                                        counts[k + 1] if k < steps - 1 else None)):
+                if neighbour is not None and neighbour <= count:
+                    continue
+                levels = shared[:count] + [raw[end_index]]
+                stair_cap(builder, base, outward, levels, offsets[:count], facing, tuple(c * 0.62 for c in tone))
     mesh = builder.to_mesh("quarry_faces", scene.tiles, ground_occlusion=False)
     obj = new_object("quarry_faces", mesh, scene.collection, scene.root("quarry"))
     obj["cast_shadow"] = True
+    return obj, ledges
 
 
 def bridge_ground(ground, layout, works):
@@ -673,6 +696,7 @@ def build_bridge_object(scene, layout, ground, rects, works):
     footprint, local_ground = bridge_ground(ground, layout, works)
     builder, arches, info = build_bridge(layout, footprint, local_ground, rects, works.centre, works.discharge,
                                          gap_at=SLAB_GAP)
+    info["gap"] = info.get("gap", (SLAB_GAP - 1.25, SLAB_GAP + 1.25))
     print("BRIDGE_PARTS", builder.triangle_count(), flush=True)
     mesh = builder.to_mesh("pont_du_gard", scene.tiles, ground_occlusion=False)
     weathering(mesh, layout, local_ground)
@@ -730,7 +754,7 @@ class Scatter:
 
 
 TREE_RADIUS = {"holm_oak_a": 2.0, "holm_oak_b": 2.7, "holm_oak_c": 2.1, "holm_oak_d": 2.8, "pine_a": 2.6,
-               "pine_b": 3.1, "willow": 2.6, "poplar": 4.0, "olive": 1.8, "fig": 1.9}
+               "pine_b": 3.1, "willow": 2.6, "poplar": 4.0, "olive": 1.8, "fig": 1.9, "holm_oak_hero": 2.4}
 
 
 def choose_vegetation(maps, layout, works, corridors, routes, rng):
@@ -758,7 +782,7 @@ def choose_vegetation(maps, layout, works, corridors, routes, rng):
         return scatter.above_water(x, y) >= 3.0 and scatter.free(x, y, 8.0)
 
     counts = {"near": 0, "far": 0}
-    targets = {"near": 460, "far": 470}
+    targets = {"near": 520, "far": 470}
     attempts = 0
     while (counts["near"] < targets["near"] or counts["far"] < targets["far"]) and attempts < 20000:
         attempts += 1
@@ -797,7 +821,7 @@ def choose_vegetation(maps, layout, works, corridors, routes, rng):
         if min((Vector((x, y)) - eye).length for eye in eyes) > 300.0 and not near_works(x, y):
             continue
         slope = float(slope_field.sample(x, y))
-        if float(maps.at("maquis", x, y)) < 0.3 or scatter.above_water(x, y) < 1.2:
+        if float(maps.at("maquis", x, y)) < 0.3 or scatter.above_water(x, y) < 3.0:
             continue
         if not scatter.free(x, y, 3.0, tree=False):
             continue
@@ -813,6 +837,8 @@ def choose_vegetation(maps, layout, works, corridors, routes, rng):
         if not 0.5 < rise < 6.0:
             continue
         if float(slope_field.sample(x, y)) > 0.9 or not scatter.free(x, y, 14.0):
+            continue
+        if min((Vector((x, y)) - eye).length for eye in eyes) < 32.0:
             continue
         add("willow" if rng.random() < 0.72 else "poplar", x, y, 0.35, 0.3, float(rng.uniform(0.75, 1.15)))
     attempts = 0
@@ -869,7 +895,7 @@ def ground_detail(frames, maps, scatter, points, rng):
         eye, target = points[name]
         direction = (Vector((target.x, target.y)) - Vector((eye.x, eye.y))).normalized()
         placed = {"tuft": 0, "pebbles": 0, "rock_slab": 0}
-        quota = {"tuft": 110, "pebbles": 45, "rock_slab": 14}
+        quota = {"tuft": 170, "pebbles": 70, "rock_slab": 18}
         for _ in range(4000):
             if all(placed[k] >= quota[k] for k in quota):
                 break
@@ -895,7 +921,8 @@ def ground_detail(frames, maps, scatter, points, rng):
                                             0.12))
 
 
-SHADOWLESS = ("holm_oak_c", "holm_oak_d", "shrub", "box", "vine", "boulder", "tuft", "pebbles", "rock_slab", "rubble")
+SHADOWLESS = ("holm_oak_c", "holm_oak_d", "shrub", "box", "vine", "boulder", "tuft", "pebbles", "rock_slab", "rubble",
+              "reed", "broom", "cistus", "rosemary", "kermes", "thyme")
 
 
 def plant_vegetation(scene, ground, frames):
@@ -910,7 +937,7 @@ def plant_vegetation(scene, ground, frames):
             matrices.append(placement(x, y, low - sink * scale, angle, scale))
         scene.library.place(key, builds[key], scene.collection, scene.root("vegetation"), matrices,
                             cast_shadow=not key.startswith(SHADOWLESS), ground_occlusion=False)
-        if not key.startswith(("boulder", "pebbles", "rock_slab", "rubble")):
+        if not key.startswith(("boulder", "pebbles", "rock_slab", "rubble", "outcrop")):
             dark = 0.62 if key.startswith("tuft") else 0.5
             pont_life.vertex_shade(scene.library.meshes[key], dark)
         mesh = scene.library.meshes[key]
@@ -921,6 +948,20 @@ def plant_vegetation(scene, ground, frames):
 def on_ground(ground, x, y, angle, radius=0.18, lift=0.0):
     low, _ = ground.footprint(x, y, radius, 4)
     return placement(x, y, low + lift, angle)
+
+
+BODY_LENGTHS = (("goat_kid", 0.45), ("goat", 0.72), ("sheep", 0.8), ("dog", 0.66), ("mule", 1.6), ("donkey", 1.3),
+                ("ox_cart", 5.0), ("hand_barrow", 2.0))
+
+
+def beast(scene, ground, key, x, y, angle):
+    length = next(value for prefix, value in BODY_LENGTHS if key.startswith(prefix))
+    reach = 0.55 * length
+    fx, fy = -math.sin(angle) * reach, math.cos(angle) * reach
+    front = ground.height(x + fx, y + fy)
+    back = ground.height(x - fx, y - fy)
+    pitch = max(-0.21, min(0.21, math.atan2(front - back, 2 * reach)))
+    scene.add(key, placement(x, y, (front + back) / 2 - 0.02, angle) @ Matrix.Rotation(pitch, 4, "X"))
 
 
 def shore_point(maps, u, w, step, limit=120):
@@ -984,15 +1025,14 @@ def place_life(scene, maps, ground, layout, works, info, scatter, points, rng):
         x, y = hx + float(rng.normal(0, 8)), hy + float(rng.normal(0, 8))
         if scatter.route_distance(x, y) < 3.0:
             continue
-        scene.add("goat_dark" if rng.random() < 0.6 else "goat_light",
-                  on_ground(ground, x, y, float(rng.uniform(0, 6.28)), 0.3))
+        beast(scene, ground, "goat_dark" if rng.random() < 0.6 else "goat_light", x, y, float(rng.uniform(0, 6.28)))
     for _ in range(6):
         x, y = hx + float(rng.normal(0, 6)), hy + float(rng.normal(0, 6))
         if scatter.route_distance(x, y) < 3.0:
             continue
-        scene.add("sheep", on_ground(ground, x, y, float(rng.uniform(0, 6.28)), 0.3))
+        beast(scene, ground, "sheep", x, y, float(rng.uniform(0, 6.28)))
     scene.add("fig_shepherd", on_ground(ground, hx + 9.0, hy + 4.0, 2.0))
-    scene.add("dog", on_ground(ground, hx + 11.0, hy + 2.0, 1.4, 0.25))
+    beast(scene, ground, "dog", hx + 11.0, hy + 2.0, 1.4)
     cx, cy = clear_spot(scatter, *from_bridge(190.0, -62.0), 8.0, rng, 20.0, 0.4)
     scene.add("campfire", on_ground(ground, cx, cy, 0.0, 0.5, -0.05))
     scene.add("fig_shepherd", on_ground(ground, cx + 1.4, cy + 0.6, heading((-1.4, -0.6))))
@@ -1000,9 +1040,10 @@ def place_life(scene, maps, ground, layout, works, info, scatter, points, rng):
     keeper = info["keeper"]
     scene.add("fig_keeper", BRIDGE_MATRIX @ Matrix.Translation(keeper) @ Matrix.Rotation(info["keeper_angle"], 4, "Z"))
     top = layout.tops[2]
-    for local, angle, key in (((SLAB_GAP + 0.2, 1.25), math.pi, "fig_kneeler"),
-                              ((SLAB_GAP - 4.4, 0.75), -math.pi / 2, "fig_mason"),
-                              ((SLAB_GAP + 1.7, 1.15), 0.0, "basket")):
+    gap0, gap1 = info["gap"]
+    scene.add("fig_kneeler", BRIDGE_MATRIX @ placement((gap0 + gap1) / 2, 1.1, top - SLAB_THICKNESS + 0.01, math.pi))
+    for local, angle, key in (((gap0 - 3.6, 0.75), -math.pi / 2, "fig_mason"),
+                              ((gap1 + 1.3, 1.15), 0.0, "basket")):
         scene.add(key, BRIDGE_MATRIX @ placement(local[0], local[1], top + 0.01, angle))
     track = TRACKS["domaine"]
     a, b = Vector(track[0]), Vector(track[1])
@@ -1010,13 +1051,13 @@ def place_life(scene, maps, ground, layout, works, info, scatter, points, rng):
     side = Vector((-direction.y, direction.x))
     for k in range(4):
         p = a + direction * (16.0 + k * 3.6)
-        scene.add("mule_packed" if k < 3 else "mule_bare", on_ground(ground, p.x, p.y, heading(direction), 0.4))
+        beast(scene, ground, "mule_packed" if k < 3 else "mule_bare", p.x, p.y, heading(direction))
     lead = a + direction * (16.0 + 3.6 * 3 + 1.5) + side * 1.1
     scene.add("fig_muleteer", on_ground(ground, lead.x, lead.y, heading(direction)))
     drover = a + direction * 14.0 + side * 1.0
     scene.add("fig_drover", on_ground(ground, drover.x, drover.y, heading(direction)))
     cart = a + direction * 48.0
-    scene.add("ox_cart", on_ground(ground, cart.x, cart.y, heading(direction), 1.2))
+    beast(scene, ground, "ox_cart", cart.x, cart.y, heading(direction))
     fx, fy = FARM
     scene.add("farmhouse", on_ground(ground, fx, fy, 0.5, 6.0, -0.3))
     kx, ky = fx + 22.0, fy - 8.0
@@ -1025,9 +1066,10 @@ def place_life(scene, maps, ground, layout, works, info, scatter, points, rng):
     smokes.append(Vector((kx, ky, ground.height(kx, ky) + 2.9)))
     smokes.append(Vector((fx + 3.0, fy, ground.height(fx, fy) + 5.6)))
     for key, dx, dy, angle in (("fig_woman", 6.0, -6.0, 2.5), ("fig_child", 7.5, -5.0, 2.0),
-                               ("fig_mason", 19.0, -4.0, 4.0), ("dog", 4.0, -9.0, 1.0)):
+                               ("fig_mason", 19.0, -4.0, 4.0)):
         scene.add(key, on_ground(ground, fx + dx, fy + dy, angle))
-    tombs = [("tomb_stele", 0), ("tomb_amphora", 1), ("tomb_tiles", 2)]
+    beast(scene, ground, "dog", fx + 4.0, fy - 9.0, 1.0)
+    tombs = [("tomb_ring", 0), ("tomb_amphora", 1), ("tomb_tiles", 2)]
     tx, ty = TOMBS
     placed = 0
     for _ in range(200):
@@ -1049,6 +1091,278 @@ def place_life(scene, maps, ground, layout, works, info, scatter, points, rng):
     for index, (x, y, angle) in enumerate(footing_row(scatter)):
         scene.add("house_footing_a" if index % 2 == 0 else "house_footing_b",
                   on_ground(ground, x, y, angle, 2.0, 0.0))
+    return smokes
+
+
+def enrich_vegetation(frames, maps, scatter, points, rng):
+    for key in ("reed", "broom", "cistus", "rosemary", "outcrop_a", "outcrop_b", "holm_oak_hero"):
+        frames.setdefault(key, [])
+    eyes = [Vector((points[name][0].x, points[name][0].y)) for name in GROUND_POIS]
+    for key in ("holm_oak_a", "holm_oak_b"):
+        kept = []
+        for entry in frames[key]:
+            if min((Vector(entry[:2]) - eye).length for eye in eyes) < 55.0:
+                frames["holm_oak_hero"].append(entry)
+            else:
+                kept.append(entry)
+        frames[key] = kept
+    slope_field = maps.fields["slope"]
+
+    def near_bridge(x, y, reach):
+        return math.hypot(x - BRIDGE_ORIGIN.x, y - BRIDGE_ORIGIN.y) < reach
+
+    def near_eye(x, y, reach):
+        return min((Vector((x, y)) - eye).length for eye in eyes) < reach
+
+    def add(key, x, y, radius, sink, scale):
+        frames[key].append((x, y, float(rng.uniform(0, 2 * math.pi)), scale, radius, sink))
+
+    quotas = {"outcrop": 90, "box": 130, "reed": 140, "flower": 190}
+    for key in ("kermes", "thyme"):
+        frames.setdefault(key, [])
+    placed = {key: 0 for key in quotas}
+    for _ in range(120000):
+        if all(placed[key] >= quotas[key] for key in quotas):
+            break
+        x, y = float(rng.uniform(X0 + 30, X0 + SIZE - 30)), float(rng.uniform(Y0 + 30, Y0 + SIZE - 30))
+        slope = float(slope_field.sample(x, y))
+        rise = scatter.above_water(x, y)
+        if placed["outcrop"] < quotas["outcrop"] and slope > 0.7 and rise > 2.0 and near_bridge(x, y, 520.0):
+            if scatter.free(x, y, 3.0, tree=False):
+                add("outcrop_a" if rng.random() < 0.6 else "outcrop_b", x, y, 0.7, 0.3, float(rng.uniform(0.7, 1.3)))
+                placed["outcrop"] += 1
+            continue
+        if placed["box"] < quotas["box"] and slope > 0.6 and rise > 3.0 and near_bridge(x, y, 450.0):
+            if scatter.free(x, y, 2.0, tree=False):
+                add("box_shrub", x, y, 0.5, 0.15, float(rng.uniform(0.8, 1.5)))
+                placed["box"] += 1
+            continue
+        if (placed["reed"] < quotas["reed"] and 0.05 < rise < 1.1 and maps.at("near_water", x, y) > 0.5
+                and (near_bridge(x, y, 420.0) or near_eye(x, y, 120.0))):
+            if scatter.free(x, y, 1.0, tree=False, clearance=1.5):
+                cluster = int(rng.integers(1, 4))
+                for _ in range(cluster):
+                    px, py = x + float(rng.normal(0, 1.2)), y + float(rng.normal(0, 1.2))
+                    if 0.0 < scatter.above_water(px, py) < 1.3:
+                        add("reed", px, py, 0.3, 0.05, float(rng.uniform(0.75, 1.25)))
+                        placed["reed"] += 1
+            continue
+        if (placed["flower"] < quotas["flower"] and 0.12 < slope < 0.9 and rise > 3.0
+                and float(maps.at("maquis", x, y)) > 0.3 and (near_bridge(x, y, 360.0) or near_eye(x, y, 140.0))):
+            if scatter.free(x, y, 2.0, tree=False):
+                roll = rng.random()
+                key = "broom" if roll < 0.2 else ("cistus" if roll < 0.55 else "rosemary")
+                add(key, x, y, 0.4, 0.08, float(rng.uniform(0.8, 1.25)))
+                placed["flower"] += 1
+    for name in GROUND_POIS:
+        eye, target = points[name]
+        direction = (Vector((target.x, target.y)) - Vector((eye.x, eye.y))).normalized()
+        count = 0
+        for _ in range(600):
+            if count >= 14:
+                break
+            distance = float(rng.uniform(5.0, 35.0))
+            angle = float(rng.normal(0.0, 0.7))
+            offset = Vector((direction.x * math.cos(angle) - direction.y * math.sin(angle),
+                             direction.x * math.sin(angle) + direction.y * math.cos(angle))) * distance
+            x, y = eye.x + offset.x, eye.y + offset.y
+            if scatter.above_water(x, y) < 3.0 or not 0.25 < float(maps.at("slope", x, y)) < 0.9:
+                continue
+            if not scatter.free(x, y, 1.0, tree=False, clearance=1.8) or maps.at("quarry", x, y) > 0.2:
+                continue
+            add("cistus" if count % 2 else "rosemary", x, y, 0.4, 0.08, float(rng.uniform(0.7, 1.1)))
+            count += 1
+    placed = {"kermes": 0, "willow": 0, "rubble": 0}
+    for _ in range(60000):
+        if placed["kermes"] >= 2000:
+            break
+        eye = eyes[int(rng.integers(0, len(eyes)))]
+        angle, distance = float(rng.uniform(0, 2 * math.pi)), float(rng.uniform(4.0, 150.0))
+        x, y = eye.x + distance * math.cos(angle), eye.y + distance * math.sin(angle)
+        if scatter.above_water(x, y) < 3.0 or float(slope_field.sample(x, y)) > 1.1:
+            continue
+        if float(maps.at("mottle", x, y)) < 0.42 or (maps.at("quarry", x, y) > 0.5 and rng.random() < 0.6):
+            continue
+        if not scatter.free(x, y, 0.8, tree=False, clearance=1.5):
+            continue
+        add("kermes" if rng.random() < 0.65 else "thyme", x, y, 0.3, 0.12, float(rng.uniform(0.6, 1.6)))
+        placed["kermes"] += 1
+    for _ in range(8000):
+        if placed["willow"] >= 45:
+            break
+        eye = eyes[int(rng.integers(0, len(eyes)))]
+        angle, distance = float(rng.uniform(0, 2 * math.pi)), float(rng.uniform(15.0, 120.0))
+        x, y = eye.x + distance * math.cos(angle), eye.y + distance * math.sin(angle)
+        if not 0.3 < scatter.above_water(x, y) < 2.5 or maps.at("near_water", x, y) < 0.5:
+            continue
+        if not scatter.free(x, y, 1.5):
+            continue
+        add("willow", x, y, 0.3, 0.2, float(rng.uniform(0.3, 0.5)))
+        placed["willow"] += 1
+    for _ in range(3000):
+        if placed["rubble"] >= 150:
+            break
+        fraction = float(rng.uniform(0.02, 0.98))
+        if any(a - 0.02 < fraction < b + 0.02 for a, b in DIKE_BREACHES):
+            continue
+        p, q = Vector(dike_point(fraction - 0.01)), Vector(dike_point(fraction + 0.01))
+        side = (q - p).normalized()
+        spot = (p + q) / 2 + Vector((-side.y, side.x)) * float(rng.normal(0.0, 2.6))
+        if scatter.route_distance(spot.x, spot.y) < 1.5:
+            continue
+        if rng.random() < 0.6:
+            add("rubble", spot.x, spot.y, 0.5, 0.12, float(rng.uniform(0.5, 1.0)))
+        else:
+            add("boulder_a", spot.x, spot.y, 0.4, 0.15, float(rng.uniform(0.4, 1.0)))
+        placed["rubble"] += 1
+
+
+def view_spot(points, name, distance, lateral):
+    eye, target = points[name]
+    forward = (Vector((target.x, target.y)) - Vector((eye.x, eye.y))).normalized()
+    right = Vector((forward.y, -forward.x))
+    spot = Vector((eye.x, eye.y)) + forward * distance + right * lateral
+    return spot.x, spot.y
+
+
+def waterside(maps, scatter, x, y, reach, rng, low=0.15, high=0.7, steep=0.4):
+    best = None
+    for _ in range(800):
+        px, py = x + float(rng.uniform(-reach, reach)), y + float(rng.uniform(-reach, reach))
+        rise = scatter.above_water(px, py)
+        if not low < rise < high or float(maps.at("slope", px, py)) > steep:
+            continue
+        if not scatter.free(px, py, 0.8, tree=False, clearance=2.0):
+            continue
+        distance = math.hypot(px - x, py - y)
+        if best is None or distance < best[0]:
+            best = (distance, px, py)
+    if best is None:
+        return None
+    _, px, py = best
+    angles = [2 * math.pi * k / 24 for k in range(24)]
+    lowest = min(angles, key=lambda a: float(maps.field.sample(px + 3.0 * math.cos(a), py + 3.0 * math.sin(a))))
+    return px, py, (math.cos(lowest), math.sin(lowest))
+
+
+def circle(scene, ground, x, y, keys, radius, rng):
+    for index, key in enumerate(keys):
+        angle = 2 * math.pi * index / len(keys) + float(rng.uniform(-0.3, 0.3))
+        px, py = x + radius * math.cos(angle), y + radius * math.sin(angle)
+        scene.add(key, on_ground(ground, px, py, heading((x - px, y - py)) + float(rng.uniform(-0.25, 0.25))))
+
+
+def place_scenes(scene, maps, ground, layout, works, info, scatter, points, rng):
+    smokes = []
+    tx, ty = clear_spot(scatter, *view_spot(points, "le-pont", 24.0, 10.0), 3.0, rng, 8.0, 0.4)
+    scene.add("campfire", on_ground(ground, tx, ty, 0.0, 0.5, -0.05))
+    circle(scene, ground, tx, ty, ["fig_talker_a", "fig_talker_b", "fig_porter", "fig_talker_c"], 1.7, rng)
+    scene.add("firewood", on_ground(ground, tx + 2.6, ty - 1.4, 0.7, 0.6))
+    beast(scene, ground, "donkey", tx - 3.2, ty + 2.4, 2.2)
+    smokes.append(Vector((tx, ty, ground.height(tx, ty) + 0.4)))
+    drink = (waterside(maps, scatter, *view_spot(points, "le-pont", 26.0, -6.0), 14.0, rng, steep=0.2)
+             or waterside(maps, scatter, *view_spot(points, "le-pont", 26.0, -6.0), 24.0, rng, steep=0.3)
+             or waterside(maps, scatter, *view_spot(points, "le-pont", 26.0, -6.0), 14.0, rng))
+    if drink is not None:
+        dx, dy, (wx, wy) = drink
+        across = Vector((-wy, wx))
+        for k, key in enumerate(("mule_packed", "mule_bare", "mule_packed")):
+            p = Vector((dx, dy)) + across * (k - 1) * 1.6 - Vector((wx, wy)) * (0.8 + 0.4 * (k % 2))
+            beast(scene, ground, key, p.x, p.y, heading((wx, wy)) + float(rng.uniform(-0.3, 0.3)))
+        lead = Vector((dx, dy)) + across * 2.8 - Vector((wx, wy)) * 1.8
+        scene.add("fig_muleteer", on_ground(ground, lead.x, lead.y, heading((wx, wy)) - 0.8))
+    wash = (waterside(maps, scatter, *view_spot(points, "la-grande-arche", 14.0, -6.0), 8.0, rng, steep=0.25)
+            or waterside(maps, scatter, *view_spot(points, "la-grande-arche", 10.0, -4.0), 22.0, rng))
+    if wash is not None:
+        wx0, wy0, (wx, wy) = wash
+        across = Vector((-wy, wx))
+        for k in range(2):
+            p = Vector((wx0, wy0)) + across * (k * 1.4 - 0.7)
+            angle = heading((wx, wy)) + float(rng.uniform(-0.3, 0.3))
+            scene.add("fig_washer", on_ground(ground, p.x, p.y, angle))
+            stone = p + Vector((wx, wy)) * 0.75
+            scene.add("wash_stone", placement(stone.x, stone.y, ground.height(stone.x, stone.y) - 0.04, angle, 0.7))
+        spread = Vector((wx0, wy0)) - Vector((wx, wy)) * 3.0 + across * 1.2
+        scene.add("laundry", on_ground(ground, spread.x, spread.y, heading(across), 0.8))
+        girl = Vector((wx0, wy0)) - Vector((wx, wy)) * 2.4 - across * 2.0
+        scene.add("fig_girl", on_ground(ground, girl.x, girl.y, heading((wx, wy)) + 0.9))
+    net = (waterside(maps, scatter, *view_spot(points, "la-grande-arche", 12.0, 18.0), 8.0, rng)
+           or waterside(maps, scatter, *view_spot(points, "la-grande-arche", 12.0, 18.0), 25.0, rng))
+    if net is not None:
+        nx, ny, (wx, wy) = net
+        scene.add("fig_netter", on_ground(ground, nx, ny, heading((wx, wy))))
+        rack = Vector((nx, ny)) - Vector((wx, wy)) * 1.5 + Vector((wy, -wx)) * 3.5
+        scene.add("net_rack", on_ground(ground, rack.x, rack.y, heading((wy, -wx)), 1.3))
+        trap = Vector((nx, ny)) - Vector((wx, wy)) * 1.5 + Vector((-wy, wx)) * 1.8
+        scene.add("fish_trap", on_ground(ground, trap.x, trap.y, heading((wx, wy)) + 0.6, 0.5))
+    hx, hy = clear_spot(scatter, *from_bridge(164.0, -125.0), 18.0, rng, 40.0, 0.45)
+    for _ in range(7):
+        x, y = hx + float(rng.normal(0, 7)), hy + float(rng.normal(0, 7))
+        if scatter.route_distance(x, y) > 3.0 and scatter.above_water(x, y) > 1.0:
+            beast(scene, ground, "goat_kid", x, y, float(rng.uniform(0, 6.28)))
+    fx, fy = FARM
+    for k in range(9):
+        x, y = fx + float(rng.uniform(-9, 9)), fy - 6.0 + float(rng.uniform(-5, 4))
+        if math.hypot(x - fx, y - fy) > 7.5:
+            scene.add("hen" if k % 3 else "hen_white", on_ground(ground, x, y, float(rng.uniform(0, 6.28)), 0.15))
+    cx, cy = clear_spot(scatter, fx + 4.0, fy - 16.0, 2.5, rng, 6.0, 0.4)
+    scene.add("fig_child_hoop", on_ground(ground, cx, cy, 0.9))
+    scene.add("fig_child_run", on_ground(ground, cx - 2.2, cy - 1.1, 1.1))
+    sx, sy = clear_spot(scatter, fx + 13.0, fy - 12.0, 2.5, rng, 6.0, 0.4)
+    scene.add("peddler_goods", on_ground(ground, sx, sy, 0.4, 0.8))
+    scene.add("fig_seller", on_ground(ground, sx + 0.4, sy + 1.2, heading((-0.4, -1.2))))
+    scene.add("fig_girl", on_ground(ground, sx - 1.0, sy - 1.3, heading((1.0, 1.3))))
+    beast(scene, ground, "donkey", sx + 2.4, sy + 0.6, 0.3)
+    scene.add("firewood", on_ground(ground, fx - 7.5, fy - 5.0, 0.1, 0.6))
+    for fraction, crew in ((0.73, ("fig_digger", "fig_digger", "fig_porter")), (0.36, ("fig_digger",))):
+        bx, by = dike_point(fraction)
+        inward = Vector((QUARRY_CENTRE[0] - bx, QUARRY_CENTRE[1] - by)).normalized()
+        along = Vector((-inward.y, inward.x))
+        base = Vector((bx, by)) + inward * 3.0
+        for k, key in enumerate(crew):
+            p = base + along * (k - 1) * 1.9 + inward * float(rng.uniform(-0.6, 0.6))
+            scene.add(key, on_ground(ground, p.x, p.y, heading(-inward) + float(rng.uniform(-0.6, 0.6))))
+        for offset, depth, key, angle in ((-1.8, 2.5, "sherd_pile", 0.3), (0.2, -0.6, "hand_barrow", heading(inward)),
+                                          (1.0, 1.5, "stone_basket", 0.0), (-1.0, 1.4, "stone_basket", 1.0),
+                                          (1.6, 0.6, "tools", 0.6)):
+            p = base + along * offset + inward * depth
+            if key == "hand_barrow":
+                beast(scene, ground, key, p.x, p.y, angle)
+            else:
+                scene.add(key, on_ground(ground, p.x, p.y, angle, 0.5))
+    bx, by = dike_point(0.18)
+    outward = Vector((bx - QUARRY_CENTRE[0], by - QUARRY_CENTRE[1])).normalized()
+    hx, hy = clear_spot(scatter, *(Vector((bx, by)) + outward * 14.0), 4.0, rng, 10.0, 0.3)
+    scene.add("hut", on_ground(ground, hx, hy, heading(-outward), 2.6, 0.0))
+    scene.add("firewood", on_ground(ground, hx + 3.2, hy + 0.8, 0.4, 0.6))
+    top = layout.tops[2]
+    gap1 = info["gap"][1]
+    for local, angle, key in (((gap1 + 0.7, 0.9), math.pi / 2, "fig_digger"),
+                              ((gap1 + 2.0, -0.85), 0.3, "tools"),
+                              ((gap1 + 1.0, -0.95), 0.0, "stone_basket")):
+        scene.add(key, BRIDGE_MATRIX @ placement(local[0], local[1], top + 0.01, angle))
+    centre = works.world_centre
+    px, py = clear_spot(scatter, *view_spot(points, "le-bassin", 10.0, 6.5), 2.5, rng, 3.0, 0.5)
+    scene.add("fig_porter", on_ground(ground, px, py, heading((centre.x - px, centre.y - py))))
+    beast(scene, ground, "donkey", px + 1.6, py - 1.4, heading((centre.x - px, centre.y - py)) + 0.5)
+    scene.add("stone_basket", on_ground(ground, px - 1.0, py + 0.9, 0.0, 0.4))
+    beast(scene, ground, "dog", px - 1.8, py - 1.0, 2.4)
+    gx, gy = clear_spot(scatter, *view_spot(points, "le-bassin", 16.0, -7.0), 2.5, rng, 3.0, 0.5)
+    circle(scene, ground, gx, gy, ["fig_talker_c", "fig_mason"], 0.7, rng)
+    gx, gy = view_spot(points, "la-carriere", 26.0, 5.0)
+    grazing = 0
+    for _ in range(80):
+        if grazing >= 8:
+            break
+        x, y = gx + float(rng.normal(0, 5)), gy + float(rng.normal(0, 5))
+        if maps.at("quarry", x, y) < 0.5 or scatter.route_distance(x, y) < 2.0:
+            continue
+        key = ("goat_dark", "goat_light", "goat_kid")[grazing % 3]
+        beast(scene, ground, key, x, y, float(rng.uniform(0, 6.28)))
+        grazing += 1
+    mx, my = TOMBS
+    gx, gy = clear_spot(scatter, mx - 6.0, my - 4.0, 2.5, rng, 4.0, 0.6)
+    circle(scene, ground, gx, gy, ["fig_talker_c", "fig_seller", "fig_child"], 0.9, rng)
     return smokes
 
 
@@ -1169,6 +1483,9 @@ def merge_objects(objects, name, collection, parent):
     return target
 
 
+LIFE_CELL = 400.0
+
+
 def instance_life(scene):
     builds = pont_life.figure_builds()
     counts = {}
@@ -1191,11 +1508,17 @@ def instance_life(scene):
         obj.parent = None
         obj.matrix_world = world
     bpy.context.view_layer.update()
-    static = merge_objects(meshes, "life_static", scene.collection, scene.root("life"))
+    cells = {}
+    for obj in meshes:
+        where = obj.matrix_world.translation
+        cells.setdefault((int(where.x // LIFE_CELL), int(where.y // LIFE_CELL)), []).append(obj)
+    triangles = 0
+    for index, objects in enumerate(cells.values()):
+        static = merge_objects(objects, f"life_static_{index}", scene.collection, scene.root("life"))
+        triangles += sum(len(polygon.vertices) - 2 for polygon in static.data.polygons)
     for group in groups:
         bpy.data.objects.remove(group)
-    triangles = sum(len(polygon.vertices) - 2 for polygon in static.data.polygons)
-    return counts, triangles
+    return counts, [triangles, len(cells)]
 
 
 def ground_eye(height, x, y, rise, maps=None):
@@ -1222,6 +1545,17 @@ def bank_eye(height, maps):
 
 
 def arch_eye(height, maps):
+    best = None
+    for u in np.arange(20.0, 26.5, 0.5):
+        for w in np.arange(-20.0, -15.5, 0.5):
+            x, y = from_bridge(float(u), float(w))
+            if float(maps.field.sample(x, y)) - maps.water(x, y) < 0.6 or float(maps.at("slope", x, y)) > 0.5:
+                continue
+            score = abs(u - 23.0) + abs(w + 18.0)
+            if best is None or score < best[0]:
+                best = (score, x, y)
+    if best is not None:
+        return ground_eye(height, best[1], best[2], 2.6, maps)
     for k in range(60):
         x, y = from_bridge(18.0 + k * 0.5, -36.0)
         if float(maps.field.sample(x, y)) - maps.water(x, y) > 0.6:
@@ -1239,7 +1573,7 @@ def viewpoints(height, maps, layout, works, info=None):
     pont_eye = bank_eye(height, maps)
     pont_target = Vector((*from_bridge(-5.0, 0.0), t1 + 1.0))
     grande = arch_eye(height, maps)
-    arch_target = Vector((*from_bridge(-2.0, 0.0), layout.base + 9.0))
+    arch_target = Vector((*from_bridge(14.5, -1.5), layout.base + 7.0))
     canal_eye = BRIDGE_MATRIX @ Vector((SLAB_GAP + 4.2, -3.1, t3 + 2.9))
     canal_target = BRIDGE_MATRIX @ Vector((SLAB_GAP - 0.6, 0.3, t3 - 1.0))
     qx, qy = dike_point(0.64)
@@ -1269,6 +1603,16 @@ def figure_view(ground):
     eye = focus - side * 8.5 + direction * 7.0
     return (Vector((eye.x, eye.y, ground.height(eye.x, eye.y) + 1.6)),
             Vector((focus.x, focus.y, ground.height(focus.x, focus.y) + 1.0)))
+
+
+def crew_view(ground):
+    bx, by = dike_point(0.73)
+    inward = Vector((QUARRY_CENTRE[0] - bx, QUARRY_CENTRE[1] - by)).normalized()
+    along = Vector((-inward.y, inward.x))
+    focus = Vector((bx, by)) + inward * 3.5
+    eye = focus - along * 7.0 + inward * 7.0
+    return (Vector((eye.x, eye.y, ground.height(eye.x, eye.y) + 1.7)),
+            Vector((focus.x, focus.y, ground.height(focus.x, focus.y) + 0.8)))
 
 
 def camera_corridors(points):
@@ -1310,6 +1654,8 @@ def place_effects(scene, ground, layout, smokes):
         z = flock_height(ground, x, y, wanted) if abs(w) > 1.0 else wanted
         flocks.append(Vector((x, y, z)))
     flocks.append(Vector((250.0, 700.0, flock_height(ground, 250.0, 700.0, QUARRY_FLOOR - DATUM + 16.0))))
+    for x, y in (from_bridge(-40.0, 220.0), (FARM[0] + 20.0, FARM[1] - 30.0)):
+        flocks.append(Vector((x, y, flock_height(ground, x, y, 30.0))))
     for index, point in enumerate(flocks):
         new_empty(f"birds_{index}", scene.collection, root, Matrix.Translation(point))
     return [[round(v, 1) for v in point] for point in flocks]
@@ -1321,10 +1667,10 @@ def render_previews(options, views):
         return {}
     names = list(views) if wanted == "all" else wanted.split(",")
     stage = ensure_collection("Stage")
-    evening_world(SUN_AZIMUTH, SUN_ELEVATION, 0.16, aerosol=0.35)
-    sun_lamp(stage, SUN_AZIMUTH, SUN_ELEVATION, 7.0, (1.0, 0.68, 0.42), 0.8)
+    evening_world(SUN_AZIMUTH, SUN_ELEVATION, 0.16, aerosol=0.6)
+    sun_lamp(stage, SUN_AZIMUTH, SUN_ELEVATION, 7.0, (1.0, 0.6, 0.34), 0.8)
     haze_volume(stage, 30000.0, 500.0, 0.00006, (0.78, 0.84, 0.95), 0.3)
-    configure_render(1280, 720, options["samples"], exposure=0.0, volumetric_end=20000.0)
+    configure_render(1280, 720, options["samples"], exposure=-0.3, volumetric_end=20000.0)
     timings = {}
     for name in names:
         eye, target = views[name]
@@ -1372,14 +1718,19 @@ def main():
     for surface in surfaces:
         ground.add(surface)
     ground.build()
-    quarry_faces(scene, ground, rng)
+    faces, ledges = quarry_faces(scene, ground, rng, frames)
+    ground.add(faces)
+    ground.build()
+    print("QUARRY_LEDGE_PLANTS", ledges, flush=True)
     arches, info, bridge_triangles = build_bridge_object(scene, layout, ground, rects, works)
     points = viewpoints(lambda x, y: ground.height(x, y), maps, layout, works, info)
     place_markers(scene, points)
     scatter = Scatter(maps, layout, works, corridors, routes)
     ground_detail(frames, maps, scatter, points, rng)
+    enrich_vegetation(frames, maps, scatter, points, rng)
     vegetation = plant_vegetation(scene, ground, frames)
     smokes = place_life(scene, maps, ground, layout, works, info, scatter, points, rng)
+    smokes += place_scenes(scene, maps, ground, layout, works, info, scatter, points, rng)
     route_points_count, route_error, route_grade = build_routes(scene, ground, routes)
     walkers = place_walkers(scene)
     life_counts, static_triangles = instance_life(scene)
@@ -1413,7 +1764,7 @@ def main():
     views = {"vue_d_ensemble": points["vue-d-ensemble"], "le_pont": points["le-pont"],
              "la_grande_arche": points["la-grande-arche"], "le_canal": points["le-canal"],
              "la_carriere": points["la-carriere"], "le_bassin": points["le-bassin"],
-             "temps_reel": points["le-pont"], "personnages": figure_view(ground)}
+             "temps_reel": points["le-pont"], "personnages": figure_view(ground), "berge": crew_view(ground)}
     bpy.context.scene["preview_points"] = json.dumps({key: [list(eye), list(target)]
                                                       for key, (eye, target) in views.items()})
     os.makedirs(os.path.dirname(BLEND), exist_ok=True)

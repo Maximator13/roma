@@ -637,10 +637,10 @@ def basin(builder, layout, height, centre, toward, discharge_side, rng):
     piece.merge(stub, Matrix.Translation((u0 - outer - stub_length, 0.0, 0.0)))
     piece.merge(discharge_channel(height, frame, v1 + outer, discharge_side, rng))
     builder.merge(piece, frame.matrix)
-    keeper_v = -discharge_side * (v1 + BASIN_RIM / 2 + BASIN_WALL)
+    keeper_v = discharge_side * (v1 + outer * 0.4)
     return {"frame": frame, "centre": centre, "toward": toward, "top": top, "floor": floor,
-            "keeper": frame.matrix @ Vector((0.6, keeper_v, top)),
-            "keeper_angle": frame.angle + (0.0 if discharge_side > 0 else math.pi),
+            "keeper": frame.matrix @ Vector((0.95, keeper_v, top)),
+            "keeper_angle": frame.angle + math.pi / 2,
             "discharge_side": discharge_side, "half": (inner_u / 2 + outer, inner_v / 2 + outer),
             "stub_length": stub_length}
 
@@ -674,7 +674,7 @@ def weathering(mesh, layout, ground_local, seed=3):
     tint *= shade[:, None]
     tint *= (1.0 - 0.18 * flood)[:, None]
     tint *= (1.0 - np.array([0.20, 0.17, 0.12]) * water_line[:, None])
-    tint = np.where((z < base + 0.6)[:, None], tint * np.array([0.72, 0.74, 0.70]), tint)
+    tint = np.where((z < base + 0.6)[:, None], tint * np.array([0.6, 0.66, 0.6]), tint)
     downward = np.clip(-normal[:, 2], 0, 1)
     tint *= (1.0 - 0.28 * downward)[:, None]
     upward = np.clip(normal[:, 2], 0, 1)
@@ -692,6 +692,9 @@ def weathering(mesh, layout, ground_local, seed=3):
         contact = ground_local(u, v)
         near = np.clip(1.0 - (z - contact) / 1.8, 0, 1)
         tint *= (1.0 - 0.3 * near)[:, None]
+        patches = 0.5 + 0.5 * np.sin(u * 0.9 + phases[5]) * np.sin(u * 0.37 + z * 0.8 + phases[6])
+        moss = np.clip(1.0 - (z - contact) / 1.4, 0, 1) * patches * (normal[:, 2] > -0.3)
+        tint = tint * (1 - 0.4 * moss[:, None]) + np.array([0.46, 0.5, 0.32]) * 0.4 * moss[:, None]
     attribute = mesh.color_attributes.get("Col")
     colours = np.empty(count * 4, dtype=np.float32)
     attribute.data.foreach_get("color_srgb", colours)
@@ -716,5 +719,6 @@ def build_bridge(layout, ground, height, rects, basin_centre, discharge_side, se
     lifted = slabs(builder, layout, layout.tier3_start, layout.tier3_end, rng, gap_at)
     if lifted:
         lifted_slabs(builder, layout, lifted)
+        info["gap"] = (min(a for a, _ in lifted), max(b for _, b in lifted))
     info["path"] = points
     return builder, arches, info

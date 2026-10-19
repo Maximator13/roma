@@ -478,7 +478,7 @@ export const scenes: Scene[] = [
         ]
       },
       {
-        "layer": "masonry",
+        "layer": "animals",
         "volume": 0.5,
         "points": [
           "la-carriere"
