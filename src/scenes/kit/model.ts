@@ -11,6 +11,7 @@ const ROUTE_PREFIX = 'walk_'
 const WALKER_PREFIX = 'walker_'
 const SMOKE_PREFIX = 'smoke_'
 const FLOCK_PREFIX = 'birds_'
+const ASH_PREFIX = 'ash_'
 const DISPOSE_DELAY_MS = 1000
 
 const pendingDisposals = new Map<string, ReturnType<typeof setTimeout>>()
@@ -36,10 +37,11 @@ export interface SceneModel {
   walkers: Mesh[]
   smokes: Vector3[]
   flocks: Vector3[]
+  ashes: Vector3[]
   anchors: Map<string, Vector3>
 }
 
-const ANCHOR_NAMES = new Set(['oculus', 'sunbeam_target'])
+const ANCHOR_NAMES = new Set(['oculus', 'sunbeam_target', 'eruption_vent'])
 
 export function castsShadow(node: Object3D): boolean {
   for (let current: Object3D | null = node; current; current = current.parent) {
@@ -60,6 +62,7 @@ function readModel(root: Object3D): SceneModel {
   const walkers: Mesh[] = []
   const smokes: Vector3[] = []
   const flocks: Vector3[] = []
+  const ashes: Vector3[] = []
   const bounds = new Box3()
   const anchors = new Map<string, Vector3>()
   root.traverse((child) => {
@@ -68,11 +71,12 @@ function readModel(root: Object3D): SceneModel {
     else if (child.name.startsWith(ROUTE_PREFIX)) named.push({ name: child.name, position: worldPosition(child) })
     else if (child.name.startsWith(SMOKE_PREFIX)) smokes.push(worldPosition(child))
     else if (child.name.startsWith(FLOCK_PREFIX)) flocks.push(worldPosition(child))
+    else if (child.name.startsWith(ASH_PREFIX)) ashes.push(worldPosition(child))
     if (!(child instanceof Mesh)) return
     if (child.name.startsWith(WALKER_PREFIX)) walkers.push(child)
     else bounds.expandByObject(child)
   })
-  return { root, markers, bounds, routes: groupRoutes(named, ROUTE_PREFIX), walkers, smokes, flocks, anchors }
+  return { root, markers, bounds, routes: groupRoutes(named, ROUTE_PREFIX), walkers, smokes, flocks, ashes, anchors }
 }
 
 function materialsOf(mesh: Mesh): Material[] {

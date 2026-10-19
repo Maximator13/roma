@@ -23,8 +23,21 @@ import { pingPong, pointAlong, routeFrom, walkerCount, type Route } from './path
 
 const WALKER_SPACING = 22
 const WALKERS_PER_ROUTE = 12
-const SMOKE_PARTICLES = 28
-const SMOKE_LIFE = 9
+export interface PuffSettings {
+  particles: number
+  life: number
+  rise: number
+  drift: [number, number]
+  sway: number
+  scatter: number
+  size: [number, number]
+  opacity: number
+  color: string
+}
+
+const SMOKE: PuffSettings = { particles: 28, life: 9, rise: 1.4, drift: [0.9, -0.4], sway: 0.35, scatter: 0, size: [1.2, 0.9], opacity: 0.5, color: '#7d7b7c' }
+const PLUME: PuffSettings = { particles: 220, life: 48, rise: 210, drift: [70, 45], sway: 40, scatter: 120, size: [260, 55], opacity: 0.85, color: '#5b524b' }
+const ASH: PuffSettings = { particles: 700, life: 70, rise: -4.5, drift: [1.2, 0.8], sway: 1.5, scatter: 450, size: [0.35, 0], opacity: 0.9, color: '#3c3732' }
 const BIRDS_PER_FLOCK = 22
 const DENSITY: Record<QualityTier, number> = { low: 0.5, medium: 1, high: 1 }
 
@@ -147,8 +160,8 @@ function smokeTexture(): CanvasTexture {
   return new CanvasTexture(canvas)
 }
 
-function smokeMaterial(): MeshBasicMaterial {
-  const material = new MeshBasicMaterial({ map: smokeTexture(), color: '#7d7b7c', transparent: true, depthWrite: false })
+function smokeMaterial(color: string): MeshBasicMaterial {
+  const material = new MeshBasicMaterial({ map: smokeTexture(), color, transparent: true, depthWrite: false })
   material.onBeforeCompile = (shader) => {
     shader.vertexShader = shader.vertexShader
       .replace('#include <common>', ['attribute float puffOpacity;', 'varying float vPuffOpacity;', '#include <common>'].join('\n'))
@@ -160,17 +173,17 @@ function smokeMaterial(): MeshBasicMaterial {
   return material
 }
 
-function Smoke({ sources }: { sources: Vector3[] }) {
+function Puffs({ sources, settings }: { sources: Vector3[]; settings: PuffSettings }) {
   const reducedMotion = useMemo(() => prefersReducedMotion(), [])
   const puffs = useMemo(() => {
-    const count = Math.max(1, sources.length * SMOKE_PARTICLES)
+    const count = Math.max(1, sources.length * settings.particles)
     const geometry = new PlaneGeometry(1, 1)
     geometry.setAttribute('puffOpacity', new InstancedBufferAttribute(new Float32Array(count), 1))
-    const mesh = new InstancedMesh(geometry, smokeMaterial(), count)
+    const mesh = new InstancedMesh(geometry, smokeMaterial(settings.color), count)
     mesh.frustumCulled = false
     mesh.renderOrder = 2
     return mesh
-  }, [sources])
+  }, [sources, settings])
   const live = useRef(puffs)
   useEffect(() => {
     live.current = puffs
@@ -185,25 +198,29 @@ function Smoke({ sources }: { sources: Vector3[] }) {
   const scratchRef = useRef({ position: new Vector3(), scale: new Vector3(), matrix: new Matrix4() })
 
   useFrame(({ clock, camera }) => {
-    const time = reducedMotion ? SMOKE_LIFE / 2 : clock.elapsedTime
+    const { particles, life, rise, drift, sway, scatter, size, opacity: strength } = settings
+    const time = reducedMotion ? life / 2 : clock.elapsedTime
     const scratch = scratchRef.current
     const mesh = live.current
     const opacity = mesh.geometry.getAttribute('puffOpacity') as InstancedBufferAttribute
+    const start = rise < 0 ? -rise * life : 0
     sources.forEach((source, sourceIndex) => {
-      for (let particle = 0; particle < SMOKE_PARTICLES; particle += 1) {
-        const index = sourceIndex * SMOKE_PARTICLES + particle
-        const age = (time + (particle / SMOKE_PARTICLES) * SMOKE_LIFE) % SMOKE_LIFE
-        const spread = age * 0.35
+      for (let particle = 0; particle < particles; particle += 1) {
+        const index = sourceIndex * particles + particle
+        const age = (time + (particle / particles) * life) % life
+        const spread = age * sway
+        const angle = seeded(index) * Math.PI * 2
+        const radius = Math.sqrt(seeded(index + 1)) * scatter
         scratch.position.set(
-          source.x + age * 0.9 + Math.sin(age * 1.3 + particle) * spread,
-          source.y + age * 1.4,
-          source.z - age * 0.4 + Math.cos(age * 1.1 + particle) * spread,
+          source.x + Math.cos(angle) * radius + age * drift[0] + Math.sin(age * 1.3 + particle) * spread,
+          source.y + start + age * rise,
+          source.z + Math.sin(angle) * radius + age * drift[1] + Math.cos(age * 1.1 + particle) * spread,
         )
-        const size = 1.2 + age * 0.9
-        scratch.scale.set(size, size, size)
+        const scale = size[0] + age * size[1]
+        scratch.scale.set(scale, scale, scale)
         scratch.matrix.compose(scratch.position, camera.quaternion, scratch.scale)
         mesh.setMatrixAt(index, scratch.matrix)
-        opacity.setX(index, 0.5 * Math.min(1, age * 1.5) * (1 - age / SMOKE_LIFE))
+        opacity.setX(index, strength * Math.min(1, (age / life) * 8) * (1 - age / life))
       }
     })
     markMoved(mesh)
@@ -275,7 +292,9 @@ export function Life({ model, quality, shadows }: { model: SceneModel; quality: 
   return (
     <>
       {model.walkers.length > 0 && model.routes.size > 0 && <Walkers model={model} density={density} shadows={shadows} />}
-      {model.smokes.length > 0 && <Smoke sources={model.smokes} />}
+      {model.smokes.length > 0 && <Puffs sources={model.smokes} settings={SMOKE} />}
+      {model.anchors.has('eruption_vent') && <Puffs sources={[model.anchors.get('eruption_vent')!]} settings={PLUME} />}
+      {model.ashes.length > 0 && <Puffs sources={model.ashes} settings={ASH} />}
       {model.flocks.length > 0 && <Flocks centres={model.flocks} density={density} />}
     </>
   )
