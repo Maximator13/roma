@@ -800,3 +800,35 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 - **Hypothèse retenue** : Podium de 26,4 m plus un escalier de 4,5 m en saillie (30,9 m au total), contre 26 m sur 15 m cités par la Ville de Nîmes.
 - **Pourquoi un doute** : À vérifier dans Amy et Gros 1979.
 - **Décision** : à trancher
+
+## Scène de Cannes (maquette tactique)
+
+### 1. Emplacement du champ de bataille
+
+- **Hypothèse retenue** : Rive droite de l'Aufide, en aval de Cannes, sur la plaine haute entre les courbes de 20 et 40 m du relief TINITALY, Romains face au sud (Kromayer 1912 ; Lazenby, OCD).
+- **Pourquoi un doute** : Trois thèses publiées depuis le XVIIIe siècle, aucune trace archéologique. Le cartel d'ensemble signale l'emplacement comme débattu.
+- **Décision** : à trancher
+
+### 2. Tracé de l'Aufide en 216 av. J.-C.
+
+- **Hypothèse retenue** : Lit restitué au pied de l'escarpement, environ 250 m au nord-ouest du rebord de la plaine haute, puis vers la mer au nord-est ; le relief TINITALY ne montre pas le lit actuel dans la plaine.
+- **Pourquoi un doute** : Cours antique inconnu ; Mahaney (2024) le place environ 500 m plus au nord-ouest qu'aujourd'hui, Strachan-Davidson plus près de l'escarpement.
+- **Décision** : à trancher
+
+### 3. Emplacement des camps et des gués
+
+- **Hypothèse retenue** : Grand camp romain et camp d'Hannibal sur la rive gauche, petit camp romain sur la rive droite à environ 1,8 km du passage romain ; un gué romain et deux gués carthaginois choisis sur le tracé restitué.
+- **Pourquoi un doute** : Polybe ne donne que des relations (même rive, 10 stades) ; les positions sont schématiques.
+- **Décision** : à trancher
+
+### 4. Ordre de bataille et effectifs de la maquette
+
+- **Hypothèse retenue** : 76 000 Romains et alliés sur le champ (vélites, hastats, principes et triaires en trois secteurs, cavalerie romaine de 2 400, cavalerie alliée de 3 600) et 10 000 au grand camp ; 48 000 Carthaginois (8 000 légers, 24 000 Celtes et Ibères en six corps alternés, 6 000 Libyens, 6 500 cavaliers ibères et celtes, 3 500 Numides) et une garde de camp de 3 000 ; 1 figurine pour 20 soldats.
+- **Pourquoi un doute** : Répartition moderne (Kromayer, Samuels) ; la garde du camp carthaginois est une estimation.
+- **Décision** : à trancher
+
+### 5. Rythme des pertes
+
+- **Hypothèse retenue** : Les figurines tombent progressivement, surtout pendant l'encerclement (environ 75 % de l'infanterie romaine à la fin) ; compteurs Polybe et Tite-Live côte à côte.
+- **Pourquoi un doute** : La chronologie des pertes n'est pas transmise ; les totaux divergent (de 48 200 à 70 000 morts romains).
+- **Décision** : à trancher

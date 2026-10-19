@@ -1,0 +1,16 @@
+export const BATTLE_UI = {
+  controls: 'Lecture de la bataille',
+  play: 'Lecture',
+  pause: 'Pause',
+  replay: 'Revoir',
+  scrubber: 'Moment de la bataille',
+  before: 'Avant la bataille',
+  phase: (index: number, total: number) => `Phase ${index} sur ${total}`,
+  clock: (time: string) => `${time}, heure solaire`,
+  views: 'Point de vue',
+  tactical: 'Vue tactique',
+  ground: 'Vue rasante',
+  scale: (soldiers: number) => `1 figurine = ${soldiers} soldats`,
+  exaggerated: (factor: number) => `taille des figurines exagérée (× ${factor})`,
+  help: 'Espace : lecture ou pause. Glisser : tourner la vue. Molette ou pincement : rapprocher.',
+}

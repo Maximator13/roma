@@ -1,0 +1,229 @@
+.battle {
+  position: fixed;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0 auto;
+  padding: 0 1rem 0.9rem;
+  max-width: 56rem;
+  color: var(--ink);
+  pointer-events: none;
+}
+
+.battle > * {
+  pointer-events: auto;
+}
+
+.battle__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: rgb(16 11 8 / 0.86);
+}
+
+.battle__play {
+  min-width: 6.5rem;
+}
+
+.battle__timeline {
+  flex: 1;
+  min-width: 0;
+}
+
+.battle__status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 0.75rem;
+  margin: 0 0 0.2rem;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.battle__phase {
+  overflow: hidden;
+  color: var(--accent-ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.battle__clock {
+  color: var(--ink-muted);
+}
+
+.battle__range {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.battle__ticks {
+  display: flex;
+  margin: 0.1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.battle__tick {
+  flex: 1;
+  height: 4px;
+  margin-right: 2px;
+  background: rgb(255 255 255 / 0.18);
+}
+
+.battle__tick--current {
+  background: var(--accent);
+}
+
+.battle__views {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.battle__view {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--ink-muted);
+  font: 400 0.72rem/1.2 var(--font-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.battle__view[aria-pressed='true'] {
+  border-color: var(--accent-ink);
+  color: var(--ink);
+}
+
+.battle__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1rem;
+  margin: 0;
+  font-size: 0.82rem;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.9);
+}
+
+.battle__note {
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+.battle__side {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.battle__side i {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 1px;
+}
+
+.battle__counters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.battle__counters li {
+  display: flex;
+  flex-direction: column;
+  padding: 0.35rem 0.7rem;
+  border-left: 2px solid var(--accent);
+  background: rgb(16 11 8 / 0.86);
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
+.battle__counters strong {
+  font: 400 1.15rem/1.2 var(--font-display);
+}
+
+.battle__help {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.9);
+}
+
+.battle-label {
+  padding: 0.1rem 0.4rem;
+  border-radius: 2px;
+  background: rgb(16 11 8 / 0.72);
+  color: var(--ink);
+  font: 400 0.7rem/1.2 var(--font-display);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.battle-label--rome {
+  border-bottom: 2px solid #c2462f;
+}
+
+.battle-label--carthage {
+  border-bottom: 2px solid #3c78b4;
+}
+
+@media (max-width: 720px) {
+  .battle {
+    padding: 0 0.5rem 0.4rem;
+  }
+
+  .battle__bar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.45rem 0.55rem;
+  }
+
+  .battle__timeline {
+    order: -1;
+    flex-basis: 100%;
+  }
+
+  .battle__play {
+    min-width: 0;
+    padding: 0.45rem 0.8rem;
+  }
+
+  .battle__views {
+    flex-direction: row;
+  }
+
+  .battle__help,
+  .battle__clock {
+    display: none;
+  }
+
+  .battle__status {
+    font-size: 0.8rem;
+  }
+
+  .battle__view {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.66rem;
+  }
+
+  .battle__legend {
+    gap: 0.1rem 0.6rem;
+    font-size: 0.7rem;
+  }
+
+  .battle-label {
+    font-size: 0.6rem;
+  }
+}

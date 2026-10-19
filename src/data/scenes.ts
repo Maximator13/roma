@@ -1,7 +1,119 @@
 import type { Scene } from './schema.ts'
 
 export const scenes: Scene[] = [
-  { id: 'cannes', title: 'Bataille de Cannes', status: 'planned' },
+  {
+    "id": "cannes",
+    "title": "Bataille de Cannes",
+    "status": "ready",
+    "year": -215,
+    "lat": 41.2967,
+    "lon": 16.1518,
+    "summary": "Le 2 août 216 av. J.-C. (calendrier romain), dans la basse vallée de l'Aufide, l'actuel Ofanto. Huit légions et autant d'alliés, environ 86 000 hommes selon Polybe dont 10 000 restés au camp, affrontent les quelque 50 000 hommes d'Hannibal. La maquette suit la restitution de Kromayer (rive droite, en aval de Cannes, Romains face au sud) : l'emplacement exact reste débattu et le tracé antique du fleuve est inconnu. Relief réel (TINITALY), figurines grossies trois fois en vue tactique.",
+    "points": [
+      {
+        "id": "la-traversee",
+        "title": "La traversée et le déploiement",
+        "text": "Juste après le lever du soleil, Varron, qui a le commandement ce jour-là selon Polybe et Tite-Live, fait passer le fleuve aux troupes du grand camp et les range avec celles du petit camp. Les Romains font face au sud : cavalerie romaine à droite contre le fleuve, infanterie au centre en manipules plus serrés et plus profonds que d'ordinaire, cavalerie alliée à gauche, troupes légères en avant. Hannibal fait passer ses frondeurs baléares et ses lonchophores, puis le reste de l'armée en deux points, et se range face au nord : cavalerie ibère et celte contre le fleuve, Libyens, Celtes et Ibères alternés en croissant, Libyens, Numides. 10 000 Romains restent au grand camp.",
+        "sources": [
+          "Polybe III, 110, 8 à 11 ; 113, 1 à 9 ; 117, 8",
+          "Tite-Live XXII, 45, 5 à 46, 7",
+          "Appien, Le livre d'Hannibal, 20 et 25",
+          "J. Kromayer et G. Veith, Antike Schlachtfelder III, 1, 1912, p. 322 à 325"
+        ]
+      },
+      {
+        "id": "l-escarmouche",
+        "title": "L'escarmouche des troupes légères",
+        "text": "Les troupes légères engagent le combat sans avantage pour personne : javelots des vélites contre balles des frondeurs baléares et traits des lonchophores. Selon Tite-Live, Paul Émile est grièvement atteint par une balle de fronde dès le début ; Polybe le dit au contraire encore indemne après le combat de cavalerie. Les légers se replient ensuite derrière les lignes, repli supposé par Kromayer d'après la bataille de Zama. Le nom de vélites n'est attesté qu'à partir de 211 av. J.-C. : on parle ici d'infanterie légère.",
+        "sources": [
+          "Polybe III, 115, 1 et 116, 1",
+          "Tite-Live XXII, 47, 1 et 49, 1 ; XXVI, 4",
+          "Appien, Le livre d'Hannibal, 25",
+          "Kromayer 1912, p. 324, n. 1"
+        ]
+      },
+      {
+        "id": "le-choc-des-cavaliers",
+        "title": "Le choc des cavaliers au bord de l'Aufide",
+        "text": "Sur l'aile romaine droite, coincés entre le fleuve et l'infanterie, les cavaliers ibères et celtes d'Hasdrubal heurtent de front les cavaliers romains. Sans place pour manœuvrer, beaucoup mettent pied à terre et luttent corps à corps. Les Romains sont tués pour la plupart, les autres poursuivis le long du fleuve ; Paul Émile rejoint le centre. Personne ne monte avec des étriers, inconnus en Europe avant la fin du VIe siècle.",
+        "sources": [
+          "Polybe III, 115, 2 à 4 ; 116, 1 à 4",
+          "Tite-Live XXII, 47, 1 à 3 ; 49, 1 à 3",
+          "Kromayer 1912, p. 288, n. 1, et p. 295 et 296",
+          "A. E. Dien, Ars Orientalis 16, 1986 (étriers)"
+        ]
+      },
+      {
+        "id": "la-poussee-romaine",
+        "title": "La poussée romaine dans le croissant",
+        "text": "L'infanterie lourde s'engage. Les Celtes, torse nu avec leurs longues épées de taille, et les Ibères, en tuniques de lin blanc bordées de pourpre, tiennent un temps, puis cèdent sous le poids des légions : le croissant s'aplatit, puis se creuse. Les Romains, attirés vers le centre, se resserrent et s'enfoncent dans la poche. Paul Émile et Hannibal combattent tous deux dans la mêlée. Tite-Live, Appien et Frontin ajoutent une ruse de faux transfuges que Polybe ignore : elle n'est pas représentée.",
+        "sources": [
+          "Polybe III, 113, 8 et 9 ; 114, 2 à 4 ; 115, 5 à 8 ; 116, 1 à 4",
+          "Tite-Live XXII, 46, 5 à 7 ; 47, 4 à 7 ; 48, 1 à 4",
+          "Appien, Le livre d'Hannibal, 20, 22 et 23",
+          "Frontin, Stratagèmes II, 3, 7 et II, 5, 27",
+          "Kromayer 1912, p. 314 à 316"
+        ]
+      },
+      {
+        "id": "la-fuite-de-la-cavalerie-alliee",
+        "title": "Les Numides et la fuite de la cavalerie alliée",
+        "text": "Sur l'aile gauche romaine, les Numides, sur de petits chevaux montés sans bride, harcèlent la cavalerie alliée de Varron sans engagement décisif. Hasdrubal, vainqueur au bord du fleuve, vient leur prêter main-forte en passant derrière l'armée romaine, selon la restitution de Kromayer : à son approche, la cavalerie alliée s'enfuit. Il lance les Numides à sa poursuite et garde ses escadrons.",
+        "sources": [
+          "Polybe III, 116, 5 à 7",
+          "Tite-Live XXXV, 11, 6 à 8",
+          "J. Kromayer et G. Veith, Schlachten-Atlas, 1922, planche 6 et texte",
+          "Kromayer 1912, p. 297"
+        ]
+      },
+      {
+        "id": "la-tenaille",
+        "title": "Les Libyens referment la tenaille",
+        "text": "Quand les Romains se sont assez enfoncés, les deux corps de Libyens, armés à la romaine avec les armes prises à la Trébie et à Trasimène, se tournent vers l'intérieur et attaquent les flancs des légions. Les Romains doivent faire face de plusieurs côtés et perdent leur élan. Le détail de la manœuvre (conversion en ligne ou colonnes faisant face) est discuté, comme leur nombre, estimé de 5 000 à 8 500 hommes.",
+        "sources": [
+          "Polybe III, 114, 1 ; 115, 8 à 12",
+          "Tite-Live XXII, 46, 4 ; 47, 8 à 10",
+          "M. Samuels, The Reality of Cannae, 1990, p. 18 et 24",
+          "Kromayer 1912, p. 326 et 342"
+        ]
+      },
+      {
+        "id": "la-charge-d-hasdrubal",
+        "title": "Hasdrubal charge le dos des légions",
+        "text": "Laissant les Numides poursuivre la cavalerie alliée, Hasdrubal lance ses escadrons contre les derniers rangs romains, par charges répétées en plusieurs points. L'armée romaine est encerclée : Celtes et Ibères devant, Libyens sur les flancs, cavaliers derrière. Tite-Live raconte autrement ce moment : Hasdrubal porterait des Espagnols et des Gaulois au secours des Africains. Cet Hasdrubal n'est pas le frère d'Hannibal, qui combat alors en Espagne.",
+        "sources": [
+          "Polybe III, 116, 7 et 8",
+          "Tite-Live XXII, 48, 5 et 6 ; XXIII, 26 à 29",
+          "J. Kromayer et G. Veith, Schlachten-Atlas, 1922, texte de la planche 6"
+        ]
+      },
+      {
+        "id": "l-encerclement",
+        "title": "L'encerclement et le massacre",
+        "text": "Pris dans l'anneau, les Romains combattent sur place et sont tués en masse jusqu'aux deux dernières heures du jour. Paul Émile tombe, comme Cnaeus Servilius Geminus et, selon Tite-Live, l'ancien maître de cavalerie Minucius ; Varron s'enfuit à Venusia. Polybe compte environ 70 000 morts ; Tite-Live, 45 500 fantassins et 2 700 cavaliers. Hannibal perd de 5 700 (Polybe) à 8 000 hommes (Tite-Live). Les 10 000 hommes du grand camp attaquent le camp carthaginois : selon Polybe, 2 000 sont tués et les autres pris ; selon Tite-Live, les deux camps romains capitulent le lendemain.",
+        "sources": [
+          "Polybe III, 116, 9 à 13 ; 117, 1 à 11",
+          "Tite-Live XXII, 49 à 52",
+          "Appien, Le livre d'Hannibal, 24 et 25",
+          "Plutarque, Fabius, 16, 8"
+        ]
+      }
+    ],
+    "ambience": [
+      {
+        "layer": "wind",
+        "volume": 0.5
+      },
+      {
+        "layer": "river",
+        "volume": 0.35,
+        "points": [
+          "la-traversee",
+          "le-choc-des-cavaliers"
+        ]
+      }
+    ]
+  },
   {
     "id": "pantheon",
     "title": "Panthéon d'Hadrien",

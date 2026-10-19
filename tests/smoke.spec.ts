@@ -118,3 +118,28 @@ test('a scene opens from its hash route, walks its points and returns to the map
   await timelineReady(page)
   expect(errors).toEqual([])
 })
+
+test('the battle of Cannae plays, follows its phases and switches views', async ({ page }) => {
+  test.setTimeout(300_000)
+  const errors = watchErrors(page)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('./#/scene/cannes')
+  await expect(page.getByRole('heading', { name: 'Bataille de Cannes' })).toBeVisible()
+  if (await page.locator('.scene-nav').isVisible()) {
+    const controls = page.getByRole('region', { name: 'Lecture de la bataille' })
+    await expect(controls).toBeVisible({ timeout: 240_000 })
+    await expect(controls).toContainText('1 figurine = 20 soldats')
+    await expect(page.locator('.veil')).toHaveCSS('opacity', '0', { timeout: 240_000 })
+    await page.keyboard.press('ArrowRight')
+    await expect(page.locator('.scene__point-title')).toHaveText('La traversée et le déploiement')
+    await expect(controls.locator('.battle__phase')).toContainText('Phase 1 sur 8')
+    await page.getByRole('button', { name: /Étape 9 sur 9/ }).click()
+    await expect(controls.locator('.battle__counters')).toContainText('70')
+    await controls.getByRole('button', { name: 'Vue rasante' }).click()
+    await expect(controls.getByRole('button', { name: 'Vue rasante' })).toHaveAttribute('aria-pressed', 'true')
+  }
+  await page.keyboard.press('Escape')
+  await expect(page).toHaveURL(/\/roma\/#\/$/)
+  await expect(page.getByRole('region', { name: 'Lecture de la bataille' })).toHaveCount(0)
+  expect(errors).toEqual([])
+})

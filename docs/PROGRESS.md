@@ -130,6 +130,12 @@ Tests : 60 tests unitaires, 12 tests Playwright (6 sur ordinateur, 6 sur mobile)
   - **Nîmes plus réaliste** (`assets-v3`, 7,6 Mo) : personnages détaillés, objets des boutiques, usure ; passants posés sur le sol (correction du site et des trajets).
   - **Son d'ambiance** libre, coupé par défaut ; **ombres de contact** (N8AO) en qualité moyenne et haute ; **6 événements de frise** qui ouvrent les scènes.
   - Captures dans `docs/screenshots/<scène>/`. Restent hors périmètre : vidéos pré-rendues, bataille de Cannes (carte de session proposée), netteté de la carte au zoom (carte de session proposée).
+- **Bataille de Cannes, 2 août 216 av. J.-C.** (`#/scene/cannes`, release `assets-v6`, 1,16 Mo), nuit du 19 au 20 octobre 2026, en autonomie :
+  - moteur de bataille générique (`src/scenes/battle/`) : données validées par zod, troupes en `InstancedMesh` qui gardent leur formation entre les phases (marche, combat, fuite, chute), emprises colorées par camp, flèches de manœuvre qui se dessinent, étiquettes d'unités, compteurs de pertes ;
+  - frise de lecture (lecture, pause, curseur, touche Espace) synchronisée avec les cartels de phase et les flèches gauche et droite ; vue tactique (figurines grossies 3 fois, mention affichée) et vue rasante à hauteur d'homme dans les rangs d'une unité ; avec `prefers-reduced-motion`, pas de lecture automatique, chaque phase s'affiche directement dans son état final et la caméra coupe au lieu de glisser ;
+  - terrain réel TINITALY 1.1 (CC BY 4.0) de 9,2 km sur 6,8 km, Aufide restitué au pied de l'escarpement, trois camps et citadelle de Cannes (`blender/cannes.py`) ;
+  - 12 figurines low poly faites par script, en deux niveaux de détail (270 à 650 triangles près, 36 à 72 loin) : casque Montefortino à trois plumes, scutum ovale, pila, triaires à la lance, vélites à la rondache, cavaliers sans étriers, Numides sans bride, aucun éléphant ;
+  - 6 850 figurines (1 pour 20 soldats, camps compris), 8 phases d'après la proposition vérifiée ; captures dans `docs/screenshots/cannes/`. Hors périmètre : le plan pré-rendu de la charge d'Hasdrubal. Cinq points ajoutés à `docs/A_VERIFIER.md`.
 - **Propositions de scènes vérifiées** : Nîmes vers 130 (validée, option A2 : le pont du Gard devient une scène à part) et Arles vers 160 (`docs/scenes/arles.md`, à valider).
 
 ### En cours

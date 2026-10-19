@@ -2,7 +2,7 @@ import { existsSync, readdirSync } from 'node:fs'
 import { dataset } from '../src/data/index.ts'
 import { validateDataset } from '../src/data/validate.ts'
 
-const SCENE_SHARED_FOLDERS = new Set(['kit'])
+const SCENE_SHARED_FOLDERS = new Set(['kit', 'battle'])
 
 export function sceneFileErrors(scenes: { id: string; status: string }[], folders: string[], exists: (path: string) => boolean): string[] {
   const ids = new Set(scenes.map((scene) => scene.id))

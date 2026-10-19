@@ -9,6 +9,13 @@
       "file": "3538ab59f493-arles.glb"
     },
     {
+      "path": "scenes/cannes/cannes.glb",
+      "bytes": 1156524,
+      "sha256": "ba96f0151ee35edf2c3e23f6c256a84413c12bada32f939154d9e6666f2f26e6",
+      "release": "assets-v6",
+      "file": "ba96f0151ee3-cannes.glb"
+    },
+    {
       "path": "scenes/nimes/nimes.glb",
       "bytes": 7613300,
       "sha256": "6abbac8a865a4c8b380c852a8afc197049a7cf9f3bc73bdc2ad39be72f79269c",

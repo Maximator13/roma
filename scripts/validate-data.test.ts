@@ -12,7 +12,7 @@ describe('sceneFileErrors', () => {
       { id: 'arles', status: 'planned' },
       { id: 'pont-du-gard', status: 'ready' },
     ]
-    expect(sceneFileErrors(scenes, ['kit', 'nimes', 'arles', 'pont-du-gard'], exists)).toEqual([])
+    expect(sceneFileErrors(scenes, ['kit', 'battle', 'nimes', 'arles', 'pont-du-gard'], exists)).toEqual([])
   })
 
   it('reports a ready scene without its Blender script and a folder without data', () => {
