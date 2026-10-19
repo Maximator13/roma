@@ -14,7 +14,7 @@ import { eraIndexAt } from './timeline/keys.ts'
 import { isVisibleAt } from './timeline/layout.ts'
 import { Timeline } from './timeline/Timeline.tsx'
 import { animateView, viewForEvent } from './timeline/viewAnimation.ts'
-import { clampViewport, viewAround, type Viewport } from './timeline/viewport.ts'
+import { clampViewport, fullView, viewAround, type Viewport } from './timeline/viewport.ts'
 import { ConsentBanner } from './ui/ConsentBanner.tsx'
 import { findScene, isPlayable } from './scenes/registry.ts'
 import { EraCaption, EventPanel, NotFoundPanel, PagePanel, ScenePanel, SceneShortcuts } from './ui/panels.tsx'
@@ -180,6 +180,8 @@ export function App() {
   useSceneKeys()
   useAmbience()
   const inScene = route.name === 'scene' && isPlayable(findScene(route.id))
+  const fullTimeline = useApp((state) => state.view.span >= fullView().span * 0.99)
+  const welcome = route.name === 'home' && fullTimeline
   return (
     <>
       <Suspense fallback={null}>
@@ -187,10 +189,12 @@ export function App() {
       </Suspense>
       <div className={inScene ? 'app app--scene' : 'app'}>
         <header className="header">
-          <a className="brand" href="#/">
-            <span className="brand__name">{UI.brand}</span>
-            <span className="brand__subtitle">{UI.subtitle}</span>
-          </a>
+          <h1 className="brand-title">
+            <a className="brand" href="#/">
+              <span className="brand__name">{UI.brand}</span>
+              <span className="brand__subtitle">{UI.subtitle}</span>
+            </a>
+          </h1>
           <nav className="site-nav" aria-label={UI.footerLabel}>
             {PAGE_LINKS.map((link) => (
               <a key={link.id} href={routeToHash({ name: 'page', id: link.id })}>
@@ -202,8 +206,8 @@ export function App() {
         <main className="main">
           {!inScene && (
             <div className="main__side">
-              <EraCaption index={eraIndex} />
-              <SceneShortcuts index={eraIndex} />
+              {!welcome && <EraCaption index={eraIndex} />}
+              {!welcome && <SceneShortcuts index={eraIndex} />}
               {route.name === 'home' && <Intro />}
             </div>
           )}

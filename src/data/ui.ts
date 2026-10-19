@@ -75,6 +75,7 @@ export const UI = {
   sceneShortcuts: 'À visiter en 3D',
   soundOn: 'Son : activé',
   soundOff: 'Son : coupé',
+  soundLabel: "Son d'ambiance",
   sources: 'Sources',
 } as const
 

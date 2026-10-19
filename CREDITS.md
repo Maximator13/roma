@@ -21,6 +21,7 @@ Dépendances npm utilisées sans modification ; leurs licences accompagnent leur
 | drei | 10.7.9 | MIT | https://github.com/pmndrs/drei |
 | @react-three/postprocessing | 3.2.0 | MIT | https://github.com/pmndrs/react-postprocessing |
 | postprocessing | 6.39.5 | zlib | https://github.com/pmndrs/postprocessing |
+| troika-three-text (étiquettes 3D, via drei) | 0.52.5 | MIT | https://github.com/protectwise/troika |
 | N8AO (occlusion ambiante des scènes) | 2.0.1 | ISC | https://github.com/N8python/n8ao |
 | meshoptimizer (décodeur des modèles 3D) | inclus dans three.js | MIT | https://github.com/zeux/meshoptimizer |
 | Basis Universal (transcodeur KTX2) | inclus dans three.js | Apache 2.0 | https://github.com/BinomialLLC/basis_universal |

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { HistoricalEvent } from '../src/data/schema.ts'
-import { escapeHtml, sharePage, sitemap } from './postbuild.ts'
+import { escapeHtml, sceneSharePage, sharePage, shortDescription, sitemap } from './postbuild.ts'
 
 const template = readFileSync('index.html', 'utf8')
 
@@ -52,5 +52,24 @@ describe('share pages', () => {
     expect(xml).toContain(
       '<loc>https://maximator13.github.io/roma/evenement/bataille-de-cannes/</loc><lastmod>2026-10-15</lastmod>',
     )
+  })
+})
+
+describe('scene pages', () => {
+  it('cuts long descriptions at a word boundary', () => {
+    const text = 'mot '.repeat(60)
+    const short = shortDescription(text)
+    expect(short.length).toBeLessThanOrEqual(155)
+    expect(short.endsWith('mot…')).toBe(true)
+    expect(shortDescription('Court.')).toBe('Court.')
+  })
+
+  it('writes a share page and a sitemap entry for a scene', () => {
+    const template = readFileSync('index.html', 'utf8')
+    const scene = { id: 'nimes', title: 'Nîmes romaine', status: 'ready' as const, year: 130, summary: 'Une ville.', points: [] }
+    const page = sceneSharePage(template, scene)
+    expect(page).toContain('<title>Nîmes romaine (vers 130), scène 3D | Roma</title>')
+    expect(page).toContain('https://maximator13.github.io/roma/scene/nimes/')
+    expect(sitemap([], '2026-10-19', ['scene/nimes/'])).toContain('<loc>https://maximator13.github.io/roma/scene/nimes/</loc>')
   })
 })

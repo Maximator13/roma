@@ -1,4 +1,4 @@
-import { PerformanceMonitor } from '@react-three/drei'
+import { PerformanceMonitor, useProgress } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { EffectComposer, N8AO, ToneMapping, Vignette } from '@react-three/postprocessing'
 import { ToneMappingMode } from 'postprocessing'
@@ -111,6 +111,7 @@ export default function Stage() {
   const veil = useRef<HTMLDivElement>(null)
   const { shown, loading, onReady } = useSceneSwap(veil)
   const loadingTitle = shown && loading ? findScene(shown)?.title : undefined
+  const progress = useProgress((state) => state.progress)
   return (
     <>
       <div className="stage" aria-hidden="true">
@@ -144,7 +145,7 @@ export default function Stage() {
           {debug && <StatsProbe />}
         </Canvas>
         <div ref={veil} className="veil">
-          {loadingTitle && <p className="veil__status">{UI.sceneLoading(loadingTitle)}</p>}
+          {loadingTitle && <p className="veil__status">{UI.sceneLoading(loadingTitle)} ({Math.round(progress)} %)</p>}
         </div>
       </div>
       {debug && <DebugHud />}

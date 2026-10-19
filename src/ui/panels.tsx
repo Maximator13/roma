@@ -12,14 +12,32 @@ import { findScene, isPlayable } from '../scenes/registry.ts'
 import { navigate, useApp } from '../store.ts'
 import { Markdown } from './Markdown.tsx'
 
-function Panel({ kind, labelId, focusKey, children }: { kind: string; labelId: string; focusKey: string; children: ReactNode }) {
+function Panel({
+  kind,
+  labelId,
+  focusKey,
+  closeLabel = UI.close,
+  children,
+}: {
+  kind: string
+  labelId: string
+  focusKey: string
+  closeLabel?: string
+  children: ReactNode
+}) {
   const ref = useRef<HTMLElement>(null)
+  useEffect(() => {
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    return () => {
+      if (opener?.isConnected) opener.focus()
+    }
+  }, [])
   useEffect(() => {
     ref.current?.querySelector<HTMLElement>(`#${labelId}`)?.focus()
   }, [focusKey, labelId])
   return (
     <aside ref={ref} className={`panel panel--${kind}`} aria-labelledby={labelId} data-native-keys>
-      <button type="button" className="panel__close" onClick={() => navigate({ name: 'home' })} aria-label={UI.close}>
+      <button type="button" className="panel__close" onClick={() => navigate({ name: 'home' })} aria-label={closeLabel}>
         <span aria-hidden="true">×</span>
       </button>
       {children}
@@ -163,7 +181,7 @@ function ScenePoints({ scene, point }: { scene: Scene; point: number }) {
 function SoundToggle() {
   const soundOn = useApp((state) => state.soundOn)
   return (
-    <button type="button" className="scene__sound" aria-pressed={soundOn} onClick={() => useApp.getState().setSoundOn(!soundOn)}>
+    <button type="button" className="scene__sound" aria-pressed={soundOn} aria-label={UI.soundLabel} onClick={() => useApp.getState().setSoundOn(!soundOn)}>
       {soundOn ? UI.soundOn : UI.soundOff}
     </button>
   )
@@ -176,7 +194,7 @@ export function ScenePanel({ scene }: { scene: Scene }) {
   const current = point > 0 ? scene.points?.[point - 1] : undefined
   const total = (scene.points?.length ?? 0) + 1
   return (
-    <Panel kind="scene" labelId="panel-title" focusKey={scene.id}>
+    <Panel kind="scene" labelId="panel-title" focusKey={scene.id} closeLabel={UI.sceneBack}>
       <p className="panel__eyebrow">
         {UI.sceneKicker}
         {scene.year !== undefined && ` · vers ${formatYear(scene.year)}`}

@@ -92,12 +92,12 @@ Les bornes des époques sont des conventions d'historiens, expliquées pour chac
 ## Crédits
 
 - Polices : Cinzel (Natanael Gama) et EB Garamond (Georg Duffner et Octavio Pardo), sous licence SIL Open Font License 1.1.
-- Bibliothèques : React, three.js, React Three Fiber, drei, Zustand et marked (licence MIT), postprocessing (licence zlib), GSAP (licence gratuite propre à Webflow).
+- Bibliothèques : React, three.js, React Three Fiber, drei, troika-three-text, meshoptimizer, Zustand et marked (licence MIT), postprocessing (licence zlib), N8AO (licence ISC), Basis Universal (licence Apache 2.0), GSAP (licence gratuite propre à Webflow).
 - Relief et fonds marins : NOAA NCEI, ETOPO 2022 (domaine public), [doi:10.25921/fd45-gt74](https://doi.org/10.25921/fd45-gt74).
 - Traits de côte et lacs : Made with Natural Earth (domaine public).
 - Lieux antiques : [Pleiades](https://pleiades.stoa.org), © les contributeurs, CC BY 3.0.
 - Sons d'ambiance : enregistrements du domaine public et sous CC0 (Wikimedia Commons, xeno-canto, OpenGameArt) ; vagues du port : « Smallwaves » par Torsten Nilsson, Work With Sounds, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), modifié. Détail dans le fichier CREDITS.md du dépôt.
-- Relief de la scène de Nîmes : IGN, RGE ALTI, Licence Ouverte Etalab 2.0. Textures de matériaux : [Poly Haven](https://polyhaven.com), CC0.
+- Relief, cours d'eau et orthophotographie des scènes de Nîmes, d'Arles et du pont du Gard : IGN (RGE ALTI, BD TOPO, BD ORTHO), Licence Ouverte Etalab 2.0. Textures de matériaux : [Poly Haven](https://polyhaven.com) et [ambientCG](https://ambientcg.com), CC0.
 - Territoires romains année par année : J. S. Bennett, E. Mutch, A. Tollefson et al., [Cliopatria v0.2.1](https://github.com/Seshat-Global-History-Databank/cliopatria) (Seshat Global History Databank), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ; données modifiées (extraction des entités romaines, simplification, dates alignées sur le projet, lacune byzantine de 1402 à 1406 comblée par la géométrie identique des années voisines).
 
 La liste complète des ressources, avec leurs auteurs, licences et modifications, est tenue à jour dans le fichier [CREDITS.md](https://github.com/Maximator13/roma/blob/main/CREDITS.md) du dépôt.`,

@@ -107,6 +107,8 @@ a {
 
 .veil__status {
   margin: 0;
+  padding: 0 1rem;
+  text-align: center;
   color: rgb(40 30 22);
   font: 400 1rem/1.2 var(--font-display);
   letter-spacing: 0.18em;
@@ -118,7 +120,7 @@ a {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(to right, rgb(10 7 5 / 0.82) 0%, rgb(10 7 5 / 0.55) 28%, transparent 52%);
+  background: linear-gradient(to right, rgb(10 7 5 / 0.86) 0%, rgb(10 7 5 / 0.66) 30%, transparent 55%);
   pointer-events: none;
 }
 
@@ -129,6 +131,11 @@ a {
   gap: 1rem;
   padding: 1rem 1.5rem 0.5rem;
   background: linear-gradient(to bottom, rgb(10 7 5 / 0.7), transparent);
+}
+
+.brand-title {
+  margin: 0;
+  font: inherit;
 }
 
 .brand {
@@ -162,6 +169,11 @@ a {
 .site-nav a {
   color: var(--ink-muted);
   text-decoration: none;
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.85);
+}
+
+.app--scene .header {
+  background: linear-gradient(to bottom, rgb(10 7 5 / 0.85), rgb(10 7 5 / 0.45) 70%, transparent);
 }
 
 .site-nav a:hover {
@@ -362,10 +374,23 @@ a {
 }
 
 .panel--scene {
+  display: flex;
+  flex-direction: column;
   width: min(27rem, 100%);
   margin-left: auto;
   align-self: flex-end;
   max-height: 100%;
+  overflow: hidden;
+}
+
+.panel--scene > * {
+  flex: none;
+}
+
+.panel--scene > .scene__cartel {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .panel__scene {
@@ -437,10 +462,7 @@ a {
 }
 
 .panel--scene .scene-nav {
-  position: sticky;
-  bottom: -2rem;
-  padding: 0.75rem 0 1rem;
-  background: rgb(16 11 8);
+  padding-top: 0.5rem;
 }
 
 .scene-nav .button:disabled {
@@ -827,8 +849,15 @@ a {
     padding: 0.75rem 1rem 0.25rem;
   }
 
+  .header {
+    flex-wrap: wrap;
+  }
+
   .site-nav {
-    display: none;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 0.1rem 0.75rem;
+    font-size: 0.78rem;
   }
 
   :root {
@@ -884,11 +913,6 @@ a {
     background: rgb(16 11 8 / 0.94);
   }
 
-  .panel--scene .scene-nav {
-    bottom: -1.25rem;
-    margin-top: 0.5rem;
-    background: rgb(16 11 8);
-  }
 
   .scene__help {
     display: none;

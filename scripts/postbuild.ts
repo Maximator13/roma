@@ -1,8 +1,9 @@
 import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { formatDate } from '../src/core/dates.ts'
+import { formatDate, formatYear } from '../src/core/dates.ts'
 import { events } from '../src/data/events.ts'
-import type { HistoricalEvent } from '../src/data/schema.ts'
+import { scenes } from '../src/data/scenes.ts'
+import type { HistoricalEvent, Scene } from '../src/data/schema.ts'
 import { CERTAINTY } from '../src/data/ui.ts'
 import { SITE, SITE_URL } from '../src/site.ts'
 
@@ -22,6 +23,16 @@ export function escapeHtml(text: string): string {
 
 export function eventPath(event: HistoricalEvent): string {
   return `evenement/${event.id}/`
+}
+
+export function scenePath(scene: Scene): string {
+  return `scene/${scene.id}/`
+}
+
+export function shortDescription(text: string, limit = 155): string {
+  if (text.length <= limit) return text
+  const cut = text.slice(0, limit - 1)
+  return `${cut.slice(0, cut.lastIndexOf(' ')).replace(/[\s,;:.]+$/, '')}…`
 }
 
 function replaceOnce(html: string, pattern: RegExp, replacement: string): string {
@@ -67,8 +78,30 @@ function staticCartel(event: HistoricalEvent): string {
 
 export function sharePage(template: string, event: HistoricalEvent): string {
   const title = `${event.title} (${formatDate(event)}) | ${SITE.name}`
-  const meta = { title, description: event.summary, url: `${SITE_URL}${eventPath(event)}` }
+  const meta = { title, description: shortDescription(event.summary), url: `${SITE_URL}${eventPath(event)}` }
   return withPageMeta(template, meta, staticCartel(event))
+}
+
+function staticScene(scene: Scene): string {
+  const points = (scene.points ?? []).map((point) => `<li>${escapeHtml(point.title)}</li>`).join('')
+  return [
+    '<article>',
+    `<h1>${escapeHtml(scene.title)}</h1>`,
+    `<p>${escapeHtml(scene.summary ?? '')}</p>`,
+    `<ul>${points}</ul>`,
+    `<p><a href="${SITE.base}#/scene/${scene.id}">Visiter la scène en 3D</a></p>`,
+    '</article>',
+  ].join('')
+}
+
+export function sceneSharePage(template: string, scene: Scene): string {
+  const year = scene.year === undefined ? '' : ` (vers ${formatYear(scene.year)})`
+  const meta = {
+    title: `${scene.title}${year}, scène 3D | ${SITE.name}`,
+    description: shortDescription(scene.summary ?? scene.title),
+    url: `${SITE_URL}${scenePath(scene)}`,
+  }
+  return withPageMeta(template, meta, staticScene(scene))
 }
 
 const NOT_FOUND_STYLE =
@@ -96,8 +129,8 @@ export function notFoundPage(): string {
 `
 }
 
-export function sitemap(items: HistoricalEvent[], lastModified: string): string {
-  const urls = [SITE_URL, ...items.map((event) => `${SITE_URL}${eventPath(event)}`)]
+export function sitemap(items: HistoricalEvent[], lastModified: string, extraPaths: string[] = []): string {
+  const urls = [SITE_URL, ...items.map((event) => `${SITE_URL}${eventPath(event)}`), ...extraPaths.map((path) => `${SITE_URL}${path}`)]
   const entries = urls.map((url) => `  <url><loc>${url}</loc><lastmod>${lastModified}</lastmod></url>`)
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -135,9 +168,11 @@ function checkSiteBudget() {
 function main() {
   const template = readFileSync(join(DIST, 'index.html'), 'utf8')
   events.forEach((event) => writePage(join(eventPath(event), 'index.html'), sharePage(template, event)))
+  const ready = scenes.filter((scene) => scene.status === 'ready')
+  ready.forEach((scene) => writePage(join(scenePath(scene), 'index.html'), sceneSharePage(template, scene)))
   writePage('404.html', notFoundPage())
-  writePage('sitemap.xml', sitemap(events, new Date().toISOString().slice(0, 10)))
-  console.log(`Postbuild: ${events.length} share pages, 404.html, sitemap.xml.`)
+  writePage('sitemap.xml', sitemap(events, new Date().toISOString().slice(0, 10), ready.map(scenePath)))
+  console.log(`Postbuild: ${events.length} event and ${ready.length} scene share pages, 404.html, sitemap.xml.`)
   checkSiteBudget()
 }
 
