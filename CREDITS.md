@@ -72,4 +72,11 @@ Boucles de 45 s faites pour le projet dans `public/audio/` (mono, recadrées, fi
 | `harbour` (goéland) | https://xeno-canto.org/707075 | Sonothèque ADVL | CC0 1.0 |
 | `harbour` (craquements de bois) | https://opengameart.org/content/tree-creaking | AntumDeluge, d'après Department64 | CC0 1.0 |
 | `wind` (vent synthétisé) | https://opengameart.org/content/wind1 | Luke.RUSTLTD | CC0 1.0 |
+| `arena-crowd` | https://freesound.org/s/342378/ ; https://freesound.org/s/141704/ ; foule d'eguobyte ci-dessus | stefgaz ; felix.blume ; eguobyte | CC0 1.0 |
+| `market` | https://freesound.org/s/384052/ ; https://freesound.org/s/159614/ ; https://freesound.org/s/455773/ | emanuele.caro ; lollosound ; kyles | CC0 1.0 |
+| `masonry` | https://freesound.org/s/812116/ ; https://freesound.org/s/321571/ | achats57 ; mondofred | CC0 1.0 |
+| `animals` | https://freesound.org/s/131925/ ; https://commons.wikimedia.org/wiki/File:157763_felix-blume_a-donkey-is-braying-in-his-enclosure-in-south-of-france.wav ; https://freesound.org/s/453433/ | felix.blume ; Felix Blume ; kyles | CC0 1.0 |
+| `cart` | https://freesound.org/s/437078/ ; https://freesound.org/s/538438/ | craigsmith ; bruno.auzet | CC0 1.0 |
+| `interior` | https://freesound.org/s/828537/ ; https://freesound.org/s/478545/ | NickTayloe ; LordFluffeh | CC0 1.0 |
+| `birds-day` | https://freesound.org/s/404663/ ; https://freesound.org/s/116791/ | straget ; nigelcoop | CC0 1.0 |
 

@@ -10,6 +10,41 @@ export const scenes: Scene[] = [
     "lat": 41.89861,
     "lon": 12.47683,
     "summary": "Le 21 avril 129, à midi, jour anniversaire de la fondation de Rome. Rebâti sous Trajan et Hadrien sur le temple d'Agrippa, le Panthéon couvre sa rotonde d'une coupole de béton d'environ 43 m de diamètre, aussi haute que large, ouverte au ciel par un oculus de près de 9 m. À midi, la lumière du soleil y découpe une tache qui glisse sur les caissons et les murs.",
+    "ambience": [
+      {
+        "layer": "evening-city",
+        "volume": 0.4,
+        "points": [
+          "vue-d-ensemble",
+          "le-porche"
+        ]
+      },
+      {
+        "layer": "market",
+        "volume": 0.35,
+        "points": [
+          "vue-d-ensemble",
+          "le-porche"
+        ]
+      },
+      {
+        "layer": "birds-day",
+        "volume": 0.3,
+        "points": [
+          "vue-d-ensemble",
+          "le-porche"
+        ]
+      },
+      {
+        "layer": "interior",
+        "volume": 0.6,
+        "points": [
+          "la-rotonde",
+          "l-oculus",
+          "les-niches"
+        ]
+      }
+    ],
     "points": [
       {
         "id": "le-porche",
@@ -75,11 +110,51 @@ export const scenes: Scene[] = [
     "ambience": [
       {
         "layer": "evening-city",
-        "volume": 0.5
+        "volume": 0.35
       },
       {
         "layer": "summer-evening",
-        "volume": 0.55
+        "volume": 0.45
+      },
+      {
+        "layer": "birds-day",
+        "volume": 0.3
+      },
+      {
+        "layer": "wind",
+        "volume": 0.35,
+        "points": [
+          "vue-d-ensemble"
+        ]
+      },
+      {
+        "layer": "cart",
+        "volume": 0.45,
+        "points": [
+          "porte-d-auguste"
+        ]
+      },
+      {
+        "layer": "animals",
+        "volume": 0.35,
+        "points": [
+          "porte-d-auguste",
+          "fontaine-tour-magne"
+        ]
+      },
+      {
+        "layer": "market",
+        "volume": 0.5,
+        "points": [
+          "maison-carree"
+        ]
+      },
+      {
+        "layer": "arena-crowd",
+        "volume": 0.5,
+        "points": [
+          "amphitheatre"
+        ]
       },
       {
         "layer": "fountain",
@@ -87,13 +162,6 @@ export const scenes: Scene[] = [
         "points": [
           "fontaine-tour-magne",
           "eau-castellum"
-        ]
-      },
-      {
-        "layer": "wind",
-        "volume": 0.35,
-        "points": [
-          "vue-d-ensemble"
         ]
       }
     ],
@@ -160,24 +228,58 @@ export const scenes: Scene[] = [
     "ambience": [
       {
         "layer": "evening-city",
-        "volume": 0.5
+        "volume": 0.35
       },
       {
         "layer": "summer-evening",
-        "volume": 0.5
+        "volume": 0.4
       },
       {
-        "layer": "harbour",
-        "volume": 0.7,
-        "points": [
-          "port-trinquetaille"
-        ]
+        "layer": "birds-day",
+        "volume": 0.25
       },
       {
         "layer": "wind",
         "volume": 0.35,
         "points": [
           "vue-d-ensemble"
+        ]
+      },
+      {
+        "layer": "market",
+        "volume": 0.5,
+        "points": [
+          "forum"
+        ]
+      },
+      {
+        "layer": "arena-crowd",
+        "volume": 0.35,
+        "points": [
+          "theatre"
+        ]
+      },
+      {
+        "layer": "arena-crowd",
+        "volume": 0.5,
+        "points": [
+          "amphitheatre",
+          "cirque"
+        ]
+      },
+      {
+        "layer": "cart",
+        "volume": 0.4,
+        "points": [
+          "port-trinquetaille",
+          "cirque"
+        ]
+      },
+      {
+        "layer": "harbour",
+        "volume": 0.7,
+        "points": [
+          "port-trinquetaille"
         ]
       }
     ],
@@ -245,11 +347,30 @@ export const scenes: Scene[] = [
       },
       {
         "layer": "summer-evening",
-        "volume": 0.7
+        "volume": 0.6
+      },
+      {
+        "layer": "birds-day",
+        "volume": 0.3
       },
       {
         "layer": "wind",
         "volume": 0.4
+      },
+      {
+        "layer": "animals",
+        "volume": 0.3,
+        "points": [
+          "vue-d-ensemble",
+          "le-pont"
+        ]
+      },
+      {
+        "layer": "masonry",
+        "volume": 0.5,
+        "points": [
+          "la-carriere"
+        ]
       }
     ],
     "points": [
