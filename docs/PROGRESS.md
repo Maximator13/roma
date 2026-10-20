@@ -136,6 +136,13 @@ Tests : 60 tests unitaires, 12 tests Playwright (6 sur ordinateur, 6 sur mobile)
   - terrain réel TINITALY 1.1 (CC BY 4.0) de 9,2 km sur 6,8 km, Aufide restitué au pied de l'escarpement, trois camps et citadelle de Cannes (`blender/cannes.py`) ;
   - 12 figurines low poly faites par script, en deux niveaux de détail (270 à 650 triangles près, 36 à 72 loin) : casque Montefortino à trois plumes, scutum ovale, pila, triaires à la lance, vélites à la rondache, cavaliers sans étriers, Numides sans bride, aucun éléphant ;
   - 6 850 figurines (1 pour 20 soldats, camps compris), 8 phases d'après la proposition vérifiée ; captures dans `docs/screenshots/cannes/`. Hors périmètre : le plan pré-rendu de la charge d'Hasdrubal. Cinq points ajoutés à `docs/A_VERIFIER.md`.
+- **Nuit du 19 au 20 octobre 2026, suite, en autonomie** (« fais ce que tu veux », le Vésuve cité en exemple) :
+  - **Audit de qualité corrigé** : cartel des scènes qui défile, menu visible sur téléphone, titre `h1`, retour du focus à la fermeture des panneaux, pourcentage de chargement, pages de partage et plan du site pour chaque scène prête.
+  - **Son d'ambiance propre à chaque lieu** : 13 nappes libres (CC0), choisies point par point (fontaine, marché, foule de l'arène, chantier, port…).
+  - **Passe de détail** sur Nîmes, Arles, le pont du Gard et le Panthéon (releases `assets-v7` à `assets-v10`).
+  - **Pompéi et l'éruption du Vésuve** (`#/scene/pompei`, release `assets-v11`, 11,5 Mo) : 24 août 79 vers 14 h (date d'octobre signalée), colonne plinienne dessinée en temps réel au-dessus du Vésuve d'avant 79, chute de ponces et de cendres, ciel voilé, habitants qui fuient avec leurs ballots, boutiques fermées ; forum et Capitole, via dell'Abbondanza, maison à atrium et péristyle, porte et rivage de 79. Relief Copernicus DEM GLO-30 retouché. Ville ajoutée à la carte ; l'événement « Éruption du Vésuve » ouvre la scène.
+  - **Le Colisée et le Forum romain vers 107** (`#/scene/colisee`, release `assets-v12`, 8,1 Mo) : jour de jeux pour le triomphe dacique de Trajan, gradins pleins par rang, velum, arène et trappes du sous-sol, Colosse, Meta Sudans, arc de Titus, voie Sacrée, Forum et Palatin. Relief TINITALY 1.1. Accessible depuis Rome sur la carte et par l'événement « Inauguration du Colisée ».
+  - Les deux propositions ont été vérifiées par une relecture contradictoire, puis la scène relue par un historien et un chef opérateur avant correction ; elles sont produites **sans ta validation** (`docs/scenes/pompei.md`, `docs/scenes/colisee.md`), et leurs choix de restitution sont dans `docs/A_VERIFIER.md`. Captures dans `docs/screenshots/pompei/` et `docs/screenshots/colisee/`.
 - **Propositions de scènes vérifiées** : Nîmes vers 130 (validée, option A2 : le pont du Gard devient une scène à part) et Arles vers 160 (`docs/scenes/arles.md`, à valider).
 
 ### En cours
@@ -171,5 +178,5 @@ Tests : 117 tests unitaires et 14 tests Playwright (ordinateur et mobile), verts
 ### Ce que j'attends de toi
 
 1. Valider le plan de design (`docs/DESIGN.md`).
-2. Valider les propositions de scènes vérifiées : Arles (`docs/scenes/arles.md`), pont du Gard (`docs/scenes/pont-du-gard.md`), Panthéon (`docs/scenes/pantheon.md`, une maquette sous licence NC-ND écartée sauf accord) et Cannes (`docs/scenes/cannes.md`).
-3. Toujours valables : mesures du HUD, relecture de `docs/A_VERIFIER.md` (70 points désormais), Search Console, GoatCounter (facultatif).
+2. Regarder Pompéi et le Colisée, faits sans validation, et me dire ce qui ne va pas. Valider les propositions de scènes vérifiées : Arles (`docs/scenes/arles.md`), pont du Gard (`docs/scenes/pont-du-gard.md`), Panthéon (`docs/scenes/pantheon.md`, une maquette sous licence NC-ND écartée sauf accord) et Cannes (`docs/scenes/cannes.md`).
+3. Toujours valables : mesures du HUD, relecture de `docs/A_VERIFIER.md` (126 points désormais), Search Console, GoatCounter (facultatif).
