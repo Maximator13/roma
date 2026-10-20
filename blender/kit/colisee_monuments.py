@@ -5,7 +5,7 @@ from mathutils import Matrix, Vector
 
 from .buildings import arched_wall, straight_moulding
 from .geometry import MATTE, MeshBuilder, placement
-from .nimes_figures import Look, ellipsoid, person, tube
+from .nimes_figures import Look, coarse, drape, ellipsoid, person, tube
 from .orders import (ENGAGED_HALF, column, facing_text_matrix, gable_roof, inscription, podium,
                      simple_entablature_profile)
 
@@ -23,6 +23,20 @@ VOID = "shadow_void"
 PEPERINO = (0.74, 0.72, 0.66)
 WOOD = (0.45, 0.33, 0.22)
 UNIT = 9.0
+OCHRE_RED = (0.55, 0.22, 0.18)
+WINDOW = (0.12, 0.10, 0.09)
+PATINA = "col_bronze_patina"
+STUCCO_TINT = (0.86, 0.80, 0.70)
+
+
+def window(builder, x, y, z, side, width=1.2, height=1.8, frame=0.15):
+    hw = width / 2
+    builder.oriented([(x - hw - frame, y + side * 0.03, z - frame), (x + hw + frame, y + side * 0.03, z - frame),
+                      (x + hw + frame, y + side * 0.03, z + height + frame),
+                      (x - hw - frame, y + side * 0.03, z + height + frame)], (0, side, 0), TRAV)
+    painted(builder, WINDOW, lambda: builder.oriented([(x - hw, y + side * 0.05, z), (x + hw, y + side * 0.05, z),
+                                                       (x + hw, y + side * 0.05, z + height),
+                                                       (x - hw, y + side * 0.05, z + height)], (0, side, 0), MATTE))
 
 
 def painted(builder, colour, action):
@@ -107,15 +121,17 @@ def temple(width, length, podium_height, column_height, diameter, front, order, 
     eave = top + entablature
     builder.box((-hw + margin - diameter * 0.9, rear, top + entablature * 0.75),
                 (hw - margin + diameter * 0.9, front_row + diameter * 0.9, eave), material)
+    painted(builder, OCHRE_RED, lambda: builder.box((-hw + margin - diameter * 0.74, rear + 0.16, top + entablature * 0.6),
+                                                    (hw - margin + diameter * 0.74, front_row + diameter * 0.74,
+                                                     top + entablature * 0.7), MATTE, bottom=False, top=False))
     half = hw - margin + diameter * 0.9
     ridge = eave + half * math.tan(math.radians(15))
     gable_roof(builder, rear, front_row + diameter * 0.9, half + 0.3, eave, ridge, GILT if gilt else TILES,
                along_axis="y", imbrex=not gilt, pitch=0.6)
-    pediment(builder, half, front_row + diameter * 0.9, eave, ridge, 1, material)
-    pediment(builder, half, rear, eave, ridge, -1, material)
+    pediment(builder, half, front_row + diameter * 0.9, eave, ridge, 1, material, OCHRE_RED)
+    pediment(builder, half, rear, eave, ridge, -1, material, OCHRE_RED)
     for x, zz in ((0.0, ridge), (-half, eave), (half, eave)):
-        builder.box((x - 0.35, front_row + diameter * 0.4, zz), (x + 0.35, front_row + diameter * 1.0, zz + 1.1),
-                    GILT if gilt else material)
+        builder.box((x - 0.35, front_row + diameter * 0.4, zz), (x + 0.35, front_row + diameter * 1.0, zz + 1.1), GILT)
     return builder, {order: frames}
 
 
@@ -184,8 +200,7 @@ def clerestory_hall(length, width, wall_bottom, wall_top, material=PLASTER, wind
         for k in range(windows):
             x = -hl + length * (k + 0.5) / windows
             y = side * (hw + 0.02)
-            builder.oriented([(x - 1.2, y, wall_top - 5.0), (x + 1.2, y, wall_top - 5.0), (x + 1.2, y, wall_top - 1.4),
-                              (x - 1.2, y, wall_top - 1.4)], (0, side, 0), VOID)
+            window(builder, x, side * hw, wall_top - 4.4, side, 1.4, 2.6)
     gable_roof(builder, -hl - 0.4, hl + 0.4, hw + 0.8, wall_top, wall_top + hw * 0.42, roof, along_axis="x",
                imbrex=False)
     for x, facing in ((-hl, -1), (hl, 1)):
@@ -335,13 +350,14 @@ def arch_of_titus():
             builder.merge(column("corinthian", 0.8, 6.6, detail="low", material=MARBLE, arc=ENGAGED_HALF),
                           Matrix.Translation((x, y, 2.6)) @ flip)
         for side in (-1, 1):
-            victory = person(Look("white", hem=0.05, palla="white", female=True, sleeves="long", arms="gesture",
-                                  mono=(0.93, 0.91, 0.86), material=MARBLE, seed=50 + side))
-            flat = Matrix.Translation((side * (passage + 1.3), y + facing * 0.1, 7.6)) @ flip @ \
-                Matrix.Rotation(side * math.radians(62), 4, "Y") @ Matrix.Diagonal((1.15, 0.25, 1.15, 1.0))
-            builder.merge(victory, flat)
+            flat = Matrix.Translation((side * (passage + 1.15), y + facing * 0.12, 7.1)) @ flip @ \
+                Matrix.Rotation(side * math.radians(-68), 4, "Y") @ Matrix.Diagonal((1.35, 0.3, 1.35, 1.0)) @ \
+                Matrix.Translation((0.0, 0.0, -0.9))
+            builder.merge(victory(50 + side), flat)
     builder.box((-hw + 0.3, -hd + 0.3, 11.0), (hw - 0.3, hd - 0.3, 15.0), MARBLE, bottom=False)
     builder.box((-hw + 0.1, -hd + 0.1, 15.0), (hw - 0.1, hd - 0.1, 15.4), MARBLE)
+    builder.box((-3.4, -2.0, 15.4), (3.4, 2.0, 16.4), MARBLE)
+    builder.merge(quadriga(), placement(0.0, 0.3, 16.4, 0.0, 1.6))
     for facing in (-1, 1):
         builder.box((-hw + 0.2, facing * (hd - 0.3) - 0.1, 11.0), (hw - 0.2, facing * (hd - 0.3) + 0.1, 11.4),
                     MARBLE, bottom=False)
@@ -364,7 +380,8 @@ def relief_panel(menorah):
         x = -1.8 + 0.6 * k
         look = Look("white", hem=0.5, belt="white", arms="carry" if menorah and k in (2, 3, 4) else "forward",
                     mono=tone, material=MARBLE, stride=0.12, seed=70 + k)
-        builder.merge(person(look), Matrix.Translation((x, 0.05, 0.15)) @ Matrix.Rotation(-math.pi / 2, 4, "Z") @ flat)
+        builder.merge(coarse(lambda look=look: person(look), 0.4),
+                      Matrix.Translation((x, 0.05, 0.15)) @ Matrix.Rotation(-math.pi / 2, 4, "Z") @ flat)
     if menorah:
         base = Vector((0.0, 0.12, 1.25))
         tube(builder, [base, base + Vector((0.0, 0.0, 0.62))], [0.035, 0.03], tone, 5, MARBLE)
@@ -398,6 +415,46 @@ def meta_sudans():
     return builder
 
 
+def sol_figure(colour=(1.0, 1.0, 1.0), material=PATINA):
+    body = MeshBuilder()
+    c = colour
+    drape(body, c, [(0.0, 0.8), (0.12, 0.81), (0.18, 0.86), (0.19, 0.94), (0.168, 1.03), (0.158, 1.1), (0.168, 1.18),
+                    (0.186, 1.27), (0.2, 1.34), (0.205, 1.4), (0.16, 1.45), (0.065, 1.48), (0.0, 1.49)], 18,
+          folds=(0, 0.0, 0.0), squash=0.6, material=material)
+    for side, ankle, knee, hip in ((1, (0.1, 0.0, 0.075), (0.105, 0.02, 0.5), (0.09, 0.0, 0.9)),
+                                   (-1, (-0.15, -0.12, 0.1), (-0.12, 0.07, 0.5), (-0.09, 0.0, 0.88))):
+        ankle, knee, hip = Vector(ankle), Vector(knee), Vector(hip)
+        ellipsoid(body, ankle + Vector((0.0, 0.065, -0.045)), (0.048, 0.115, 0.038), c, 8, 4, material)
+        tube(body, [ankle, ankle.lerp(knee, 0.3), ankle.lerp(knee, 0.62), knee, knee.lerp(hip, 0.45), hip],
+             [0.042, 0.06, 0.066, 0.056, 0.085, 0.105], c, 10, material, cap=False)
+    tube(body, [(0.0, 0.0, 1.45), (0.0, 0.012, 1.52), (0.0, 0.02, 1.58)], [0.058, 0.052, 0.05], c, 10, material)
+    ellipsoid(body, (0.0, 0.025, 1.645), (0.082, 0.096, 0.108), c, 12, 7, material)
+    ellipsoid(body, (0.0, 0.0, 1.675), (0.09, 0.095, 0.092), c, 10, 6, material)
+    tube(body, [(0.0, 0.112, 1.665), (0.0, 0.13, 1.625)], [0.012, 0.007], c, 4, material)
+    for side, elbow, wrist in ((1, (0.36, 0.06, 1.25), (0.42, 0.12, 1.55)), (-1, (-0.27, 0.0, 1.13), (-0.29, 0.13, 1.0))):
+        shoulder = Vector((side * 0.19, 0.0, 1.39))
+        elbow, wrist = Vector(elbow), Vector(wrist)
+        ellipsoid(body, shoulder + Vector((side * 0.01, 0.0, 0.0)), (0.07, 0.065, 0.065), c, 8, 5, material)
+        tube(body, [shoulder, shoulder.lerp(elbow, 0.5), elbow, elbow.lerp(wrist, 0.5), wrist],
+             [0.068, 0.062, 0.05, 0.047, 0.034], c, 10, material)
+        direction = (wrist - elbow).normalized()
+        ellipsoid(body, wrist + direction * 0.06, (0.028, 0.02, 0.055), c, 6, 4, material)
+    ellipsoid(body, (-0.3, 0.2, 1.02), (0.085, 0.085, 0.085), c, 10, 6, material)
+    tube(body, [(-0.2, -0.05, 1.43), (-0.29, -0.08, 1.25), (-0.33, -0.05, 1.02), (-0.33, -0.02, 0.78),
+                (-0.31, 0.0, 0.62)], [0.07, 0.09, 0.1, 0.095, 0.06], c, 10, material, squash=0.35)
+    tube(body, [(-0.2, -0.13, 0.02), (-0.24, -0.12, 0.92)], [0.016, 0.014], c, 5, material)
+    body.box((-0.215, -0.27, 0.02), (-0.205, -0.13, 0.5), material)
+    crown = MeshBuilder()
+    drape(crown, (1.0, 1.0, 1.0), [(0.098, 1.68), (0.1, 1.72)], 12, folds=(0, 0.0, 0.0), squash=1.0, material=GILT)
+    for k in range(7):
+        angle = math.radians(-72 + 24 * k)
+        root = Vector((0.0, 0.0, 1.66)) + Vector((math.sin(angle) * 0.1, -0.01, math.cos(angle) * 0.1))
+        tip = Vector((0.0, 0.0, 1.66)) + Vector((math.sin(angle) * 0.31, -0.03, math.cos(angle) * 0.31))
+        tube(crown, [root, tip], [0.012, 0.002], (1.0, 1.0, 1.0), 4, GILT, squash=0.3)
+    body.merge(crown)
+    return body
+
+
 def colossus():
     builder = MeshBuilder()
     builder.box((-6.0, -6.0, -1.0), (6.0, 6.0, 5.4), MARBLE, bottom=False)
@@ -405,18 +462,46 @@ def colossus():
         builder.box((-6.0 - 0.5 * (3 - k), -6.0 - 0.5 * (3 - k), -1.0), (6.0 + 0.5 * (3 - k), 6.0 + 0.5 * (3 - k),
                                                                         0.35 * (k + 1)), MARBLE, bottom=False)
     builder.box((-5.4, -5.4, 5.4), (5.4, 5.4, 6.0), MARBLE)
-    statue = person(Look((0.5, 0.36, 0.2), hem=0.86, hair=0, arms="gesture", mono=(1.0, 1.0, 1.0), material=BRONZE,
-                         stride=0.08, seed=99))
-    tube(statue, [(-0.26, 0.12, 0.0), (-0.25, 0.12, 0.95), (-0.24, 0.12, 1.5)], [0.016, 0.016, 0.016], (1.0, 1.0, 1.0),
-         5, BRONZE)
-    statue.box((-0.3, 0.05, 0.02), (-0.2, 0.2, 0.45), BRONZE)
-    for k in range(7):
-        angle = math.radians(-60 + 20 * k)
-        tip = Vector((0.0, 0.0, 1.62)) + Vector((math.sin(angle) * 0.26, 0.04, math.cos(angle) * 0.26))
-        root = Vector((0.0, 0.0, 1.62)) + Vector((math.sin(angle) * 0.1, 0.02, math.cos(angle) * 0.1))
-        tube(statue, [root, tip], [0.022, 0.004], (1.0, 1.0, 1.0), 4, BRONZE)
-    ellipsoid(statue, (0.33, 0.33, 1.47), (0.06, 0.06, 0.06), (1.0, 1.0, 1.0), 8, 5, BRONZE)
-    builder.merge(statue, Matrix.Translation((0.0, 0.0, 6.0)) @ Matrix.Scale(18.0, 4))
+    builder.merge(sol_figure(), Matrix.Translation((0.0, 0.0, 6.0)) @ Matrix.Scale(17.0, 4))
+    return builder
+
+
+def horse(builder, matrix, colour, material, gait=0.0):
+    local = MeshBuilder()
+    ellipsoid(local, (0.0, 0.0, 1.35), (0.3, 0.85, 0.36), colour, 10, 6, material)
+    tube(local, [(0.0, 0.6, 1.5), (0.0, 0.85, 1.95), (0.0, 0.95, 2.1)], [0.2, 0.15, 0.11], colour, 8, material)
+    ellipsoid(local, (0.0, 1.12, 2.02), (0.11, 0.3, 0.13), colour, 8, 4, material,
+              matrix=Matrix.Rotation(math.radians(-35), 4, "X"))
+    tube(local, [(0.0, 0.62, 1.82), (0.0, 0.88, 2.2)], [0.03, 0.03], colour, 4, material, squash=0.3)
+    for side in (-1, 1):
+        for end, lift in ((1, gait), (-1, 0.0)):
+            y = end * 0.55
+            hoof = (side * 0.16, y + 0.3 * lift, 0.04 + 0.4 * lift)
+            tube(local, [(side * 0.16, y, 1.2), (side * 0.16, y + 0.05 * end, 0.7), hoof], [0.09, 0.05, 0.045],
+                 colour, 6, material)
+    tube(local, [(0.0, -0.8, 1.45), (0.0, -1.0, 1.1), (0.0, -1.05, 0.7)], [0.06, 0.07, 0.05], colour, 5, material)
+    builder.merge(local, matrix)
+
+
+def quadriga(material=PATINA, colour=(1.0, 1.0, 1.0)):
+    builder = MeshBuilder()
+    for k, x in enumerate((-1.2, -0.4, 0.4, 1.2)):
+        horse(builder, placement(x, 0.8, 0.0, 0.0, 1.05), colour, material, gait=0.6 if k in (1, 2) else 0.0)
+    builder.box((-0.55, -1.15, 0.75), (0.55, -0.55, 1.3), material)
+    for side in (-1, 1):
+        builder.lathe([(0.0, -0.05), (0.62, -0.05), (0.62, 0.05), (0.0, 0.05)], 10, material,
+                      matrix=Matrix.Translation((side * 0.82, -0.8, 0.62)) @ Matrix.Rotation(math.pi / 2, 4, "Y"))
+    builder.merge(coarse(lambda: person(Look("white", hem=0.12, toga="white", arms="toga_gesture", mono=colour,
+                                             material=material, seed=88)), 0.5), placement(0.0, -0.8, 1.0, 0.0, 1.25))
+    return builder
+
+
+def victory(seed=50):
+    builder = coarse(lambda: person(Look("white", hem=0.05, palla="white", female=True, sleeves="long", arms="gesture",
+                                         mono=(0.93, 0.91, 0.86), material=MARBLE, seed=seed)), 0.5)
+    for side in (-1, 1):
+        wing = Matrix.Translation((side * 0.12, -0.14, 1.32)) @ Matrix.Rotation(side * math.radians(28), 4, "Y")
+        ellipsoid(builder, (0.0, 0.0, 0.3), (0.05, 0.22, 0.48), (0.93, 0.91, 0.86), 8, 5, MARBLE, matrix=wing)
     return builder
 
 
@@ -460,32 +545,32 @@ def hall(width, depth, height, material=BRICK, roof="gable", windows=3):
     builder = MeshBuilder()
     hw, hd = width / 2, depth / 2
     builder.box((-hw, -hd, -3.0), (hw, hd, height), material, bottom=False, top=roof == "flat")
+    levels = (0.62,) if height < 14 else (0.36, 0.7)
     for side in (-1, 1):
         for k in range(windows):
             x = -hw + width * (k + 0.5) / windows
-            builder.oriented([(x - 1.3, side * (hd + 0.03), height * 0.62), (x + 1.3, side * (hd + 0.03), height * 0.62),
-                              (x + 1.3, side * (hd + 0.03), height * 0.62 + 3.5),
-                              (x - 1.3, side * (hd + 0.03), height * 0.62 + 3.5)], (0, side, 0), VOID)
-    if roof == "gable":
-        gable_roof(builder, -hd - 0.4, hd + 0.4, hw + 0.5, height, height + hw * 0.4, TILES, along_axis="y",
+            for level in levels:
+                window(builder, x, side * hd, height * level, side)
+        ends = max(int(windows * depth / width), 1)
+        for k in range(ends):
+            y = -hd + depth * (k + 0.5) / ends
+            for level in levels:
+                local = MeshBuilder()
+                window(local, -y * side, hw, height * level, 1)
+                builder.merge(local, Matrix.Rotation(-side * math.pi / 2, 4, "Z"))
+    if roof in ("gable", "vault"):
+        pitch = 0.4 if roof == "gable" else 0.22
+        gable_roof(builder, -hd - 0.4, hd + 0.4, hw + 0.5, height, height + hw * pitch, TILES, along_axis="y",
                    imbrex=False)
         for y, facing in ((-hd, -1), (hd, 1)):
-            builder.oriented([(-hw, y, height), (hw, y, height), (0.0, y, height + hw * 0.4)], (0, facing, 0), material)
-    elif roof == "vault":
-        rows = []
-        for k in range(9):
-            angle = math.pi * k / 8
-            rows.append([(-hw * math.cos(angle), -hd, height + hw * 0.55 * math.sin(angle)),
-                         (-hw * math.cos(angle), hd, height + hw * 0.55 * math.sin(angle))])
-        builder.surface(rows, STUCCO, facing=(0, 0, 1))
-        for y, facing in ((-hd, -1), (hd, 1)):
-            builder.polygon([(-hw * math.cos(math.pi * k / 8), y, height + hw * 0.55 * math.sin(math.pi * k / 8))
-                             for k in range(9)][::facing], material)
+            builder.oriented([(-hw, y, height), (hw, y, height), (0.0, y, height + hw * pitch)], (0, facing, 0),
+                             material)
     elif roof == "dome":
         radius = min(hw, hd) * 0.9
         builder.box((-hw, -hd, height - 0.1), (hw, hd, height), material)
-        builder.lathe([(radius, height), (radius * 0.92, height + radius * 0.4), (radius * 0.7, height + radius * 0.72),
-                       (radius * 0.38, height + radius * 0.93), (0.0, height + radius)], 16, STUCCO)
+        painted(builder, (0.78, 0.74, 0.68), lambda: builder.lathe(
+            [(radius, height), (radius * 0.92, height + radius * 0.4), (radius * 0.7, height + radius * 0.72),
+             (radius * 0.38, height + radius * 0.93), (0.0, height + radius)], 16, STUCCO))
     return builder
 
 

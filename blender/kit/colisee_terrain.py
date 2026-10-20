@@ -11,6 +11,8 @@ TINITALY_WCS = ("https://tinitaly.pi.ingv.it/TINItaly_1_1/wcs?service=WCS&versio
                 "&coverageId=TINItaly_1_1__tinitaly_dem&format=image/tiff&subset=E({},{})&subset=N({},{})")
 TINITALY_BOX = (783600, 795900, 4637400, 4649600)
 TINITALY_STEP = 10.0
+OUTER_BOX = (749600, 829600, 4603400, 4683400)
+OUTER_STEP = 400.0
 TINITALY_LICENCE = "CC BY 4.0, Tarquini et al. 2023, TINITALY 1.1, INGV, doi:10.13127/tinitaly/1.1"
 ORIGIN = (41.890169, 12.492269)
 FRAME = GeoFrame(*ORIGIN)
@@ -64,8 +66,7 @@ def read_tiled_tiff(path):
     return result
 
 
-def tinitaly(cache_path):
-    url = TINITALY_WCS.format(*TINITALY_BOX)
+def fetch(url, cache_path):
     if not os.path.exists(cache_path):
         os.makedirs(os.path.dirname(cache_path), exist_ok=True)
         request = urllib.request.Request(url, headers={"User-Agent": "roma-scene-builder/1.0"})
@@ -75,22 +76,34 @@ def tinitaly(cache_path):
             raise RuntimeError(f"TINITALY did not return a GeoTIFF: {payload[:200]!r}")
         with open(cache_path, "wb") as handle:
             handle.write(payload)
-    heights = read_tiled_tiff(cache_path).astype(np.float64)
+    return read_tiled_tiff(cache_path).astype(np.float64)
+
+
+def tinitaly_outer(cache_path):
+    url = TINITALY_WCS.format(*OUTER_BOX) + "&SCALEFACTOR=0.025"
+    heights = fetch(url, cache_path)
+    heights[heights < -1000] = 0.0
+    return dem_sampler(heights, OUTER_BOX, OUTER_STEP), url
+
+
+def tinitaly(cache_path):
+    url = TINITALY_WCS.format(*TINITALY_BOX)
+    heights = fetch(url, cache_path)
     invalid = heights < -1000
     if invalid.any():
         heights[invalid] = float(np.median(heights[~invalid]))
     return heights, url
 
 
-def dem_sampler(heights):
-    west, _, _, north = TINITALY_BOX
+def dem_sampler(heights, box=TINITALY_BOX, step=TINITALY_STEP):
+    west, _, _, north = box
 
     def sample(xs, ys):
         latitude, longitude = FRAME.to_geo(np.asarray(xs, np.float64), np.asarray(ys, np.float64))
         easting, northing = utm32(latitude, longitude)
         rows, columns = heights.shape
-        column = np.clip((easting - west) / TINITALY_STEP - 0.5, 0, columns - 1.001)
-        row = np.clip((north - northing) / TINITALY_STEP - 0.5, 0, rows - 1.001)
+        column = np.clip((easting - west) / step - 0.5, 0, columns - 1.001)
+        row = np.clip((north - northing) / step - 0.5, 0, rows - 1.001)
         c0 = column.astype(int)
         r0 = row.astype(int)
         fx = column - c0
@@ -136,7 +149,56 @@ def ridge(grid_x, grid_y, heights, points, crest, width):
     return np.maximum(heights, heights * (1 - profile) + lift)
 
 
-def ground_colour(grid_x, grid_y, heights, slope, paved, seed=17):
+def densify(points, step):
+    out = []
+    for a, b in zip(points[:-1], points[1:]):
+        count = max(int(math.ceil(math.hypot(b[0] - a[0], b[1] - a[1]) / step)), 1)
+        for k in range(count):
+            t = k / count
+            out.append((a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t))
+    out.append((points[-1][0], points[-1][1]))
+    return out
+
+
+def graded_profile(points, sample, max_grade=0.08, step=5.0, window=60.0):
+    dense = densify(points, step)
+    raw = np.array([float(sample(x, y)) for x, y in dense])
+    lengths = np.concatenate([[0.0], np.cumsum([math.hypot(b[0] - a[0], b[1] - a[1])
+                                                for a, b in zip(dense[:-1], dense[1:])])])
+    half = max(int(window / step / 2), 1)
+    padded = np.pad(raw, half, mode="edge")
+    kernel = np.ones(2 * half + 1) / (2 * half + 1)
+    levels = np.convolve(padded, kernel, mode="valid")
+    levels[0] = raw[0]
+    levels[-1] = raw[-1]
+    for i in range(1, len(levels)):
+        limit = max_grade * (lengths[i] - lengths[i - 1])
+        levels[i] = min(max(levels[i], levels[i - 1] - limit), levels[i - 1] + limit)
+    for i in range(len(levels) - 2, -1, -1):
+        limit = max_grade * (lengths[i + 1] - lengths[i])
+        levels[i] = min(max(levels[i], levels[i + 1] - limit), levels[i + 1] + limit)
+    return dense, list(levels)
+
+
+def road_blend(grid_x, grid_y, heights, points, levels, flat, margin):
+    distance = np.full(grid_x.shape, np.inf)
+    level = np.zeros(grid_x.shape)
+    for (a, b), (la, lb) in zip(zip(points[:-1], points[1:]), zip(levels[:-1], levels[1:])):
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        span = dx * dx + dy * dy
+        if span < 1e-9:
+            continue
+        t = np.clip(((grid_x - a[0]) * dx + (grid_y - a[1]) * dy) / span, 0, 1)
+        d = np.hypot(grid_x - (a[0] + t * dx), grid_y - (a[1] + t * dy))
+        closer = d < distance
+        distance = np.where(closer, d, distance)
+        level = np.where(closer, la + (lb - la) * t, level)
+    weight = np.clip(1.0 - (distance - flat) / margin, 0.0, 1.0)
+    weight = weight * weight * (3 - 2 * weight)
+    return heights * (1 - weight) + level * weight
+
+
+def ground_colour(grid_x, grid_y, heights, slope, paved, seed=17, garden=None):
     shape = grid_x.shape
     noise = value_noise(shape, 12, seed)
     fine = value_noise(shape, 48, seed + 1, octaves=3)
@@ -144,7 +206,15 @@ def ground_colour(grid_x, grid_y, heights, slope, paved, seed=17):
     green = np.dstack([0.36 + 0.06 * fine, 0.40 + 0.07 * noise, 0.22 + 0.03 * fine])
     city = np.dstack([0.60 + 0.05 * fine, 0.54 + 0.04 * fine, 0.46 + 0.04 * noise])
     steep = np.clip((slope - 0.12) / 0.3, 0.0, 1.0)[..., None]
-    vegetation = np.clip(0.35 + 0.6 * (noise - 0.5) + 0.8 * steep[..., 0], 0.0, 1.0)[..., None]
+    vegetation = np.clip(0.35 + 0.6 * (noise - 0.5) + 0.8 * steep[..., 0], 0.0, 1.0)
+    if garden is not None:
+        vegetation = vegetation * garden
+        street = np.dstack([0.52 + 0.05 * fine, 0.47 + 0.04 * fine, 0.40 + 0.04 * noise])
+        rubble = np.dstack([0.50 + 0.05 * noise, 0.43 + 0.04 * noise, 0.35 + 0.03 * fine])
+        urban = street * (1 - steep) + rubble * steep
+        city = city * garden[..., None] + urban * (1 - garden[..., None])
+        paved = np.maximum(paved, 0.85 * (1 - garden))
+    vegetation = vegetation[..., None]
     colour = dry * (1 - vegetation) + green * vegetation
     colour = colour * (1 - paved[..., None] * 0.85) + city * paved[..., None] * 0.85
     colour *= (0.9 + 0.16 * fine)[..., None]

@@ -5,7 +5,7 @@ from mathutils import Matrix, Vector
 
 from .geometry import MATTE, MeshBuilder, placement
 from .life import LEATHER, SKIN, WOOD
-from .nimes_figures import POSES, Look, drape, ellipsoid, person, tube
+from .nimes_figures import POSES, Look, coarse, drape, ellipsoid, person, tube
 
 POSES.update({
     "colisee_fight": [((0.31, 0.16, 1.2), (0.29, 0.42, 1.27)), ((-0.29, 0.18, 1.14), (-0.17, 0.36, 1.12))],
@@ -135,9 +135,13 @@ def retiarius(seed=3):
          start_cap=True)
     for offset in (-0.07, 0.0, 0.07):
         tube(builder, [(-0.25 + offset, 1.15, 1.4), (-0.27 + offset * 1.2, 1.4, 1.48)], [0.012, 0.003], STEEL, 3)
-    painted(builder, (0.6, 0.55, 0.42), lambda: builder.surface(
-        [[(0.38 + 0.2 * math.cos(a), 0.5 + 0.2 * math.sin(a), 0.4 + 0.15 * k) for a in (0.0, 1.5, 3.0, 4.5)]
-         for k in range(3)], MATTE, closed=True))
+    rows = []
+    for r, z in enumerate((1.18, 0.78, 0.36)):
+        spread = 0.05 + 0.2 * r
+        rows.append([(-0.19 + (-1 + 2 * c / 5) * spread, 0.42 + 0.05 * r + 0.05 * math.sin(c * 1.7 + r), z)
+                     for c in range(6)])
+    for facing in ((0, 1, 0), (0, -1, 0)):
+        painted(builder, (0.6, 0.55, 0.42), lambda facing=facing: builder.surface(rows, MATTE, facing=facing))
     return builder
 
 
@@ -193,8 +197,8 @@ def attendant(seed=7):
 
 
 def sailor(seed=8):
-    return person(Look("woad", hem=0.56, skin=2, hair=1, belt=LEATHER, arms="colisee_rope", stride=0.12,
-                       hat=(0.5, 0.42, 0.32), seed=seed))
+    return coarse(lambda: person(Look("woad", hem=0.56, skin=2, hair=1, belt=LEATHER, arms="colisee_rope", stride=0.12,
+                                      hat=(0.5, 0.42, 0.32), seed=seed)), 0.5)
 
 
 def praetorian(seed=9):
@@ -206,6 +210,13 @@ def praetorian(seed=9):
     tube(builder, [(0.25, 0.22, 0.0), (0.25, 0.2, 2.2)], [0.02, 0.016], WOOD, 4)
     tube(builder, [(0.25, 0.2, 2.2), (0.25, 0.2, 2.42)], [0.03, 0.002], STEEL, 4)
     shield(builder, (-0.3, 0.1, 0.95), 0.55, 0.95, (0.62, 0.2, 0.14), 0.1)
+    return builder
+
+
+def guard(seed=13):
+    builder = person(Look("white", hem=0.5, skin=seed % 3, hair=1, belt=LEATHER, arms="down", seed=seed))
+    tube(builder, [(0.2, -0.02, 1.38), (0.0, 0.17, 1.2), (-0.2, 0.04, 1.0)], [0.012, 0.012, 0.012], LEATHER, 4)
+    tube(builder, [(-0.21, 0.02, 1.0), (-0.24, 0.08, 0.56)], [0.03, 0.022], (0.36, 0.26, 0.18), 5, start_cap=True)
     return builder
 
 
@@ -274,6 +285,7 @@ FIGURE_BUILDS = {
     "fig_attendant": attendant,
     "fig_sailor": sailor,
     "fig_praetorian": praetorian,
+    "fig_guard": guard,
     "fig_emperor": emperor,
     "fig_senator": lambda: senator(11),
     "fig_senator_gesture": lambda: senator(14, True),

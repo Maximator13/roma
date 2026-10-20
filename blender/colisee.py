@@ -14,6 +14,8 @@ from mathutils.bvhtree import BVHTree
 from mathutils.kdtree import KDTree
 
 from kit import colisee_amphitheatre as amp
+from kit import colisee_city
+from kit import colisee_fora as fora
 from kit import colisee_life as life
 from kit import colisee_materials
 from kit import colisee_monuments as mon
@@ -24,10 +26,10 @@ from kit.arles_monuments import strip_normals
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.materials import baked_material, principled_material, save_pixels
 from kit.nimes_figures import WALKERS, Look, coarse, person
-from kit.pantheon_detail import PROPS, seller
+from kit.pantheon_detail import seller
 from kit.pantheon_materials import build_library, weather
 from kit.stage import camera, configure_render, evening_world, export_glb, group_statistics, haze_volume, render_still, sun_lamp
-from kit.terrain import grid_mesh, polyline_distance, remove_faces_inside, value_noise
+from kit.terrain import HeightField, grid_mesh, polyline_distance, remove_faces_inside, value_noise
 
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(PROJECT, ".cache", "scenes", "colisee")
@@ -37,6 +39,8 @@ NEAR_HALF = 1000.0
 NEAR_SPACING = 12.5
 FAR_HALF = 6000.0
 FAR_SPACING = 100.0
+OUTER_HALF = 39000.0
+OUTER_SPACING = 1000.0
 COL_BEARING = 112.0
 COL_ANGLE = math.radians(90.0 - COL_BEARING)
 COL = Matrix.Rotation(COL_ANGLE, 4, "Z")
@@ -48,8 +52,9 @@ FORUM_LEVEL = 13.5
 ARCH_LEVEL = 31.0
 META_LEVEL = 21.5
 VESTIBULE_LEVEL = 29.5
-SUN_AZIMUTH = 262.0
-SUN_ELEVATION = 30.0
+SUN_AZIMUTH = 268.0
+SUN_ELEVATION = 37.0
+SUN_COLOUR = (1.0, 0.78, 0.55)
 META = Vector((-126.0, 22.0))
 COLOSSUS = Vector((-171.0, 103.0))
 VESTIBULE_ANGLE = math.radians(-4.0)
@@ -57,13 +62,27 @@ LUDUS = Vector((195.0, -60.0))
 TITUS_BATHS = Vector((175.0, 235.0))
 TRAJAN_SITE = Vector((335.0, 440.0))
 CLAUDIUM = Vector((170.0, -390.0))
-PEACE_F = (-75.0, 196.0)
+PEACE_F = (-80.0, 133.0)
+PEACE_HALF = (67.5, 55.0)
 HORREA_F = (-212.0, 58.0)
 JUPITER = Vector((-818.0, 148.0))
 FLAVIA = Vector((-490.0, -110.0))
 TIBERIANA = Vector((-610.0, -10.0))
 EYE_CLEARANCE = 2.4
 PALACE_BEARING = 30.0
+CIRCUS = Vector((-578.0, -474.0))
+CIRCUS_BEARING = 125.0
+AQUEDUCT = [(980.0, -470.0), (700.0, -452.0), (450.0, -428.0), (268.0, -402.0)]
+FORA = {
+    "iulium": (120.0, 104.0, FORUM_BEARING, 37.5, 80.0, FORUM_LEVEL + 1.0),
+    "augustum": (102.0, 204.0, FORUM_BEARING - 270.0, 62.5, 59.0, FORUM_LEVEL + 2.5),
+    "nerva": (10.0, 136.0, FORUM_BEARING - 270.0, 22.5, 60.0, FORUM_LEVEL + 1.5),
+    "traiani": (315.0, 240.0, FORUM_BEARING, 105.0, 90.0, FORUM_LEVEL + 3.5),
+}
+GARDENS = [(FLAVIA.x + 120.0, FLAVIA.y - 160.0, 120.0), (CLAUDIUM.x, CLAUDIUM.y - 160.0, 140.0),
+           (TITUS_BATHS.x - 120.0, TITUS_BATHS.y + 60.0, 90.0), (-760.0, 260.0, 90.0), (420.0, -480.0, 160.0),
+           (650.0, 400.0, 220.0), (-150.0, 330.0, 70.0), (60.0, 360.0, 80.0)]
+ROAD_PROFILES = {}
 
 
 def arguments():
@@ -128,14 +147,14 @@ def sacra_levels():
 
 
 OTHER_ROADS = {
-    "labicana": [Vector(v) for v in ((105.0, -55.0), (200.0, -105.0), (330.0, -150.0), (520.0, -220.0), (760.0, -300.0),
+    "labicana": [Vector(v) for v in ((118.0, -14.0), (215.0, -8.0), (330.0, -55.0), (520.0, -200.0), (760.0, -300.0),
                                      (1000.0, -380.0))],
-    "triumphalis": [Vector(v) for v in ((-130.0, -40.0), (-190.0, -150.0), (-260.0, -300.0), (-330.0, -420.0),
-                                        (-420.0, -560.0), (-520.0, -720.0))],
+    "triumphalis": [Vector(v) for v in ((-130.0, -40.0), (-175.0, -150.0), (-225.0, -300.0), (-265.0, -450.0),
+                                        (-295.0, -590.0), (-315.0, -720.0))],
     "caelius": [Vector(v) for v in ((-20.0, -105.0), (20.0, -200.0), (80.0, -280.0), (110.0, -300.0))],
     "oppius": [Vector(v) for v in ((40.0, 110.0), (90.0, 170.0), (120.0, 200.0))],
-    "argiletum": [Vector(v) for v in (tuple(forum(30.0, 85.0)), tuple(forum(45.0, 160.0)), tuple(forum(60.0, 260.0)),
-                                      tuple(forum(80.0, 420.0)), tuple(forum(100.0, 600.0)))],
+    "argiletum": [Vector(v) for v in (tuple(forum(10.0, 196.0)), tuple(forum(25.0, 270.0)), tuple(forum(80.0, 420.0)),
+                                      tuple(forum(100.0, 600.0)))],
     "subura": [Vector(v) for v in ((-60.0, 120.0), (-120.0, 260.0), (-170.0, 420.0), (-230.0, 640.0),
                                    (-270.0, 900.0))],
     "vicus_tuscus": [Vector(v) for v in (tuple(forum(-50.0, -50.0)), tuple(forum(-42.0, -120.0)),
@@ -172,6 +191,7 @@ def flat_sites():
         "claudium": (CLAUDIUM, 93.0, 101.0, bearing_angle(22.0)),
         "horrea": (forum(*HORREA_F), 31.0, 22.0, FORUM_ANGLE),
         "jupiter": (JUPITER, 32.0, 36.0, bearing_angle(160.0)),
+        "circus": (CIRCUS, 72.0, 302.0, bearing_angle(CIRCUS_BEARING)),
     }
 
 
@@ -179,36 +199,42 @@ def site_level(name):
     return LEVELS[name] - DATUM
 
 
+def fora_rect(name):
+    u, v, bearing, hx, hy, level = FORA[name]
+    p = forum(u, v)
+    return p, hx, hy, bearing_angle(bearing), level
+
+
 def terrain_edits(xs, ys, heights):
     heights = ter.ridge(xs, ys, heights, [(-230.0, 150.0), (-150.0, 260.0), (-60.0, 360.0), (40.0, 420.0)], 34.0, 70.0)
+    heights = ter.blend_to(heights, colosseum_distance(xs, ys, 80.0), DATUM, 120.0)
     heights = ter.blend_to(heights, rect_distance(xs, ys, *forum(2.0, -4.0), 116.0, 80.0, FORUM_ANGLE), FORUM_LEVEL,
                            40.0)
+    for name in FORA:
+        p, hx, hy, angle, level = fora_rect(name)
+        heights = ter.blend_to(heights, rect_distance(xs, ys, p.x, p.y, hx, hy, angle), level, 25.0)
+    peace = forum(*PEACE_F)
+    heights = ter.blend_to(heights, rect_distance(xs, ys, peace.x, peace.y, *PEACE_HALF, FORUM_ANGLE),
+                           FORUM_LEVEL + 2.0, 30.0)
     points, levels = sacra_levels()
-    distance = np.full(xs.shape, np.inf)
-    level = np.zeros(xs.shape)
-    for (a, b), (la, lb) in zip(zip(points[:-1], points[1:]), zip(levels[:-1], levels[1:])):
-        dx, dy = b.x - a.x, b.y - a.y
-        t = np.clip(((xs - a.x) * dx + (ys - a.y) * dy) / (dx * dx + dy * dy), 0, 1)
-        d = np.hypot(xs - (a.x + t * dx), ys - (a.y + t * dy))
-        closer = d < distance
-        distance = np.where(closer, d, distance)
-        level = np.where(closer, la + (lb - la) * t, level)
-    weight = np.clip(1.0 - (distance - 10.0) / 45.0, 0.0, 1.0)
-    weight = weight * weight * (3 - 2 * weight)
-    heights = heights * (1 - weight) + level * weight
+    heights = ter.road_blend(xs, ys, heights, [tuple(p) for p in points], levels, 10.0, 45.0)
     heights = ter.blend_to(heights, rect_distance(xs, ys, COLOSSUS.x, COLOSSUS.y, 60.0, 50.0, VESTIBULE_ANGLE),
                            VESTIBULE_LEVEL, 25.0)
-    heights = ter.blend_to(heights, colosseum_distance(xs, ys, 80.0), DATUM, 45.0)
     heights = ter.blend_to(heights, np.hypot(xs - META.x, ys - META.y) - 18.0, META_LEVEL, 20.0)
-    heights = ter.blend_to(heights, rect_distance(xs, ys, LUDUS.x, LUDUS.y, 62.0, 46.0, COL_ANGLE), DATUM + 1.0, 30.0)
+    heights = ter.blend_to(heights, rect_distance(xs, ys, LUDUS.x, LUDUS.y, 62.0, 46.0, COL_ANGLE), DATUM + 1.0, 90.0)
     for name, (centre, hx, hy, angle) in flat_sites().items():
         if name not in LEVELS:
             inside = rect_distance(xs, ys, centre.x, centre.y, hx, hy, angle) < 0
             LEVELS[name] = float(np.median(heights[inside])) if inside.any() else float(heights.mean())
-        heights = ter.blend_to(heights, rect_distance(xs, ys, centre.x, centre.y, hx, hy, angle), LEVELS[name], 14.0)
-    peace = forum(*PEACE_F)
-    heights = ter.blend_to(heights, rect_distance(xs, ys, peace.x, peace.y, 70.0, 58.0, FORUM_ANGLE), FORUM_LEVEL + 2.0,
-                           30.0)
+        margin = 30.0 if name == "circus" else 14.0
+        heights = ter.blend_to(heights, rect_distance(xs, ys, centre.x, centre.y, hx, hy, angle), LEVELS[name], margin)
+    if not ROAD_PROFILES:
+        field = HeightField(heights, float(xs.max()))
+        for name, road in OTHER_ROADS.items():
+            ROAD_PROFILES[name] = ter.graded_profile([tuple(p) for p in road], field.sample)
+    for name, (dense, levels) in ROAD_PROFILES.items():
+        heights = ter.road_blend(xs, ys, heights, dense, levels, 10.0, 60.0)
+    heights = ter.blend_to(heights, colosseum_distance(xs, ys, 72.0), DATUM, 20.0)
     return heights
 
 
@@ -224,6 +250,8 @@ class Scene:
         self.statics = {}
         self.builds = {}
         self.extra_trees = []
+        self.worksites = []
+        self.obstacles = []
 
     def root(self, name):
         if name not in self.roots:
@@ -278,6 +306,9 @@ def extra_materials(tiles, credits):
     principled_material("velum_linen", (0.92, 0.88, 0.78), 0.9)
     tiles["velum_linen"] = 4.0
     colisee_materials.colisee_library(CACHE, tiles, credits)
+    colisee_materials.paving_library(CACHE, tiles, credits)
+    colisee_materials.facade_library(CACHE, tiles)
+    principled_material("col_bronze_patina", (0.45, 0.33, 0.20), 0.45, 1.0)
     for name in ("travertine", "brick", "marble_paving", "bronze_tiles"):
         strip_normals(name)
 
@@ -298,8 +329,10 @@ def terrain_objects(scene, near, far):
     paved = np.maximum(paved, (polyline_distance([tuple(p) for p in points], tx, ty) < 9.0) * 0.9)
     for road in OTHER_ROADS.values():
         paved = np.maximum(paved, (polyline_distance([tuple(p) for p in road], tx, ty) < 7.0) * 0.8)
-    paved = np.maximum(paved, np.clip(0.55 - slope * 2.0, 0.0, 0.55) * (np.hypot(tx, ty) < 950.0))
-    colour = ter.ground_colour(tx, ty, th, slope, paved)
+    garden = np.zeros(tx.shape)
+    for gx, gy, radius in GARDENS:
+        garden = np.maximum(garden, np.clip(1.0 - (np.hypot(tx - gx, ty - gy) - radius * 0.7) / (radius * 0.3), 0, 1))
+    colour = ter.ground_colour(tx, ty, th, slope, paved, garden=garden)
     image = save_pixels("terrain_colour", colour,
                         os.path.join(CACHE, "textures", "terrain_colour.jpg"), quality=88)
     mesh.materials.append(baked_material("terrain", image))
@@ -307,7 +340,7 @@ def terrain_objects(scene, near, far):
     created["cast_shadow"] = False
     scene.terrain_object = created
     far_heights = far.heights - DATUM
-    far_mesh = grid_mesh("terrain_far", far_heights, FAR_HALF, ring=(30000.0, 60.0))
+    far_mesh = grid_mesh("terrain_far", far_heights, FAR_HALF)
     remove_faces_inside(far_mesh, NEAR_HALF - FAR_SPACING * 0.5)
     axis = np.linspace(-FAR_HALF, FAR_HALF, 1024)
     tx, ty = np.meshgrid(axis, axis)
@@ -325,6 +358,24 @@ def terrain_objects(scene, near, far):
     image = save_pixels("terrain_far_colour", colour, os.path.join(CACHE, "textures", "terrain_far_colour.jpg"), quality=85)
     far_mesh.materials.append(baked_material("terrain_far", image))
     created = new_object("terrain_far", far_mesh, scene.collection, root)
+    created["cast_shadow"] = False
+    sample, scene.outer_url = ter.tinitaly_outer(os.path.join(CACHE, "src", "tinitaly_outer.tif"))
+    axis = np.linspace(-OUTER_HALF, OUTER_HALF, int(round(2 * OUTER_HALF / OUTER_SPACING)) + 1)
+    tx, ty = np.meshgrid(axis, axis)
+    reach = np.maximum(np.abs(tx), np.abs(ty))
+    th = sample(tx, ty) - DATUM - 6.0 * np.clip(1.0 - (reach - FAR_HALF) / 3000.0, 0.0, 1.0)
+    outer = grid_mesh("terrain_outer", th, OUTER_HALF, ring=(90000.0, 0.0))
+    remove_faces_inside(outer, FAR_HALF - OUTER_SPACING * 0.5)
+    axis = np.linspace(-OUTER_HALF, OUTER_HALF, 512)
+    tx, ty = np.meshgrid(axis, axis)
+    th = sample(tx, ty)
+    gy, gx = np.gradient(th, axis[1] - axis[0])
+    colour = ter.ground_colour(tx, ty, th, np.hypot(gx, gy) * 3.0, np.zeros(tx.shape), seed=31)
+    colour[th < 0.5] = (0.2, 0.28, 0.31)
+    image = save_pixels("terrain_outer_colour", colour, os.path.join(CACHE, "textures", "terrain_outer_colour.jpg"),
+                        quality=85)
+    outer.materials.append(baked_material("terrain_outer", image))
+    created = new_object("terrain_outer", outer, scene.collection, root)
     created["cast_shadow"] = False
 
 
@@ -345,7 +396,7 @@ def tiber(scene):
     scene.unique("sol", builder, occlusion=False)
 
 
-def road_ribbon(scene, points, width, levels=None, material=mon.BASALT, tint=(0.62, 0.6, 0.58), lift=0.08, step=3.0):
+def road_ribbon(scene, points, width, levels=None, material="col_basalt", tint=(0.95, 0.95, 0.95), lift=0.08, step=3.0):
     dense = []
     dense_levels = []
     for index, (a, b) in enumerate(zip(points[:-1], points[1:])):
@@ -391,14 +442,17 @@ def build_colosseum(scene, rng):
     for k, f in enumerate(frames):
         for level, z in ((0, 11.6), (1, 23.4)):
             key = "col_statue_a" if (k + level) % 2 else "col_statue_b"
-            statue_frames[key].append(f @ placement(0.0, -1.2, z, 0.0, 1.22))
+            statue_frames[key].append(f @ placement(0.0, -1.2, z + 0.4, 0.0, 1.75))
     looks = {"col_statue_a": Look("white", hem=0.12, toga="white", arms="toga_gesture", mono=(0.95, 0.93, 0.89),
                                   material=mon.MARBLE, seed=301),
              "col_statue_b": Look("white", hem=0.03, palla="white", female=True, sleeves="long", arms="hip",
                                   mono=(0.95, 0.93, 0.89), material=mon.MARBLE, seed=302)}
+    def statue(look):
+        builder = coarse(lambda: person(look), 0.3)
+        builder.box((-0.2, -0.18, -0.4 / 1.75), (0.2, 0.18, 0.0), mon.MARBLE, bottom=False)
+        return builder
     for key, matrices in statue_frames.items():
-        scene.instances("colisee", key, lambda look=looks[key]: coarse(lambda: person(look), 0.36), matrices,
-                        cast_shadow=False)
+        scene.instances("colisee", key, lambda look=looks[key]: statue(look), matrices, cast_shadow=False)
     for k in range(14, 42):
         number = amp.bay_number(k)
         if number is None:
@@ -430,7 +484,7 @@ def build_crowd(scene, angles, width, kappas, index, near_eye):
     for k, t in enumerate(angles):
         f_local = amp.frame(t)
         if (f_local.translation - near_eye).to_2d().length < 58.0:
-            builder = amp.crowd_block(width, kappas[k], 700 + k, near=near_eye, near_radius=10.5, frame_matrix=f_local,
+            builder = amp.crowd_block(width, kappas[k], 700 + k, near=near_eye, near_radius=8.0, frame_matrix=f_local,
                                       pool=pool)
             scene.unique("foule_proche", builder, COL @ f_local, occlusion=False)
             continue
@@ -447,7 +501,7 @@ def build_crowd(scene, angles, width, kappas, index, near_eye):
 
 
 def build_arena_life(scene, spots, near_eye):
-    def put(key, x, y, turn, build=None, z=0.02):
+    def put(key, x, y, turn, build=None, z=amp.FLOOR):
         scene.add(key, COL @ placement(x, y, z, turn), build)
     put("fig_murmillo", 3.4, -11.0, 0.15, life.murmillo)
     put("fig_thraex", 3.8, -9.1, math.pi + 0.1, life.thraex)
@@ -461,8 +515,8 @@ def build_arena_life(scene, spots, near_eye):
     for x in (12.0, 13.4, 6.0):
         put("fig_cornicen", x, 22.4, math.pi + 0.1, life.cornicen)
     x, y = spots[9]
-    put("prop_cage", x, y, 0.0, life.cage, z=-0.9)
-    put("prop_lion", x, y + 0.1, 0.0, life.lion, z=-0.75)
+    put("prop_cage", x, y, 0.0, life.cage, z=amp.FLOOR - 0.3)
+    put("prop_lion", x, y + 0.1, 0.0, life.lion, z=amp.FLOOR + 0.03)
     south = 3 * math.pi / 2
     pulvinar = amp.frame(south, 0.0, 0.0)
     put_matrix = lambda key, local, build: scene.add(key, COL @ pulvinar @ local, build)
@@ -583,7 +637,7 @@ def build_monuments(scene, rng):
                                                                                        0.0 if w > d else math.pi / 2))
     vm = fmat(-142.0, -42.0, zf, 1, 0)
     scene.unique("forum", vestals, vm)
-    columns["ionic"].extend(vm @ f for f in vestal_columns)
+    scene.instances("forum", "vestal_column", mon.simple_column(), [vm @ f for f in vestal_columns])
     for k in range(3):
         u = -40.0 + 40.0 * k
         base = MeshBuilder()
@@ -592,10 +646,29 @@ def build_monuments(scene, rng):
                              material=mon.BRONZE, seed=500 + k))
         base.merge(statue, placement(0.0, 0.0, 2.4, 0.0, 1.35))
         scene.unique("forum", base, fmat(u, -11.0, zf, 0, 1))
+    for k, u in enumerate((-52.0, -36.0, -20.0, 28.0, 44.0)):
+        base = MeshBuilder()
+        base.box((-1.6, -1.2, 0.0), (1.6, 1.2, 2.2), mon.MARBLE, bottom=False)
+        statue = person(Look("white", hem=0.12, toga="white", arms="toga_gesture" if k % 2 else "toga",
+                             mono=(1.0, 1.0, 1.0), material=mon.PATINA, seed=520 + k))
+        base.merge(statue, placement(0.0, 0.0, 2.2, 0.0, 1.3))
+        scene.unique("forum", base, fmat(u, 20.0, zf, 0, -1))
+        scene.obstacles.append((forum(u, 20.0), 2.6))
+    for k in range(3):
+        scene.obstacles.append((forum(-40.0 + 40.0 * k, -11.0), 2.6))
+    curtius = MeshBuilder()
+    for x0, y0, x1, y1 in ((-5.0, -4.5, 5.0, -4.0), (-5.0, 4.0, 5.0, 4.5), (-5.0, -4.0, -4.5, 4.0), (4.5, -4.0, 5.0, 4.0)):
+        curtius.box((x0, y0, -0.3), (x1, y1, 0.9), mon.MARBLE, bottom=False)
+    curtius.box((-4.5, -4.0, -0.3), (4.5, 4.0, 0.05), mon.TRAV, bottom=False)
+    curtius.tint(len(curtius.polygons) - 5, (0.62, 0.58, 0.52))
+    curtius.box((-0.8, -0.6, 0.05), (0.8, 0.6, 1.1), mon.MARBLE, bottom=False)
+    scene.unique("forum", curtius, fmat(-15.0, -6.0, zf + 0.1, 1, 0))
+    scene.obstacles.append((forum(-15.0, -6.0), 7.5))
     paving = MeshBuilder()
-    corners = [forum(-58.0, -24.0), forum(58.0, -24.0), forum(58.0, 30.0), forum(-58.0, 30.0)]
-    paving.polygon([(p.x, p.y, zf + 0.04) for p in corners], mon.TRAV)
-    paving.tint(0, (0.92, 0.9, 0.86))
+    corners = [forum(-58.0, -24.0), forum(-58.0, 30.0), forum(58.0, 30.0), forum(58.0, -24.0)]
+    uvs = [((p - FORUM_CENTRE).dot(V_DIR), (p - FORUM_CENTRE).dot(U_DIR)) for p in corners]
+    paving.polygon([(p.x, p.y, zf + 0.1) for p in corners], "col_slabs", uvs=uvs)
+    paving.tint(0, (0.97, 0.96, 0.94))
     scene.unique("sol", paving, occlusion=False)
     for order, matrices in columns.items():
         if matrices:
@@ -605,16 +678,18 @@ def build_monuments(scene, rng):
     for order, matrices in columns.items():
         matrices.clear()
     points, levels = sacra_levels()
-    scene.unique("sol", road_ribbon(scene, points, 9.0, tint=(0.7, 0.64, 0.56)), occlusion=False)
+    scene.unique("sol", road_ribbon(scene, points, 9.0), occlusion=False)
     sacra_porticoes(scene, points, levels)
     for name, road in OTHER_ROADS.items():
-        scene.unique("sol", road_ribbon(scene, road, 7.0, tint=(0.66, 0.6, 0.52), material=mon.TRAV), occlusion=False)
+        scene.unique("sol", road_ribbon(scene, road, 7.0, tint=(0.9, 0.88, 0.86)), occlusion=False)
     arch_index = sacra_via()[1]
     arch_point = points[arch_index]
     direction = (points[arch_index + 1] - points[arch_index - 1]).normalized()
     arch_matrix = placement(arch_point.x, arch_point.y, ARCH_LEVEL - DATUM, heading(direction))
-    scene.unique("velia", mon.arch_of_titus(), arch_matrix)
+    scene.unique("arc", mon.arch_of_titus(), arch_matrix)
+    scene.obstacles.append((arch_point, 9.5))
     scene.unique("velia", mon.meta_sudans(), placement(META.x, META.y, META_LEVEL - DATUM))
+    scene.obstacles.append((META, 11.0))
     vz = VESTIBULE_LEVEL - DATUM
     portico, frames = mon.portico_ring(120.0, 100.0, height=7.5, depth=7.0, spacing=4.2)
     retaining = MeshBuilder()
@@ -623,8 +698,8 @@ def build_monuments(scene, rng):
     vestibule = placement(COLOSSUS.x, COLOSSUS.y, vz, VESTIBULE_ANGLE)
     scene.unique("velia", portico, vestibule)
     scene.unique("velia", retaining, vestibule)
-    scene.instances("velia", "vestibule_column", mon.unit_column("tuscan", "low"), [vestibule @ f for f in frames])
-    scene.unique("velia", mon.colossus(), vestibule)
+    scene.instances("velia", "vestibule_column", mon.simple_column(), [vestibule @ f for f in frames])
+    scene.unique("velia", mon.colossus(), placement(COLOSSUS.x, COLOSSUS.y, vz, bearing_angle(225.0)))
     horrea = mon.hall(60.0, 42.0, 14.0, mon.BRICK, roof="gable", windows=8)
     hp = forum(*HORREA_F)
     scene.unique("velia", horrea, placement(hp.x, hp.y, site_level("horrea"), FORUM_ANGLE))
@@ -670,12 +745,16 @@ def sacra_porticoes(scene, points, levels):
                 along = Vector((*(d * 1.1), 0.0))
                 local.oriented([door - along, door + along, door + along + Vector((0, 0, 3.0)),
                                 door - along + Vector((0, 0, 3.0))], Vector((*(-side * sign), 0.0)), mon.VOID)
-            floor = [Vector((p.x, p.y, z + 0.05)) + Vector((*(side * sign * offset), 0.0)) for offset in (7.0, 13.5)
+            floor = [Vector((p.x, p.y, z + 0.25)) + Vector((*(side * sign * offset), 0.0)) for offset in (4.5, 13.5)
                      for p, z in ((a, za), (b, zb))]
+            first = len(local.polygons)
             local.oriented([floor[0], floor[1], floor[3], floor[2]], (0, 0, 1), mon.TRAV)
+            local.oriented([floor[0] - Vector((0, 0, 0.4)), floor[1] - Vector((0, 0, 0.4)), floor[1], floor[0]],
+                           Vector((*(-side * sign), 0.0)), mon.TRAV)
+            local.tint(first, (0.86, 0.8, 0.72))
             builder.merge(local)
     scene.unique("velia", builder)
-    scene.instances("velia", "sacra_column", mon.unit_column("tuscan", "low"), frames)
+    scene.instances("velia", "sacra_column", mon.simple_column(), frames)
 
 
 def build_hills(scene, rng):
@@ -686,36 +765,36 @@ def build_hills(scene, rng):
         return placement(point.x, point.y, site_level(name) + lift, bearing_angle(bearing))
 
     flavia = MeshBuilder()
-    flavia.merge(mon.hall(34.0, 47.0, 30.0, mon.BRICK, roof="gable", windows=4), placement(0.0, 52.0, 0.0))
-    flavia.merge(mon.hall(16.0, 32.0, 20.0, mon.BRICK, roof="gable"), placement(-28.0, 50.0, 0.0))
-    flavia.merge(mon.hall(16.0, 32.0, 24.0, mon.BRICK, roof="vault"), placement(28.0, 50.0, 0.0))
+    flavia.merge(mon.hall(34.0, 47.0, 30.0, mon.PLASTER, roof="gable", windows=4), placement(0.0, 52.0, 0.0))
+    flavia.merge(mon.hall(16.0, 32.0, 20.0, mon.PLASTER, roof="gable"), placement(-28.0, 50.0, 0.0))
+    flavia.merge(mon.hall(16.0, 32.0, 24.0, mon.PLASTER, roof="vault"), placement(28.0, 50.0, 0.0))
     peristyle, frames = mon.court(52.0, 46.0, 7.0, basin=(20.0, 20.0))
     flavia.merge(peristyle, placement(0.0, 0.0, 0.0))
-    court_columns += [(placement(0.0, 0.0, 0.0), frames)]
-    flavia.merge(mon.hall(34.0, 30.0, 22.0, mon.BRICK, roof="vault", windows=3), placement(0.0, -48.0, 0.0))
+    court_columns += [(placement(0.0, 0.0, 0.0), frames[::2])]
+    flavia.merge(mon.hall(34.0, 30.0, 22.0, mon.PLASTER, roof="vault", windows=3), placement(0.0, -48.0, 0.0))
     for side in (-1, 1):
         flavia.merge(mon.hall(14.0, 26.0, 9.0, mon.PLASTER, roof="gable"), placement(side * 30.0, -48.0, 0.0))
     upper, frames2 = mon.court(62.0, 56.0, 7.0, basin=(26.0, 26.0))
     flavia.merge(upper, placement(88.0, -20.0, 0.0))
-    court_columns += [(placement(88.0, -20.0, 0.0), frames2)]
+    court_columns += [(placement(88.0, -20.0, 0.0), frames2[::2])]
     for x, y, w, d, h in ((88.0, 26.0, 70.0, 16.0, 14.0), (128.0, -20.0, 12.0, 70.0, 16.0),
                           (88.0, -66.0, 70.0, 16.0, 18.0), (52.0, -78.0, 20.0, 20.0, 20.0)):
-        flavia.merge(mon.hall(w, d, h, mon.BRICK, roof="gable"), placement(x, y, 0.0))
+        flavia.merge(mon.hall(w, d, h, mon.PLASTER, roof="gable"), placement(x, y, 0.0))
     lower, frames3 = mon.court(48.0, 38.0, 6.0, basin=(16.0, 12.0))
     flavia.merge(lower, placement(88.0, -110.0, 0.0))
-    court_columns += [(placement(88.0, -110.0, 0.0), frames3)]
-    flavia.merge(mon.hall(80.0, 20.0, 14.0, mon.BRICK, roof="vault", windows=6), placement(88.0, -142.0, 0.0))
+    court_columns += [(placement(88.0, -110.0, 0.0), frames3[::2])]
+    flavia.merge(mon.hall(80.0, 20.0, 14.0, mon.PLASTER, roof="vault", windows=6), placement(88.0, -142.0, 0.0))
     stadium, frames4 = mon.court(150.0, 44.0, 7.0, basin=None)
     flavia.merge(stadium, placement(175.0, -40.0, 0.0, math.pi / 2))
-    court_columns += [(placement(175.0, -40.0, 0.0, math.pi / 2), frames4[::2])]
+    court_columns += [(placement(175.0, -40.0, 0.0, math.pi / 2), frames4[::3])]
     for x, y, w, d, h, roof in ((-36.0, 0.0, 14.0, 50.0, 11.0, "gable"), (36.0, 0.0, 14.0, 50.0, 11.0, "gable"),
                                 (88.0, 52.0, 66.0, 34.0, 15.0, "gable"), (130.0, 52.0, 24.0, 30.0, 20.0, "vault"),
                                 (55.0, -110.0, 18.0, 40.0, 12.0, "gable"), (121.0, -110.0, 18.0, 40.0, 12.0, "gable"),
                                 (205.0, 30.0, 20.0, 40.0, 14.0, "gable"), (-30.0, -80.0, 22.0, 20.0, 9.0, "gable")):
-        flavia.merge(mon.hall(w, d, h, mon.BRICK if h > 12 else mon.PLASTER, roof=roof, windows=3),
-                     placement(x, y, 0.0))
+        flavia.merge(mon.hall(w, d, h, mon.PLASTER, roof=roof, windows=3), placement(x, y, 0.0))
     flavia.box((-45.0, -160.0, -24.0), (215.0, 80.0, -0.3), mon.BRICK, bottom=False, top=True)
     flavia.paint(mon.BRICK, (0.92, 0.82, 0.74))
+    flavia.paint(mon.PLASTER, mon.STUCCO_TINT)
     palace = at("flavia", PALACE_BEARING, 0.0)
     for x, y in ((-14.0, 14.0), (14.0, 14.0), (-14.0, -14.0), (14.0, -14.0), (70.0, 0.0), (106.0, 0.0), (70.0, -40.0),
                  (106.0, -40.0), (175.0, -100.0), (175.0, -70.0), (175.0, -10.0), (175.0, 20.0), (162.0, -40.0),
@@ -734,28 +813,40 @@ def build_hills(scene, rng):
     for x, y, w, d, h in ((45.0, 0.0, 34.0, 80.0, 16.0), (-20.0, 40.0, 100.0, 14.0, 12.0)):
         tiberiana.merge(mon.hall(w, d, h, mon.PLASTER, roof="gable", windows=5), placement(x, y, 0.2))
     tm = at("tiberiana", 330.0, 0.0)
+    for x0, y0, x1, y1, nx, ny in ((-75.0, 57.0, 75.0, 57.0, 0.0, 1.0), (77.0, -55.0, 77.0, 57.0, 1.0, 0.0)):
+        outside = [tm @ Vector((x0 + (x1 - x0) * t + nx * 8.0, y0 + (y1 - y0) * t + ny * 8.0, 0.0))
+                   for t in (0.1, 0.3, 0.5, 0.7, 0.9)]
+        drop = site_level("tiberiana") - min(scene.ground(q.x, q.y) for q in outside)
+        if drop > 2.0:
+            wall = MeshBuilder()
+            span = math.hypot(x1 - x0, y1 - y0)
+            mon.wall_run(wall, x0, y0, x1, y1, drop + 1.4, 3.0, mon.BRICK, max(int(span / 9.0), 1))
+            tiberiana.merge(wall, Matrix.Translation((0.0, 0.0, -drop)))
+    tiberiana.paint(mon.PLASTER, mon.STUCCO_TINT)
     scene.unique("collines", tiberiana, tm)
     for f in frames5:
         scene.add("palace_column", tm @ placement(-20.0, 0.0, 0.2) @ f, mon.simple_column())
     baths = MeshBuilder()
     baths.box((-62.0, -55.0, -14.0), (62.0, 55.0, 0.3), mon.BRICK, bottom=False)
-    baths.merge(mon.hall(40.0, 26.0, 26.0, mon.BRICK, roof="vault", windows=4), placement(0.0, 0.0, 0.3))
-    baths.merge(mon.hall(24.0, 24.0, 22.0, mon.BRICK, roof="dome", windows=2), placement(0.0, -30.0, 0.3))
+    baths.merge(mon.hall(40.0, 26.0, 26.0, mon.PLASTER, roof="vault", windows=4), placement(0.0, 0.0, 0.3))
+    baths.merge(mon.hall(24.0, 24.0, 22.0, mon.PLASTER, roof="dome", windows=2), placement(0.0, -30.0, 0.3))
     for side in (-1, 1):
         palaestra, frames6 = mon.court(30.0, 36.0, 6.0, basin=None, garden=False)
         baths.merge(palaestra, placement(side * 40.0, 10.0, 0.3))
-        baths.merge(mon.hall(22.0, 40.0, 16.0, mon.BRICK, roof="vault"), placement(side * 22.0, 30.0, 0.3))
+        baths.merge(mon.hall(22.0, 40.0, 16.0, mon.PLASTER, roof="vault"), placement(side * 22.0, 30.0, 0.3))
     for k in range(14):
         baths.box((-30.0, -55.0 - 1.4 * (14 - k), -14.0), (30.0, -55.0 - 1.4 * (13 - k), 0.3 - (13 - k) * 0.9), mon.TRAV,
                   bottom=False)
+    baths.paint(mon.PLASTER, mon.STUCCO_TINT)
     bm = at("baths", 202.0, 0.0)
     scene.unique("collines", baths, bm)
     site = MeshBuilder()
     site.box((-110.0, -100.0, -12.0), (110.0, 100.0, 0.2), mon.BRICK, bottom=False)
-    for x0, y0, x1, y1, h, arches in ((-80.0, -60.0, 80.0, -60.0, 14.0, 9), (-80.0, 60.0, 80.0, 60.0, 9.0, 0),
-                                      (-80.0, -60.0, -80.0, 60.0, 18.0, 6), (80.0, -60.0, 80.0, 20.0, 6.0, 0),
-                                      (-30.0, -20.0, 30.0, -20.0, 22.0, 3), (-30.0, 20.0, 30.0, 20.0, 12.0, 0),
-                                      (-100.0, 95.0, 100.0, 95.0, 5.0, 0)):
+    site_walls = ((-80.0, -60.0, 80.0, -60.0, 14.0, 9), (-80.0, 60.0, 80.0, 60.0, 9.0, 0),
+                  (-80.0, -60.0, -80.0, 60.0, 18.0, 6), (80.0, -60.0, 80.0, 20.0, 6.0, 0),
+                  (-30.0, -20.0, 30.0, -20.0, 22.0, 3), (-30.0, 20.0, 30.0, 20.0, 12.0, 0),
+                  (-100.0, 95.0, 100.0, 95.0, 5.0, 0))
+    for x0, y0, x1, y1, h, arches in site_walls:
         mon.wall_run(site, x0, y0, x1, y1, h, 2.6, mon.BRICK, arches)
     centring = MeshBuilder()
     for k in range(9):
@@ -769,9 +860,14 @@ def build_hills(scene, rng):
         scene.add("crane", tm2 @ local, mon.construction_crane)
     for local in (placement(0.0, -63.0, 0.2), placement(-83.0, 0.0, 0.2, math.pi / 2), placement(0.0, -23.0, 0.2)):
         scene.add("scaffold", tm2 @ local, lambda: mon.scaffold(40.0, 16.0))
-    for local in (placement(-40.0, -80.0, 0.2, 0.4), placement(40.0, -80.0, 0.2, -0.3), placement(0.0, 75.0, 0.2, 1.4),
-                  placement(-55.0, 30.0, 0.2, 0.9)):
+    heaps = (placement(-40.0, -80.0, 0.2, 0.4), placement(40.0, -80.0, 0.2, -0.3), placement(0.0, 75.0, 0.2, 1.4),
+             placement(-55.0, 30.0, 0.2, 0.9))
+    for local in heaps:
         scene.add("material_heap", tm2 @ local, mon.material_heap)
+    busy = [Vector(v) for v in ((-60.0, -70.0), (10.0, -30.0), (60.0, 40.0), (0.0, -63.0), (-83.0, 0.0), (0.0, -23.0))]
+    busy += [local.translation.to_2d() for local in heaps]
+    scene.worksites.append((tm2, 95.0, 85.0, [w[:4] for w in site_walls], busy))
+    build_aqueduct(scene)
     claud = MeshBuilder()
     claud.box((-92.0, -100.0, -16.0), (92.0, 100.0, 0.3), mon.BRICK, bottom=False)
     mon.wall_run(claud, -92.0, 100.0, 92.0, 100.0, 0.3, 4.0, mon.BRICK, 12)
@@ -783,7 +879,7 @@ def build_hills(scene, rng):
     scene.unique("collines", claud, cm)
     for f in temple_cols["corinthian"]:
         scene.add("palace_column", cm @ placement(0.0, -20.0, 0.3) @ f, mon.simple_column())
-    for f in frames7[::2]:
+    for f in frames7[::3]:
         scene.add("palace_column", cm @ placement(0.0, 0.0, 0.3) @ f, mon.simple_column())
     ludus = MeshBuilder()
     ludus.box((-58.0, -42.0, -4.0), (58.0, 42.0, 0.2), mon.TRAV, bottom=False)
@@ -808,7 +904,7 @@ def build_hills(scene, rng):
         key = ("fig_murmillo", "fig_thraex", "fig_retiarius", "fig_secutor", "fig_referee")[k]
         build = (life.murmillo, life.thraex, life.retiarius, life.secutor, life.referee)[k]
         scene.add(key, lm @ placement(x, y, 0.22, turn), build)
-    peace, peace_frames = mon.portico_ring(135.0, 110.0, height=8.0, depth=7.0, spacing=4.4)
+    peace, peace_frames = mon.portico_ring(PEACE_HALF[0] * 2, PEACE_HALF[1] * 2, height=8.0, depth=7.0, spacing=4.4)
     pm = placement(*forum(*PEACE_F), FORUM_LEVEL + 2.0 - DATUM, FORUM_ANGLE)
     garden3 = MeshBuilder()
     for k in range(6):
@@ -819,31 +915,90 @@ def build_hills(scene, rng):
                   placement(0.0, -46.0, 0.4, math.pi))
     scene.unique("collines", peace, pm)
     scene.unique("collines", garden3, pm)
-    scene.instances("palatin", "peace_column", mon.simple_column(), [pm @ f for f in peace_frames])
+    scene.instances("palatin", "peace_column", mon.simple_column(), [pm @ f for f in peace_frames], cast_shadow=False)
     return {"palace": palace, "baths": bm, "site": tm2, "claudium": cm, "ludus": lm, "peace": pm}
+
+
+def fora_matrix(name):
+    p, _, _, angle, level = fora_rect(name)
+    return placement(p.x, p.y, level - DATUM, angle)
+
+
+def build_fora(scene):
+    corinthian, simple = [], []
+    for name, build in (("iulium", fora.forum_iulium), ("augustum", fora.forum_augustum),
+                        ("nerva", fora.forum_transitorium)):
+        builder, frames = build()
+        matrix = fora_matrix(name)
+        scene.unique("fora", builder, matrix)
+        corinthian += [matrix @ f for f in frames["corinthian"]]
+        simple += [matrix @ f for f in frames["simple"]]
+    scene.instances("fora", "fora_corinthian", mon.simple_column(), corinthian)
+    scene.instances("fora", "fora_column", mon.simple_column(), simple)
+    builder, walls, cranes, scaffolds, heaps = fora.trajan_worksite()
+    matrix = fora_matrix("traiani")
+    scene.unique("fora", builder, matrix)
+    for local in cranes:
+        scene.add("crane", matrix @ local, mon.construction_crane)
+    for local in scaffolds:
+        scene.add("scaffold", matrix @ local, lambda: mon.scaffold(40.0, 16.0))
+    for local in heaps:
+        scene.add("material_heap", matrix @ local, mon.material_heap)
+    busy = [local.translation.to_2d() for local in cranes + scaffolds + heaps]
+    scene.worksites.append((matrix, 95.0, 80.0, walls, busy))
+    circus = placement(CIRCUS.x, CIRCUS.y, site_level("circus"), bearing_angle(CIRCUS_BEARING))
+    scene.unique("circus", fora.circus_maximus(), circus)
+
+
+def build_aqueduct(scene):
+    samples = ter.densify(AQUEDUCT, 6.0)
+    top = max(scene.ground(x, y) for x, y in samples) + 7.0
+    builder = MeshBuilder()
+    dense = ter.densify(AQUEDUCT, 36.0)
+    for a, b in zip(dense[:-1], dense[1:]):
+        a, b = Vector(a), Vector(b)
+        length = (b - a).length
+        base = min(scene.ground(*a.lerp(b, t)) for t in (0.0, 0.25, 0.5, 0.75, 1.0)) - 0.3
+        segment = fora.aqueduct_segment(length + 0.4, top - base, max(int(round(length / 7.2)), 1))
+        middle = (a + b) / 2
+        builder.merge(segment, placement(middle.x, middle.y, base, math.atan2(b.y - a.y, b.x - a.x)))
+    scene.unique("collines", builder)
 
 
 class Zones:
     def __init__(self):
         self.tests = []
+        self.mask = None
+        self.spacing = 2.0
 
     def rect(self, cx, cy, hx, hy, angle):
-        self.tests.append(lambda x, y: rect_distance(np.array(x), np.array(y), cx, cy, hx, hy, angle) < 0)
+        self.tests.append(lambda x, y: rect_distance(x, y, cx, cy, hx, hy, angle) < 0)
 
     def circle(self, cx, cy, radius):
-        self.tests.append(lambda x, y: math.hypot(x - cx, y - cy) < radius)
+        self.tests.append(lambda x, y: np.hypot(x - cx, y - cy) < radius)
 
     def corridor(self, points, width):
         flat = [tuple(p) for p in points]
-        self.tests.append(lambda x, y: float(polyline_distance(flat, np.array([[x]]), np.array([[y]]))[0, 0]) < width)
+        self.tests.append(lambda x, y: polyline_distance(flat, x, y) < width)
+
+    def rasterise(self):
+        axis = np.arange(-NEAR_HALF, NEAR_HALF + self.spacing, self.spacing)
+        grid_x, grid_y = np.meshgrid(axis, axis)
+        self.mask = np.zeros(grid_x.shape, dtype=bool)
+        for test in self.tests:
+            self.mask |= test(grid_x, grid_y)
 
     def blocked(self, x, y):
-        return any(bool(test(x, y)) for test in self.tests)
+        column = int(round((x + NEAR_HALF) / self.spacing))
+        row = int(round((y + NEAR_HALF) / self.spacing))
+        if not (0 <= row < self.mask.shape[0] and 0 <= column < self.mask.shape[1]):
+            return False
+        return bool(self.mask[row, column])
 
 
 def build_zones(points_of_view):
     zones = Zones()
-    zones.tests.append(lambda x, y: float(colosseum_distance(np.array([[x]]), np.array([[y]]), 86.0)[0, 0]) < 0)
+    zones.tests.append(lambda x, y: colosseum_distance(x, y, 86.0) < 0)
     zones.rect(*forum(10.0, -2.0), 160.0, 92.0, FORUM_ANGLE)
     zones.rect(COLOSSUS.x, COLOSSUS.y, 72.0, 62.0, VESTIBULE_ANGLE)
     zones.circle(META.x, META.y, 34.0)
@@ -855,48 +1010,81 @@ def build_zones(points_of_view):
     zones.rect(CLAUDIUM.x, CLAUDIUM.y, 104.0, 112.0, bearing_angle(22.0))
     zones.rect(LUDUS.x, LUDUS.y, 72.0, 56.0, COL_ANGLE)
     peace = forum(*PEACE_F)
-    zones.rect(peace.x, peace.y, 82.0, 70.0, FORUM_ANGLE)
+    zones.rect(peace.x, peace.y, PEACE_HALF[0] + 12.0, PEACE_HALF[1] + 12.0, FORUM_ANGLE)
+    for name in FORA:
+        p, hx, hy, angle, _ = fora_rect(name)
+        zones.rect(p.x, p.y, hx + 10.0, hy + 10.0, angle)
+    zones.rect(CIRCUS.x, CIRCUS.y, 82.0, 312.0, bearing_angle(CIRCUS_BEARING))
+    zones.corridor(AQUEDUCT, 9.0)
     horrea = forum(*HORREA_F)
     zones.rect(horrea.x, horrea.y, 40.0, 30.0, FORUM_ANGLE)
     zones.circle(JUPITER.x, JUPITER.y, 60.0)
     points, _ = sacra_levels()
-    zones.corridor(points, 26.0)
+    zones.corridor(points, 16.0)
     for road in OTHER_ROADS.values():
-        zones.corridor(road, 11.0)
+        zones.corridor(road, 8.0)
     zones.corridor([tuple(ter.FRAME.to_local(*p)) for p in city.RIVER_GEO], 75.0)
     for eye, target in points_of_view:
         zones.corridor([eye.to_2d(), target.to_2d()], 14.0)
+    zones.rasterise()
     return zones
 
 
+FOOTPRINTS = {"insula_court_a": (30.0, 24.0, False), "insula_court_b": (27.0, 22.0, False),
+              "insula_block_a": (20.0, 12.0, True), "insula_block_b": (24.0, 13.0, True), "domus_low": (16.0, 11.0, True)}
+
+
 def build_city(scene, zones, rng):
-    keys = list(city.INSULAE)
-    weights = np.array([0.26, 0.2, 0.22, 0.2, 0.12])
+    keys = list(colisee_city.INSULAE)
+    weights = np.array([0.24, 0.2, 0.22, 0.2, 0.14])
     frames = {key: [] for key in keys}
     spots = []
-    step = 32.0
-    count = int(980.0 / step)
-    grid_angle = math.radians(18.0)
-    for i in range(-count, count + 1):
-        for j in range(-count, count + 1):
-            gx, gy = i * step, j * step
-            x = gx * math.cos(grid_angle) - gy * math.sin(grid_angle) + rng.uniform(-3.0, 3.0)
-            y = gx * math.sin(grid_angle) + gy * math.cos(grid_angle) + rng.uniform(-3.0, 3.0)
-            if abs(x) > NEAR_HALF - 30 or abs(y) > NEAR_HALF - 30 or rng.random() > 0.84 or zones.blocked(x, y):
-                continue
-            corners = [scene.ground(x + dx, y + dy) for dx in (-13, 13) for dy in (-13, 13)]
-            if max(corners) - min(corners) > 7.0:
-                continue
-            key = keys[int(rng.choice(len(keys), p=weights / weights.sum()))]
-            turn = grid_angle + (math.pi / 2 if rng.random() < 0.4 else 0.0) + math.radians(rng.uniform(-3, 3))
-            size = (rng.uniform(0.88, 1.15), rng.uniform(0.88, 1.15), rng.uniform(0.8, 1.3))
-            frames[key].append(placement(x, y, min(corners), turn, size))
-            spots.append((x, y, min(corners), key))
+    district = 300.0
+    step = 30.0
+    limit = NEAR_HALF - 25.0
+    cells = int(math.ceil(limit / district))
+    for di in range(-cells, cells):
+        for dj in range(-cells, cells):
+            cx, cy = (di + 0.5) * district, (dj + 0.5) * district
+            angle = math.radians(rng.uniform(0.0, 25.0))
+            ca, sa = math.cos(angle), math.sin(angle)
+            ox, oy = rng.uniform(-step / 2, step / 2), rng.uniform(-step / 2, step / 2)
+            for i in range(-6, 7):
+                for j in range(-6, 7):
+                    lx, ly = i * step + ox, j * step + oy
+                    x, y = cx + lx * ca - ly * sa, cy + lx * sa + ly * ca
+                    size = step - rng.uniform(4.0, 6.0)
+                    half = size / 2
+                    corners = [(x + dx * ca - dy * sa, y + dx * sa + dy * ca) for dx in (-half, half)
+                               for dy in (-half, half)]
+                    if any(abs(px - cx) > district / 2 - 1.0 or abs(py - cy) > district / 2 - 1.0 for px, py in corners):
+                        continue
+                    if abs(x) > limit or abs(y) > limit or rng.random() < 0.04:
+                        continue
+                    if zones.blocked(x, y) or any(zones.blocked(px, py) for px, py in corners):
+                        continue
+                    heights = [scene.ground(px, py) for px, py in corners]
+                    if max(heights) - min(heights) > 7.0:
+                        continue
+                    z = min(heights)
+                    key = keys[int(rng.choice(len(keys), p=weights / weights.sum()))]
+                    fx, fy, paired = FOOTPRINTS[key]
+                    turn = angle + math.pi / 2 * int(rng.integers(4))
+                    lift = rng.uniform(0.8, 1.3)
+                    base = placement(x, y, z, turn)
+                    if paired:
+                        for side in (-1, 1):
+                            frames[key].append(base @ placement(0.0, side * size / 4, 0.0, 0.0 if side < 0 else math.pi,
+                                                                (size / fx, size / 2 / fy, lift * rng.uniform(0.9, 1.1))))
+                    else:
+                        frames[key].append(base @ placement(0.0, 0.0, 0.0, 0.0, (size / fx, size / fy, lift)))
+                    spots.append((x, y, z, key))
     for key, matrices in frames.items():
-        scene.instances("ville", key, city.INSULAE[key], matrices)
+        scene.instances("ville", key, colisee_city.INSULAE[key], matrices)
+    grid_angle = math.radians(18.0)
     far = []
     far_rng = random.Random(41)
-    for _ in range(9000):
+    for _ in range(7000):
         x, y = far_rng.uniform(-2600, 2600), far_rng.uniform(-2600, 2600)
         r = math.hypot(x, y)
         if max(abs(x), abs(y)) < NEAR_HALF + 10 or r > 2600 * far_rng.uniform(0.75, 1.0):
@@ -930,26 +1118,26 @@ def build_trees(scene, zones, rng, spots):
     for index, (x, y, _, _) in enumerate(spots):
         houses.insert((x, y, 0.0), index)
     houses.balance()
-    gardens = [(FLAVIA.x - 60.0, FLAVIA.y + 120.0, 90.0), (FLAVIA.x + 120.0, FLAVIA.y - 160.0, 120.0),
-               (CLAUDIUM.x, CLAUDIUM.y - 160.0, 140.0), (TITUS_BATHS.x - 120.0, TITUS_BATHS.y + 60.0, 90.0),
-               (-760.0, 260.0, 90.0), (-640.0, -320.0, 110.0), (420.0, -480.0, 160.0), (650.0, 400.0, 220.0),
-               (-150.0, 330.0, 70.0), (60.0, 360.0, 80.0)]
+    gardens = GARDENS
     near_keys = ["tree_pine", "tree_pine_b", "tree_cypress", "tree_plane", "tree_oak"]
     weights = [0.3, 0.2, 0.25, 0.12, 0.13]
     attempts = 0
     placed = 0
     while placed < 460 and attempts < 12000:
         attempts += 1
-        if rng.random() < 0.65:
+        in_garden = rng.random() < 0.8
+        if in_garden:
             gx, gy, radius = gardens[int(rng.integers(len(gardens)))]
             angle = rng.uniform(0, 2 * math.pi)
             reach = radius * math.sqrt(rng.random())
             x, y = gx + reach * math.cos(angle), gy + reach * math.sin(angle)
         else:
             x, y = rng.uniform(-NEAR_HALF + 20, NEAR_HALF - 20), rng.uniform(-NEAR_HALF + 20, NEAR_HALF - 20)
-        if zones.blocked(x, y) or houses.find_range((x, y, 0.0), 17.0):
+        if zones.blocked(x, y) or houses.find_range((x, y, 0.0), 15.0):
             continue
         key = near_keys[int(rng.choice(5, p=weights))]
+        if not in_garden:
+            key = ("tree_cypress", "tree_plane", "tree_oak")[int(rng.integers(3))]
         if math.hypot(x, y) > 650.0:
             key = city.FAR[key]
         frames[key].append(placement(x, y, scene.lowest(x, y, 1.5) - 0.3, rng.uniform(0, 2 * math.pi),
@@ -972,27 +1160,26 @@ def build_trees(scene, zones, rng, spots):
     return {key: len(m) for key, m in frames.items()}
 
 
-def viewpoints(scene, arch_matrix, direction):
+def viewpoints(scene, arch_matrix, direction, angles):
     pts = {}
     t_e = 3 * math.pi / 2 + 0.26
-    eye = amp.oval(t_e, 1.1, 3.6 + 1.62)
-    pts["l-arene"] = (col_world(eye), col_world((4.0, -10.0, 0.9)))
-    t_f = math.pi - 0.36
-    facade_eye = col_world(amp.oval(t_f, amp.OUTER + 40.0, 0.0))
-    facade_target = col_world(amp.oval(t_f - 0.02, amp.OUTER, 15.0))
+    eye = amp.oval(t_e, 1.1, 5.6)
+    pts["l-arene"] = (col_world(eye), col_world((4.0, -10.0, 4.2)))
+    numbered = [k for k in range(14, 42) if amp.bay_number(k) is not None]
+    t_f = angles[min(numbered, key=lambda k: abs(angles[k] - (math.pi - 0.36)))]
+    facade_eye = col_world(amp.oval(t_f, amp.OUTER + 70.0, 0.0))
+    facade_target = col_world(amp.oval(t_f, amp.OUTER, 26.0))
     facade_eye.z = scene.ground(facade_eye.x, facade_eye.y) + 1.7
-    if math.isnan(facade_eye.z):
-        facade_eye.z = 1.7
     pts["la-facade"] = (facade_eye, facade_target)
     zf = FORUM_LEVEL - DATUM
-    eye_f = forum(126.0, 2.0)
-    target_f = forum(-20.0, 0.0)
-    pts["le-forum"] = (Vector((eye_f.x, eye_f.y, zf + 40.0)), Vector((target_f.x, target_f.y, zf + 1.0)))
+    eye_f = forum(78.0, -10.0)
+    target_f = forum(-40.0, 2.0)
+    pts["le-forum"] = (Vector((eye_f.x, eye_f.y, zf + 11.0)), Vector((target_f.x, target_f.y, zf + 2.0)))
     arch = arch_matrix.translation
     road_eye = arch.to_2d() - direction * 38.0
     eye_z = scene.ground(road_eye.x, road_eye.y) + 1.75
     pts["la-voie-sacree"] = (Vector((road_eye.x, road_eye.y, eye_z)), Vector((arch.x, arch.y, arch.z + 7.0)))
-    pts["vue-d-ensemble"] = (Vector((-600.0, -470.0, 230.0)), Vector((-330.0, 130.0, 0.0)))
+    pts["vue-d-ensemble"] = (Vector((-780.0, -620.0, 300.0)), Vector((-260.0, 90.0, 0.0)))
     return pts
 
 
@@ -1065,7 +1252,8 @@ def refine(scene, a, b, out, depth=0):
 
 def routes(arch_matrix, direction):
     sacra, _ = sacra_levels()
-    side = Vector((-direction.y, direction.x))
+    arch = arch_matrix.translation.to_2d()
+    dense = [p.to_2d() for p in resample(sacra[2:], 2.0)]
 
     def offset(points, amount):
         result = []
@@ -1073,31 +1261,54 @@ def routes(arch_matrix, direction):
             a = points[max(index - 1, 0)]
             b = points[min(index + 1, len(points) - 1)]
             d = (b - a).normalized()
-            result.append(p + Vector((-d.y, d.x)) * amount)
+            along = abs((p - arch).dot(direction))
+            lateral = 1.4 + (abs(amount) - 1.4) * min(max((along - 8.0) / 12.0, 0.0), 1.0)
+            result.append(p + Vector((-d.y, d.x)) * math.copysign(lateral, amount))
         return result
     ring_north = [col_world(amp.oval(t, amp.OUTER + 9.0, 0.0)).to_2d() for t in np.linspace(0.25, math.pi - 0.25, 24)]
     ring_south = [col_world(amp.oval(t, amp.OUTER + 9.0, 0.0)).to_2d() for t in np.linspace(math.pi + 0.25,
                                                                                             2 * math.pi - 0.3, 24)]
     return {
-        "voie-sacree-nord": offset(sacra[2:], 3.0),
-        "voie-sacree-sud": offset(sacra[2:], -3.2)[::-1],
+        "voie-sacree-nord": offset(dense, 3.0),
+        "voie-sacree-sud": offset(dense, -3.2)[::-1],
         "forum-long": [forum(50.0, 10.0), forum(-50.0, 12.0)],
         "forum-travers": [forum(20.0, -20.0), forum(0.0, 25.0)],
         "forum-sud": [forum(45.0, -18.0), forum(-45.0, -19.0)],
         "anneau-nord": ring_north,
         "anneau-sud": ring_south,
-        "labicana": [OTHER_ROADS["labicana"][0] + Vector((10.0, 5.0)), OTHER_ROADS["labicana"][3]],
+        "labicana": [p + Vector((0.0, 2.0)) for p in OTHER_ROADS["labicana"][:4]],
         "triomphale": [p + Vector((2.0, 0.0)) for p in OTHER_ROADS["triumphalis"][:4]],
         "oppius": [col_world(amp.oval(math.pi / 2 - 0.3, amp.OUTER + 16.0, 0.0)).to_2d()] + OTHER_ROADS["oppius"],
     }
+
+
+def route_problems(name, chain):
+    problems = []
+    for index, (a, b) in enumerate(zip(chain[:-1], chain[1:])):
+        if abs(b.z - a.z) > 0.35:
+            problems.append(f"{name} step {index}: {a.z:.2f} to {b.z:.2f} at {a.x:.1f},{a.y:.1f}")
+    j = 0
+    for i, a in enumerate(chain):
+        j = max(j, i)
+        while j < len(chain) and (chain[j].to_2d() - a.to_2d()).length < 2.5:
+            j += 1
+        if j >= len(chain):
+            break
+        run = (chain[j].to_2d() - a.to_2d()).length
+        grade = abs(chain[j].z - a.z) / run
+        if grade > 0.15:
+            problems.append(f"{name} grade {grade:.2f} at {i} ({a.x:.1f},{a.y:.1f},{a.z:.2f})")
+    return problems
 
 
 def place_routes(scene, arch_matrix, direction, eyes):
     root = scene.root("life")
     counts = {}
     samples = []
+    problems = []
     for name, points in routes(arch_matrix, direction).items():
         chain = ground_route(scene, points)
+        problems += route_problems(name, chain)
         for point in chain:
             for eye in eyes:
                 if (point.to_2d() - eye.to_2d()).length < EYE_CLEARANCE and abs(point.z + 1.6 - eye.z) < 2.5:
@@ -1108,6 +1319,10 @@ def place_routes(scene, arch_matrix, direction, eyes):
             steps = max(int((b - a).length / 0.5), 1)
             samples.extend(a.lerp(b, k / steps).to_2d() for k in range(steps))
         counts[name] = len(chain)
+    for problem in problems:
+        print("ROUTE", problem, flush=True)
+    if problems:
+        raise ValueError(f"{len(problems)} route problems")
     return counts, samples
 
 
@@ -1124,6 +1339,8 @@ def build_street_life(scene, rng, eyes, targets, route_samples, arch_matrix, dir
         if tree.find_range((x, y, 0.0), radius):
             return False
         point = Vector((x, y))
+        if any((point - centre).length < reach for centre, reach in scene.obstacles):
+            return False
         for eye, target in sights:
             span = target - eye
             t = max(0.0, min(1.0, (point - eye).dot(span) / span.length_squared))
@@ -1179,25 +1396,30 @@ def build_street_life(scene, rng, eyes, targets, route_samples, arch_matrix, dir
         p = col_world(amp.oval(t, amp.OUTER + rng.uniform(12.0, 16.5), 0.0))
         if free(p.x, p.y, 1.2):
             scene.add("fig_seller", placement(p.x, p.y, 0.0, rng.uniform(0, 6.28)), lambda: seller(187))
-    for k, (t, d) in enumerate(((1.2, 66.0), (2.5, 70.0), (4.2, 64.0), (5.5, 75.0))):
-        p = col_world(amp.oval(t, d, 0.0))
-        if free(p.x, p.y, 2.6):
-            scene.add("prop_lectica", placement(p.x, p.y, 0.0, rng.uniform(0, 6.28)), PROPS["prop_lectica"])
     south = col_world(amp.oval(3 * math.pi / 2, amp.OUTER + 6.0, 0.0))
     for k in range(6):
         p = south + Vector((rng.uniform(-6, 6), rng.uniform(-3, 3), 0.0))
         if free(p.x, p.y):
-            scene.add("fig_praetorian", placement(p.x, p.y, 0.0, rng.uniform(0, 6.28)), life.praetorian)
+            scene.add("fig_guard", placement(p.x, p.y, 0.0, rng.uniform(0, 6.28)), life.guard)
     for k in range(6):
         p = arch_matrix.translation.to_2d() + direction * rng.uniform(-60, -20) + Vector((rng.uniform(-3, 3),
                                                                                          rng.uniform(-3, 3)))
         if free(p.x, p.y):
             scene.add("fig_lictor", placement(p.x, p.y, 0.0, heading(direction)), life.lictor)
-    for k in range(20):
-        x, y = TRAJAN_SITE.x + rng.uniform(-90, 90), TRAJAN_SITE.y + rng.uniform(-80, 80)
-        scene.add("fig_worker", placement(x, y, site_level("trajan") + 0.2, rng.uniform(0, 6.28)),
-                  lambda: coarse(lambda: person(Look("ochre", hem=0.55, skin=2, hair=1, belt="brown", arms="shoulder",
-                                                     exomis=True, seed=601)), 0.5))
+    worker = lambda: coarse(lambda: person(Look("ochre", hem=0.55, skin=2, hair=1, belt="brown", arms="shoulder",
+                                                 exomis=True, seed=601)), 0.5)
+    for matrix, hx, hy, walls, busy in scene.worksites:
+        for k in range(22):
+            local = Vector((rng.uniform(-hx, hx), rng.uniform(-hy, hy)))
+            near_wall = False
+            for x0, y0, x1, y1 in walls:
+                a, b = Vector((x0, y0)), Vector((x1, y1))
+                t = max(0.0, min(1.0, (local - a).dot(b - a) / max((b - a).length_squared, 1e-9)))
+                near_wall = near_wall or (local - a.lerp(b, t)).length < 3.4
+            if near_wall or any((local - spot).length < 5.0 for spot in busy):
+                continue
+            world = matrix @ Vector((local.x, local.y, 0.0))
+            scene.add("fig_worker", placement(world.x, world.y, 0.0, rng.uniform(0, 6.28)), worker)
     return placed
 
 
@@ -1222,7 +1444,7 @@ def place_life(scene):
         group = "vie" if key.startswith(("fig_", "prop_")) else "chantier_vie"
         if key == "palace_column":
             group = "palatin"
-        scene.instances(group, key, build, matrices, cast_shadow=not key.endswith("_far"),
+        scene.instances(group, key, build, matrices, cast_shadow=not key.endswith("_far") and key != "palace_column",
                         occlusion=key in ("palace_column", "crane", "scaffold", "material_heap"))
         counts[key] = len(matrices)
     root = scene.root("life")
@@ -1295,15 +1517,16 @@ def render_previews(options, views):
     names = list(views) if wanted == "all" else wanted.split(",")
     stage = ensure_collection("Stage")
     preview_world(float(options.get("sky", 0.12)), float(options.get("saturation", 0.45)))
-    sun_lamp(stage, SUN_AZIMUTH, SUN_ELEVATION, float(options.get("sun", 6.5)), (1.0, 0.8, 0.6), 0.6)
-    haze_volume(stage, 9000.0, 500.0, float(options.get("haze", 0.00004)), (0.95, 0.85, 0.72), 0.3)
-    configure_render(1280, 720, options["samples"], exposure=float(options.get("exposure", 0.0)), volumetric_end=9000.0)
+    sun_lamp(stage, SUN_AZIMUTH, SUN_ELEVATION, float(options.get("sun", 6.5)), SUN_COLOUR, 0.6)
+    haze_volume(stage, 45000.0, 1400.0, float(options.get("haze", 0.00004)), (0.95, 0.85, 0.72), 0.3)
+    configure_render(1280, 720, options["samples"], exposure=float(options.get("exposure", 0.0)), volumetric_end=45000.0)
     lenses = {"aerial": 28.0, "arene": 24.0, "facade": 26.0, "forum": 28.0, "voie": 28.0}
     timings = {}
     for name in names:
         eye, target = views[name]
         rig = camera(stage, f"cam_{name}", eye, target, lens=lenses.get(name, 28.0))
         rig.data.clip_start = 0.2
+        rig.data.clip_end = 90000.0
         path = os.path.join(CACHE, "previews", f"{name}.png")
         timings[name] = round(render_still(rig, path), 1)
         print(f"PREVIEW {name} {timings[name]} s", flush=True)
@@ -1330,8 +1553,9 @@ def main():
     tiber(scene)
     angles, width, kappas, index, frames, spots = build_colosseum(scene, rng)
     arch_matrix, direction = build_monuments(scene, rng)
+    build_fora(scene)
     hills = build_hills(scene, rng)
-    points = viewpoints(scene, arch_matrix, direction)
+    points = viewpoints(scene, arch_matrix, direction, angles)
     place_markers(scene, points)
     eyes = [eye for key, (eye, _) in points.items() if key != "vue-d-ensemble"]
     near_eye = COL.inverted() @ points["l-arene"][0]
@@ -1341,7 +1565,7 @@ def main():
     city_spots, city_counts, far_count = build_city(scene, zones, rng)
     tree_counts = build_trees(scene, zones, rng, city_spots)
     scene.flush(shadowless=("sol", "arene", "foule_proche", "eau"))
-    walkable = [obj for name, obj in scene.statics.items() if name.startswith(("sol", "forum", "velia"))]
+    walkable = [obj for name, obj in scene.statics.items() if name.startswith(("sol", "forum"))]
     walkable.append(scene.terrain_object)
     scene.surface = Surface(walkable)
     standing = [obj for name, obj in scene.statics.items() if not name.startswith(("velarium", "foule", "eau"))]
@@ -1365,7 +1589,8 @@ def main():
               "trees": tree_counts, "routes": route_counts, "street_figures": street_count, "life": life_counts,
               "smoke": smoke_count, "flocks": flock_count, "statistics": statistics, "glb_bytes": os.path.getsize(glb),
               "export_seconds": round(export_seconds, 1), "elevation_source": dem_url,
-              "elevation_licence": ter.TINITALY_LICENCE, "texture_credits": credits,
+              "elevation_licence": ter.TINITALY_LICENCE, "outer_elevation_source": scene.outer_url,
+              "texture_credits": credits,
               "markers": {key: [[round(v, 2) for v in eye], [round(v, 2) for v in target]]
                           for key, (eye, target) in points.items()}}
     views = {"aerial": points["vue-d-ensemble"], "arene": points["l-arene"], "facade": points["la-facade"],

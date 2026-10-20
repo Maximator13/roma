@@ -28,6 +28,8 @@ MAST_TOP = 56.0
 RING_D = 7.0
 RING_Z = 38.0
 LEVELS = (0.0, 10.5, 22.3, 33.9)
+FLOOR = 0.12
+CROWD = (0.42, 0.36, 0.30)
 TOGA = (0.90, 0.88, 0.80)
 SKINS = [(0.80, 0.60, 0.47), (0.72, 0.52, 0.39), (0.62, 0.44, 0.32)]
 HAIRS = [(0.17, 0.12, 0.09), (0.30, 0.20, 0.12), (0.45, 0.42, 0.38)]
@@ -123,17 +125,17 @@ def storey(builder, w, z0, z1, impost, sill, order, diameter, column_top, depth=
 def interior(builder, w, rings):
     hw = w / 2
     builder.box((-hw, -14.6, -0.2), (hw, -2.6, 0.0), TRAV, bottom=False)
-    for level, (z0, z1) in enumerate(((0.0, 10.5), (10.5, 22.3))):
-        arched_wall(builder, -hw, hw, -9.3, -7.9, z0, z1 - 0.4, [(0.0, 1.9, z0 + 5.0)], BRICK, segments=6)
+    for level, (z0, z1, impost) in enumerate(((0.0, 10.5, 4.95), (10.5, 22.3, 16.45))):
+        arched_wall(builder, -hw, hw, -9.3, -7.9, z0, z1 - 0.4, [(0.0, OPENING, impost)], TRAV, segments=8)
         vault(builder, -hw, hw, -5.25, 2.65, z1 - 3.4, STUCCO)
         vault(builder, -hw, hw, -11.8, 2.5, z1 - 3.4, STUCCO)
-        builder.box((-hw, -14.6, z1 - 0.75), (hw, -2.6, z1), BRICK, bottom=False)
+        builder.box((-hw, -14.6, z1 - 0.75), (hw, -2.6, z1), STUCCO, bottom=False)
         arched_wall(builder, -hw, hw, -15.0, -14.3, z0, z1 - 0.4, [(0.0, 1.0, z0 + 3.4)], BRICK, segments=4)
         builder.box((-1.0, -15.4, z0), (1.0, -15.0, z0 + 4.4), VOID, bottom=False)
-    arched_wall(builder, -hw, hw, -9.3, -7.9, 22.3, 33.5, [(0.0, 1.0, 25.5)], BRICK, segments=4)
+    arched_wall(builder, -hw, hw, -9.3, -7.9, 22.3, 33.5, [(0.0, OPENING, 28.2)], TRAV, segments=8)
     builder.box((-1.0, -9.6, 22.3), (1.0, -9.3, 26.5), VOID, bottom=False)
     vault(builder, -hw, hw, -5.25, 2.65, 30.85, STUCCO)
-    builder.box((-hw, -9.3, 33.5), (hw, -1.4, 33.9), BRICK, top=False)
+    builder.box((-hw, -9.3, 33.5), (hw, -1.4, 33.9), TRAV, top=False)
 
 
 def attic(builder, w):
@@ -178,7 +180,7 @@ def bay(w, kappa, porch=False):
     interior(builder, w, 2)
     builder.paint(TRAV, (1.0, 0.97, 0.93))
     builder.paint(BRICK, (0.62, 0.56, 0.52))
-    builder.paint(STUCCO, (0.62, 0.58, 0.52))
+    builder.paint(STUCCO, (0.86, 0.82, 0.75))
     if porch:
         for x in (-2.3, 2.3):
             builder.merge(column("corinthian", 0.7, 6.6, detail="low", material=MARBLE), placement(x, 3.6, 0.12))
@@ -264,12 +266,16 @@ ZONE = {"podium_wall": (MARBLE, (0.93, 0.9, 0.86)), "parapet": (MARBLE, (0.97, 0
         "attic_inner": (TRAV, (0.86, 0.83, 0.78))}
 
 
-def cavea(bay_angles, samples=240):
+def cavea(bay_angles, samples=200):
     rows, _ = cavea_profile()
     angles, _ = even_angles(samples, 25.0)
     builder = MeshBuilder()
+    rng = random.Random(29)
     for name, d0, z0, d1, z1 in rows:
         material, colour = ZONE[name]
+        crowded = name in ("primum", "imum", "summum", "ligneis")
+        if crowded:
+            material = MATTE
         riser = abs(d1 - d0) < 1e-6
         outward = name in ("parapet_back",)
         for k in range(samples):
@@ -281,7 +287,7 @@ def cavea(bay_angles, samples=240):
                 facing = Vector((0.0, 0.0, 1.0))
             first = len(builder.polygons)
             builder.oriented(quad, facing, material)
-            builder.tint(first, colour)
+            builder.tint(first, tuple(c * rng.uniform(0.85, 1.15) for c in CROWD) if crowded else colour)
     for name, d0, z0, d1, z1 in rows:
         if name != "balteus" or z0 < 6.5:
             continue
@@ -315,17 +321,17 @@ def portico_roof(samples=160):
     return builder
 
 
-def arena_floor(rings=12, samples=120, seed=3):
+def arena_floor(rings=12, samples=120, seed=3, z=FLOOR):
     builder = MeshBuilder()
     rng = random.Random(seed)
     previous = None
     for ring in range(1, rings + 1):
         scale = ring / rings
         points = [Vector((A * scale * math.cos(2 * math.pi * k / samples), B * scale * math.sin(2 * math.pi * k / samples),
-                          0.02)) for k in range(samples)]
+                          z)) for k in range(samples)]
         indices = [builder.point(p) for p in points]
         if previous is None:
-            centre = builder.point((0.0, 0.0, 0.02))
+            centre = builder.point((0.0, 0.0, z))
             for k in range(samples):
                 builder.face([centre, indices[k], indices[(k + 1) % samples]], SAND)
                 builder.tint(len(builder.polygons) - 1, (0.97, 0.96, 0.94))
@@ -348,18 +354,20 @@ def trapdoors():
                 spots.append((float(x), row))
     for index, (x, y) in enumerate(spots):
         if index == 9:
-            builder.box((x - 0.7, y - 1.3, -0.02), (x + 0.7, y + 1.3, 0.03), VOID, bottom=False)
-            painted(builder, WOOD, lambda x=x, y=y: builder.box((x - 0.75, y + 1.3, 0.0), (x + 0.75, y + 1.42, 2.6),
+            builder.box((x - 0.7, y - 1.3, FLOOR - 0.02), (x + 0.7, y + 1.3, FLOOR + 0.01), VOID, bottom=False)
+            painted(builder, WOOD, lambda x=x, y=y: builder.box((x - 0.75, y + 1.3, FLOOR), (x + 0.75, y + 1.42, FLOOR + 2.6),
                                                                  MATTE))
-            painted(builder, WOOD, lambda x=x, y=y: builder.box((x - 0.8, y - 1.35, 0.0), (x + 0.8, y + 1.35, 0.06),
+            painted(builder, WOOD, lambda x=x, y=y: builder.box((x - 0.8, y - 1.35, FLOOR), (x + 0.8, y + 1.35, FLOOR + 0.06),
                                                                  MATTE, bottom=False, top=False))
             continue
-        painted(builder, (0.95, 0.92, 0.88), lambda x=x, y=y: builder.box((x - 0.75, y - 1.35, 0.02), (x + 0.75, y + 1.35,
-                                                                                                      0.045), SAND,
-                                                                          bottom=False))
+        z = FLOOR + 0.005
+        painted(builder, (0.95, 0.94, 0.91), lambda x=x, y=y, z=z: builder.oriented(
+            [(x - 0.75, y - 1.35, z), (x + 0.75, y - 1.35, z), (x + 0.75, y + 1.35, z), (x - 0.75, y + 1.35, z)],
+            (0, 0, 1), SAND))
         for edge in (-1.35, 1.35):
-            painted(builder, (0.62, 0.55, 0.46), lambda x=x, y=y, edge=edge: builder.box(
-                (x - 0.78, y + edge - 0.04, 0.02), (x + 0.78, y + edge + 0.04, 0.05), SAND, bottom=False))
+            painted(builder, (0.93, 0.91, 0.88), lambda x=x, y=y, edge=edge, z=z: builder.oriented(
+                [(x - 0.78, y + edge - 0.04, z + 0.001), (x + 0.78, y + edge - 0.04, z + 0.001),
+                 (x + 0.78, y + edge + 0.04, z + 0.001), (x - 0.78, y + edge + 0.04, z + 0.001)], (0, 0, 1), SAND))
     return builder, spots
 
 
@@ -447,8 +455,8 @@ def crowd_block(w, kappa, seed, near=None, near_radius=0.0, frame_matrix=None, p
     for name, d, z, rise, row in seat_rows():
         depth = d - OUTER
         width = w * local_ratio(depth + 0.3, kappa)
-        count = int(width / 0.52)
-        fill = {"primum": 0.88, "imum": 0.9, "summum": 0.86, "ligneis": 0.8}[name]
+        count = int(width / 0.42)
+        fill = {"primum": 0.96, "imum": 0.96, "summum": 0.96, "ligneis": 0.94}[name]
         for i in range(count):
             x = -width / 2 + width * (i + 0.5 + rng.uniform(-0.15, 0.15)) / count
             if abs(x) > width / 2 - 0.5 or rng.random() > fill:
@@ -470,7 +478,7 @@ def crowd_block(w, kappa, seed, near=None, near_radius=0.0, frame_matrix=None, p
 
 def spectator_card(builder, x, y, z, rise, zone, rng):
     if zone == "primum":
-        body = TOGA if rng.random() < 0.72 else COLOURS["plebs"][rng.randrange(8)]
+        body = TOGA if rng.random() < 0.55 else COLOURS["plebs"][rng.randrange(8)]
     elif zone == "imum":
         body = TOGA if rng.random() < 0.55 else COLOURS["plebs"][rng.randrange(8)]
     elif zone == "summum":
@@ -496,6 +504,8 @@ def spectator_card(builder, x, y, z, rise, zone, rng):
                       crown + head * 0.9, crown - head * 0.9], (0, -1, 0.3), MATTE)
     cover = HAIRS[rng.randrange(3)] if zone != "ligneis" or rng.random() < 0.5 else body
     builder.polygon_colors[first] = skin
+    if zone != "primum":
+        return
     top = len(builder.polygons)
     builder.oriented([crown - head * 0.9, crown + head * 0.9, crown + head * 0.7 + Vector((0, 0.1, 0.01)),
                       crown - head * 0.7 + Vector((0, 0.1, 0.01))], (0, 0, 1), MATTE)
@@ -511,10 +521,10 @@ def ground_ring(samples=200):
     angles, _ = even_angles(samples, 60.0)
     for k in range(samples):
         ta, tb = angles[k], angles[(k + 1) % samples]
-        quad = [oval(ta, OUTER + 1.5, 0.0), oval(tb, OUTER + 1.5, 0.0), oval(tb, OUTER + 17.5, 0.0),
-                oval(ta, OUTER + 17.5, 0.0)]
+        quad = [oval(ta, OUTER + 1.5, 0.08), oval(tb, OUTER + 1.5, 0.08), oval(tb, OUTER + 17.5, 0.08),
+                oval(ta, OUTER + 17.5, 0.08)]
         builder.oriented(quad, (0, 0, 1), TRAV)
-        edge = [oval(ta, OUTER + 17.5, 0.0), oval(tb, OUTER + 17.5, 0.0), oval(tb, OUTER + 17.5, -1.2),
+        edge = [oval(ta, OUTER + 17.5, 0.08), oval(tb, OUTER + 17.5, 0.08), oval(tb, OUTER + 17.5, -1.2),
                 oval(ta, OUTER + 17.5, -1.2)]
         builder.oriented(edge, normal((ta + tb) / 2), TRAV)
     return builder

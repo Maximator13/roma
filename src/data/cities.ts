@@ -100,7 +100,8 @@ export const cities: City[] = [
     "pleiadesId": 423025,
     "from": -752,
     "importance": 1,
-    "note": "Fondation légendaire le 21 avril 753 av. J.-C. selon la chronologie varronienne, cœur de la République puis de l'Empire."
+    "note": "Fondation légendaire le 21 avril 753 av. J.-C. selon la chronologie varronienne, cœur de la République puis de l'Empire.",
+    "scene": "colisee"
   },
   {
     "id": "veies",
@@ -370,6 +371,19 @@ export const cities: City[] = [
     "importance": 3,
     "note": "Pont de l'aqueduc de Nîmes sur le Gardon, achevé vers le milieu du Ier siècle apr. J.-C. ; trois étages d'arches, 48,77 m de hauteur.",
     "scene": "pont-du-gard"
+  },
+  {
+    "id": "pompei",
+    "name": "Pompéi",
+    "ancientName": "Pompeii",
+    "lat": 40.74941,
+    "lon": 14.485429,
+    "pleiadesId": 433032,
+    "from": -599,
+    "to": 79,
+    "importance": 3,
+    "note": "Agglomération osque fortifiée dès le VIe siècle av. J.-C., colonie romaine sous Sulla vers 80 av. J.-C., ensevelie par l'éruption du Vésuve en 79.",
+    "scene": "pompei"
   },
   {
     "id": "narbonne",

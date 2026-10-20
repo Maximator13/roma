@@ -1391,7 +1391,8 @@ export const events: HistoricalEvent[] = [
         "work": "« The 79 CE eruption of Vesuvius: A lesson from the past and the need of a multidisciplinary approach for developments in volcanology », Earth-Science Reviews, 231 (2022)",
         "url": "https://ingv.it/en/urp-press/Press-office/Press-releases/vesuvio-revealed-ancient-mysteries-of-the-eruption-of-79-dc"
       }
-    ]
+    ],
+    "scene": "pompei"
   },
   {
     "id": "inauguration-du-colisee",
@@ -1436,7 +1437,8 @@ export const events: HistoricalEvent[] = [
         "author": "Bowman, Garnsey et Rathbone (dir.)",
         "work": "The Cambridge Ancient History, vol. XI : The High Empire (2e éd., 2000)"
       }
-    ]
+    ],
+    "scene": "colisee"
   },
   {
     "id": "amphitheatre-de-nimes",

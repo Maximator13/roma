@@ -13,8 +13,8 @@ from .orders import column
 from .pompei_materials import remap
 from .pompei_town import STONE, TILES, VOID, compluviate_roof, gable_roof, quad, tinted
 
-STUCCO = (0.96, 0.94, 0.89)
-TUFF = (0.72, 0.66, 0.56)
+STUCCO = (0.84, 0.80, 0.72)
+TUFF = (0.66, 0.60, 0.50)
 TIMBER = (0.42, 0.31, 0.20)
 DARK_TIMBER = (0.30, 0.22, 0.15)
 BASALT = (0.30, 0.29, 0.28)
@@ -106,7 +106,7 @@ def portico_shell(length, depth, lower, upper, back=True, top=True):
     builder = MeshBuilder()
     hl = length / 2
     z1 = lower + 0.6
-    tinted(builder, (0.80, 0.78, 0.72), lambda: builder.box((-hl, 0.0, -1.0), (hl, depth, 0.35), "paving",
+    tinted(builder, (0.95, 0.93, 0.88), lambda: builder.box((-hl, 0.0, -1.0), (hl, depth, 0.35), "floor_sheltered",
                                                             bottom=False))
     tinted(builder, STUCCO, lambda: builder.box((-hl, -0.25, lower), (hl, 0.45, z1), "plaster", bottom=False))
     tinted(builder, DARK_TIMBER, lambda: builder.box((-hl, 0.45, lower + 0.3), (hl, depth, lower + 0.42), MATTE,
@@ -326,9 +326,20 @@ def basilica():
     return builder
 
 
+def equestrian_base(builder, length=3.0, width=1.4, height=2.2):
+    hx, hy = width / 2, length / 2
+    marble = (0.80, 0.78, 0.73)
+    tinted(builder, marble, lambda: builder.box((-hx - 0.12, -hy - 0.12, -0.3), (hx + 0.12, hy + 0.12, 0.3), "marble",
+                                                bottom=False))
+    tinted(builder, marble, lambda: builder.box((-hx, -hy, 0.3), (hx, hy, height - 0.3), "marble", bottom=False,
+                                                top=False))
+    tinted(builder, marble, lambda: builder.box((-hx - 0.1, -hy - 0.1, height - 0.3), (hx + 0.1, hy + 0.1, height),
+                                                "marble", bottom=False))
+
+
 def equestrian_statue(seed=0):
     builder = MeshBuilder()
-    nimes_figures.statue_base(builder, 2.2)
+    equestrian_base(builder)
     bronze = (1.0, 1.0, 1.0)
     horse = arles_details.horse(bronze, "stand", seed)
     horse.polygon_colors = [bronze for _ in horse.polygon_colors]
@@ -401,11 +412,33 @@ def venus_terrace(width=60.0, depth=56.0, drop=7.0):
     return builder
 
 
-def porta_marina():
+MARINA_PASSAGES = ((-3.9, 1.9, 4.0), (0.3, 4.2, 6.2))
+MARINA_DEPTH = 21.0
+MARINA_KERB = 0.38
+
+
+def ramp_warp(builder, rise, depth, top, flat=7.0):
+    warped = []
+    for x, y, z in builder.positions:
+        shift = rise * y / depth
+        if z > flat:
+            shift += (rise - shift) * min((z - flat) / (top - flat), 1.0)
+        warped.append((x, y, z + shift))
+    builder.positions = warped
+    return builder
+
+
+def porta_marina(rise=0.0):
     builder = MeshBuilder()
-    width, depth, height = 15.0, 21.0, 11.0
+    width, depth, height = 15.0, MARINA_DEPTH, 11.0
     hw = width / 2
-    passages = ((-3.6, 1.9, 4.0), (1.4, 4.2, 6.2))
+    passages = MARINA_PASSAGES
+    (px, pw, _), (vx, vw, _) = passages
+    tinted(builder, (0.86, 0.84, 0.80), lambda: builder.box((vx - vw / 2, -2.0, -0.8), (vx + vw / 2, depth + 0.6, 0.0),
+                                                            "basalt", bottom=False))
+    tinted(builder, (0.95, 0.93, 0.90), lambda: builder.box((px - pw / 2, -3.0, -0.8),
+                                                            (px + pw / 2, depth + 0.6, MARINA_KERB), "sidewalk",
+                                                            bottom=False))
     face = (0.64, 0.61, 0.55)
     xs = sorted([-hw, hw] + [x - w / 2 for x, w, _ in passages] + [x + w / 2 for x, w, _ in passages])
     for a, b in zip(xs[0::2], xs[1::2]):
@@ -441,7 +474,7 @@ def porta_marina():
     minerva = person(Look("white", hem=0.03, palla="white", female=True, sleeves="long", arms="gesture",
                           mono=(0.76, 0.48, 0.32), seed=77))
     builder.merge(minerva, Matrix.Translation((-0.5, depth - 0.15, 6.4)) @ Matrix.Scale(0.75, 4))
-    return builder
+    return ramp_warp(builder, rise, depth, height)
 
 
 def theatre(radius=31.0, rows=20):
@@ -535,19 +568,19 @@ def house_vettii():
                        (side * 1.3, -0.02, 3.9)], (0, -1, 0), MATTE, (0.36, 0.26, 0.17))
     tinted(builder, (0.62, 0.16, 0.11), lambda: builder.polygon([(x0, -0.02, 0.0), (x1, -0.02, 0.0),
                                                                  (x1, -0.02, 1.0), (x0, -0.02, 1.0)], "plaster"))
-    rooms = MeshBuilder()
-    tinted(rooms, (0.42, 0.40, 0.37), lambda: rooms.box((x0 + 0.3, y0 + 0.3, -0.5), (x1 - 0.3, y1 - 0.3, floor),
-                                                        "sidewalk", bottom=False))
-    builder.merge(rooms)
-    tinted(builder, COCCIO, lambda: builder.box((-6.0, 4.6, floor - 0.02), (6.0, 18.0, floor + 0.01), "sidewalk",
-                                                bottom=False))
+    impluvium_hole = (-2.3, 2.3, 9.1, 13.9)
+    garden_hole = (-10.9, 10.9, 21.1, 30.4)
+    tinted(builder, (0.42, 0.40, 0.37), lambda: builder.box((x0 + 0.3, y0 + 0.3, -0.5), (x1 - 0.3, y1 - 0.3, floor),
+                                                            "sidewalk", bottom=False, top=False))
+    floor_with_holes(builder, (x0 + 0.3, x1 - 0.3, y0 + 0.3, y1 - 0.3), [impluvium_hole, garden_hole], floor,
+                     "floor_sheltered", (0.66, 0.62, 0.56))
+    floor_with_holes(builder, (-6.0, 6.0, 4.6, 18.0), [impluvium_hole], floor + 0.01, "floor_sheltered",
+                     (1.0, 0.72, 0.62))
     fresco_room(builder, -6.0, 6.0, 4.6, 18.0, floor, 7.4, open_side="back", door_front=(-1.3, 1.3))
     tinted(builder, (0.30, 0.26, 0.22), lambda: builder.box((-1.3, 0.0, floor - 0.02), (1.3, 4.6, floor + 0.01),
                                                             "sidewalk", bottom=False))
     for side in (-1, 1):
-        quad(builder, [(side * 1.3, 0.0, floor), (side * 1.3, 4.6, floor), (side * 1.3, 4.6, floor + 4.6),
-                       (side * 1.3, 0.0, floor + 4.6)], (-side, 0, 0), "fresco", None)
-        builder.polygon_uvs[-1] = [(0.0, 0.0), (4.6, 0.0), (4.6, 4.0), (0.0, 4.0)]
+        fresco_face(builder, (side * 1.3, 0.0), (side * 1.3, 4.6), floor, floor + 4.6, 0.0, 4.0, (-side, 0))
     quad(builder, [(-1.3, 0.0, floor + 4.6), (1.3, 0.0, floor + 4.6), (1.3, 4.6, floor + 4.6), (-1.3, 4.6, floor + 4.6)],
          (0, 0, -1), MATTE, DARK_TIMBER)
     impluvium(builder, -2.0, 2.0, 9.4, 13.6, floor)
@@ -579,8 +612,33 @@ def house_vettii():
     return builder
 
 
+def floor_with_holes(builder, rect, holes, z, material, colour):
+    x0, x1, y0, y1 = rect
+    xs = sorted({x0, x1} | {value for hole in holes for value in hole[:2] if x0 < value < x1})
+    ys = sorted({y0, y1} | {value for hole in holes for value in hole[2:] if y0 < value < y1})
+    first = len(builder.polygons)
+    for xa, xb in zip(xs[:-1], xs[1:]):
+        for ya, yb in zip(ys[:-1], ys[1:]):
+            cx, cy = (xa + xb) / 2, (ya + yb) / 2
+            if any(h[0] < cx < h[1] and h[2] < cy < h[3] for h in holes):
+                continue
+            builder.polygon([(xa, ya, z), (xb, ya, z), (xb, yb, z), (xa, yb, z)], material)
+    builder.tint(first, colour)
+
+
+def basin_walls(builder, x0, x1, y0, y1, bottom, top, material, colour):
+    first = len(builder.polygons)
+    for (ax, ay), (bx, by), normal in (((x0, y0), (x1, y0), (0, 1, 0)), ((x1, y0), (x1, y1), (-1, 0, 0)),
+                                       ((x1, y1), (x0, y1), (0, -1, 0)), ((x0, y1), (x0, y0), (1, 0, 0))):
+        builder.oriented([(ax, ay, bottom), (bx, by, bottom), (bx, by, top), (ax, ay, top)], normal, material)
+    builder.tint(first, colour)
+
+
 def fresco_room(builder, x0, x1, y0, y1, floor, height, open_side=None, door_front=None):
     band = 4.0
+    upper = 5.2
+    cornice = 0.25
+    attic = (0.62, 0.40, 0.25)
     walls = [((x0, y0), (x1, y0), (0, 1)), ((x1, y0), (x1, y1), (-1, 0)), ((x1, y1), (x0, y1), (0, -1)),
              ((x0, y1), (x0, y0), (1, 0))]
     names = ["front", "right", "back", "left"]
@@ -589,9 +647,7 @@ def fresco_room(builder, x0, x1, y0, y1, floor, height, open_side=None, door_fro
         if name == open_side:
             opening = 4.0
             cut = [(0.0, (length - opening) / 2), ((length + opening) / 2, length)]
-            pa, pb = (ax, ay), (bx, by)
-            quad(builder, [(pa[0], pa[1], floor + band), (pb[0], pb[1], floor + band), (pb[0], pb[1], floor + height),
-                           (pa[0], pa[1], floor + height)], normal + (0,), "plaster", (0.95, 0.92, 0.84))
+            upper_wall(builder, (ax, ay), (bx, by), normal, floor, band, upper, cornice, height, attic)
         elif name == "front" and door_front is not None:
             centre = length / 2
             cut = [(0.0, centre - (door_front[1] - door_front[0]) / 2),
@@ -611,10 +667,8 @@ def fresco_room(builder, x0, x1, y0, y1, floor, height, open_side=None, door_fro
                 indices = list(reversed(indices))
                 uvs = list(reversed(uvs))
             builder.face(indices, "fresco", uvs=uvs)
-            if name != open_side:
-                quad(builder, [(pa[0], pa[1], floor + band), (pb[0], pb[1], floor + band),
-                               (pb[0], pb[1], floor + height), (pa[0], pa[1], floor + height)], normal + (0,),
-                     "plaster", (0.95, 0.92, 0.84))
+        if name != open_side:
+            upper_wall(builder, (ax, ay), (bx, by), normal, floor, band, upper, cornice, height, attic)
         if name in ("left", "right"):
             for door in (y0 + 2.6, y0 + 6.2):
                 along = abs(door - ay) if name == "left" else abs(door - ay)
@@ -626,6 +680,36 @@ def fresco_room(builder, x0, x1, y0, y1, floor, height, open_side=None, door_fro
                                (point[0] + n.x * 0.01, point[1] - 0.9, floor + 3.0)], normal + (0,), VOID)
 
 
+def fresco_face(builder, a, b, z0, z1, v0, v1, normal):
+    length = math.hypot(b[0] - a[0], b[1] - a[1])
+    corners = [(a[0], a[1], z0), (b[0], b[1], z0), (b[0], b[1], z1), (a[0], a[1], z1)]
+    uvs = [(0.0, v0), (length, v0), (length, v1), (0.0, v1)]
+    indices = builder.points(corners)
+    test = (Vector(corners[1]) - Vector(corners[0])).cross(Vector(corners[3]) - Vector(corners[0]))
+    if test.dot(Vector(tuple(normal) + (0,))) < 0:
+        indices = list(reversed(indices))
+        uvs = list(reversed(uvs))
+    builder.face(indices, "fresco", uvs=uvs)
+
+
+def upper_wall(builder, a, b, normal, floor, band, upper, cornice, height, attic):
+    fresco_face(builder, a, b, floor + band, floor + upper, 3.2, 4.0, normal)
+    quad(builder, [(a[0], a[1], floor + upper + cornice), (b[0], b[1], floor + upper + cornice),
+                   (b[0], b[1], floor + height), (a[0], a[1], floor + height)], normal + (0,), "plaster", attic)
+    out_a = Vector(a) + Vector(normal) * 0.14
+    out_b = Vector(b) + Vector(normal) * 0.14
+    stucco = (0.88, 0.85, 0.78)
+    quad(builder, [(out_a.x, out_a.y, floor + upper + 0.06), (out_b.x, out_b.y, floor + upper + 0.06),
+                   (out_b.x, out_b.y, floor + upper + cornice), (out_a.x, out_a.y, floor + upper + cornice)],
+         normal + (0,), "plaster", stucco)
+    quad(builder, [(a[0], a[1], floor + upper), (b[0], b[1], floor + upper), (out_b.x, out_b.y, floor + upper + 0.06),
+                   (out_a.x, out_a.y, floor + upper + 0.06)], (normal[0], normal[1], -1.0), "plaster",
+         tuple(c * 0.8 for c in stucco))
+    quad(builder, [(a[0], a[1], floor + upper + cornice), (b[0], b[1], floor + upper + cornice),
+                   (out_b.x, out_b.y, floor + upper + cornice), (out_a.x, out_a.y, floor + upper + cornice)],
+         (0, 0, 1), "plaster", stucco)
+
+
 def impluvium(builder, x0, x1, y0, y1, floor):
     tinted(builder, (0.93, 0.92, 0.88), lambda: builder.box((x0 - 0.3, y0 - 0.3, floor - 0.3), (x1 + 0.3, y1 + 0.3,
                                                                                                floor + 0.12),
@@ -635,13 +719,18 @@ def impluvium(builder, x0, x1, y0, y1, floor):
         tinted(builder, (0.93, 0.92, 0.88), lambda a=a, b=b: builder.polygon(
             [(a[0], a[1], floor + 0.12), (b[0], a[1], floor + 0.12), (b[0], b[1], floor + 0.12),
              (a[0], b[1], floor + 0.12)], "marble"))
-    tinted(builder, (0.12, 0.16, 0.16), lambda: builder.polygon([(x0, y0, floor - 0.12), (x1, y0, floor - 0.12),
-                                                                 (x1, y1, floor - 0.12), (x0, y1, floor - 0.12)],
+    basin_walls(builder, x0, x1, y0, y1, floor - 0.3, floor + 0.12, "marble", (0.80, 0.78, 0.74))
+    tinted(builder, (0.12, 0.16, 0.16), lambda: builder.polygon([(x0, y0, floor - 0.06), (x1, y0, floor - 0.06),
+                                                                 (x1, y1, floor - 0.06), (x0, y1, floor - 0.06)],
                                                                 "water"))
-    drape(builder, (0.70, 0.68, 0.62), [(0.62, floor - 0.13), (0.45, floor - 0.04), (0.2, floor + 0.04),
-                                        (0.0, floor + 0.06)], 9, folds=(5, 0.12, 0.3), squash=1.2,
-          center=((x0 + x1) / 2 + 0.3, (y0 + y1) / 2 - 0.2), material=MATTE)
+    drape(builder, (0.72, 0.70, 0.64), [(1.25, floor - 0.08), (0.95, floor - 0.01), (0.5, floor + 0.07),
+                                        (0.0, floor + 0.11)], 12, folds=(6, 0.16, 0.3), squash=1.15,
+          center=((x0 + x1) / 2 + 0.2, (y0 + y1) / 2 - 0.3), material=MATTE)
     rng = random.Random(4)
+    for _ in range(36):
+        x = rng.uniform(x0 + 0.1, x1 - 0.1)
+        y = rng.uniform(y0 + 0.1, y1 - 0.1)
+        ellipsoid(builder, (x, y, floor - 0.055), (0.04, 0.035, 0.02), (0.80, 0.78, 0.72), 4, 2, MATTE)
     for _ in range(40):
         x = rng.uniform(x0 - 1.8, x1 + 1.8)
         y = rng.uniform(y0 - 1.8, y1 + 1.8)
@@ -675,13 +764,16 @@ def compluviate_atrium():
 def peristyle(builder, floor):
     gx0, gx1, gy0, gy1 = -10.5, 10.5, 21.5, 30.0
     px0, px1, py0, py1 = -14.0, 14.0, 18.0, 33.5
-    tinted(builder, (0.46, 0.40, 0.30), lambda: builder.box((gx0, gy0, floor - 0.6), (gx1, gy1, floor - 0.25),
-                                                            "sidewalk", bottom=False))
-    tinted(builder, (0.88, 0.86, 0.82), lambda: builder.box((gx0 - 0.4, gy0 - 0.4, floor - 0.6), (gx1 + 0.4, gy1 + 0.4,
+    tinted(builder, (0.34, 0.31, 0.20), lambda: builder.box((gx0, gy0, floor - 0.6), (gx1, gy1, floor - 0.25),
+                                                            MATTE, bottom=False))
+    tinted(builder, (0.82, 0.80, 0.76), lambda: builder.box((gx0 - 0.4, gy0 - 0.4, floor - 0.6), (gx1 + 0.4, gy1 + 0.4,
                                                                                                  floor + 0.1),
                                                             "marble", bottom=False, top=False))
-    tinted(builder, COCCIO, lambda: builder.box((px0, py0, floor - 0.02), (px1, py1, floor + 0.01), "sidewalk",
-                                                bottom=False))
+    floor_with_holes(builder, (gx0 - 0.4, gx1 + 0.4, gy0 - 0.4, gy1 + 0.4), [(gx0, gx1, gy0, gy1)], floor + 0.1,
+                     "marble", (0.82, 0.80, 0.76))
+    basin_walls(builder, gx0, gx1, gy0, gy1, floor - 0.25, floor + 0.1, "marble", (0.70, 0.68, 0.64))
+    floor_with_holes(builder, (px0, px1, py0, py1), [(gx0 - 0.4, gx1 + 0.4, gy0 - 0.4, gy1 + 0.4)], floor + 0.01,
+                     "floor_sheltered", (1.0, 0.72, 0.62))
     for (ax, ay), (bx, by), normal in (((px0, py0), (px1, py0), (0, 1)), ((px1, py0), (px1, py1), (-1, 0)),
                                        ((px1, py1), (px0, py1), (0, -1)), ((px0, py1), (px0, py0), (1, 0))):
         if normal == (0, 1):
@@ -803,21 +895,19 @@ def thermopolium(seed=8):
          MATTE, DARK_TIMBER)
     tinted(builder, (0.45, 0.32, 0.22), lambda: builder.box((open_a - 0.1, -0.12, 2.9), (open_b + 0.1, 0.05, 3.4),
                                                             MATTE))
-    counter_front = 0.9
-    tinted(builder, (0.85, 0.82, 0.76), lambda: builder.box((open_a + 0.1, counter_front, 0.0),
+    counter_front = 0.1
+    tinted(builder, (0.78, 0.76, 0.71), lambda: builder.box((open_a + 0.1, counter_front, 0.0),
                                                             (open_b - 1.0, counter_front + 0.75, 1.0), "marble"))
-    tinted(builder, (0.85, 0.82, 0.76), lambda: builder.box((open_b - 1.75, counter_front, 0.0),
+    tinted(builder, (0.78, 0.76, 0.71), lambda: builder.box((open_b - 1.75, counter_front, 0.0),
                                                             (open_b - 1.0, 5.2, 1.0), "marble"))
-    marbles = [(0.88, 0.86, 0.80), (0.62, 0.20, 0.14), (0.42, 0.52, 0.40), (0.86, 0.72, 0.42), (0.28, 0.26, 0.26),
-               (0.92, 0.84, 0.82)]
-    x = open_a + 0.1
-    while x < open_b - 1.05:
-        w = rng.uniform(0.25, 0.6)
-        for z0, z1 in ((0.05, 0.45), (0.5, 0.95)):
-            quad(builder, [(x, counter_front - 0.01, z0), (min(x + w, open_b - 1.0), counter_front - 0.01, z0),
-                           (min(x + w, open_b - 1.0), counter_front - 0.01, z1), (x, counter_front - 0.01, z1)],
-                 (0, -1, 0), MATTE, rng.choice(marbles))
-        x += w + 0.02
+    xa, xb = open_a + 0.1, open_b - 1.0
+    builder.face(builder.points([(xa, counter_front - 0.01, 0.05), (xb, counter_front - 0.01, 0.05),
+                                 (xb, counter_front - 0.01, 0.95), (xa, counter_front - 0.01, 0.95)]), "crustae",
+                 uvs=[(xa, 0.05), (xb, 0.05), (xb, 0.95), (xa, 0.95)])
+    side = open_b - 1.76
+    builder.face(builder.points([(side, 5.15, 0.05), (side, counter_front + 0.76, 0.05),
+                                 (side, counter_front + 0.76, 0.95), (side, 5.15, 0.95)]), "crustae",
+                 uvs=[(5.15, 0.05), (counter_front + 0.76, 0.05), (counter_front + 0.76, 0.95), (5.15, 0.95)])
     for k in range(3):
         cx = open_a + 0.8 + k * 1.05
         dolium_mouth(builder, cx, counter_front + 0.375, 1.0)

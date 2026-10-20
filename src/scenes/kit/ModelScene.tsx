@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Vector3, type Object3D } from 'three'
 import { QUALITY } from '../../stage/quality.ts'
 import type { SceneProps } from '../registry.ts'
-import { Atmosphere, type HazeSettings, type InteriorSettings, type SunSettings } from './Atmosphere.tsx'
+import { Atmosphere, type HazeSettings, type InteriorSettings, type SkySettings, type SunSettings } from './Atmosphere.tsx'
 import { GuidedRail } from './GuidedRail.tsx'
 import { Life } from './Life.tsx'
 import { LightShaft } from './LightShaft.tsx'
@@ -17,6 +17,7 @@ export interface ModelSceneConfig {
   forceShadows?: boolean
   interior?: InteriorSettings
   lightShaftRadius?: number
+  sky?: SkySettings
   views?: Record<string, { position: [number, number, number]; target: [number, number, number] }>
 }
 
@@ -38,18 +39,20 @@ export function ModelScene({ config, scene, point, insets, quality }: SceneProps
   const shadows = QUALITY[quality].shadows || config.forceShadows === true
   const model = useSceneModel(config.model, shadows)
   const stops = useMemo<CameraStop[]>(() => {
-    const overview =
-      markerStop(model.markers, OVERVIEW_MARKER) ?? overviewStop(model.bounds, config.overview.azimuth, config.overview.elevation)
     const viewStop = (id: string): CameraStop | null => {
       const view = config.views?.[id]
       return view ? { position: new Vector3(...view.position), target: new Vector3(...view.target) } : null
     }
+    const overview =
+      viewStop(OVERVIEW_MARKER) ??
+      markerStop(model.markers, OVERVIEW_MARKER) ??
+      overviewStop(model.bounds, config.overview.azimuth, config.overview.elevation)
     const points = (scene.points ?? []).map((item) => viewStop(item.id) ?? markerStop(model.markers, item.id) ?? overview)
     return [overview, ...points]
   }, [model, scene, config])
   return (
     <>
-      <Atmosphere sun={config.sun} haze={config.haze} shadows={shadows} interior={config.interior} />
+      <Atmosphere sun={config.sun} haze={config.haze} shadows={shadows} interior={config.interior} sky={config.sky} />
       <primitive object={model.root} />
       <Life model={model} quality={quality} shadows={shadows} />
       {model.anchors.has('oculus') && model.anchors.has('sunbeam_target') && (

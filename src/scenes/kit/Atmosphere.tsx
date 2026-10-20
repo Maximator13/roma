@@ -36,6 +36,13 @@ export interface InteriorSettings {
 }
 
 const AMBIENT = 0.3
+
+export interface SkySettings {
+  turbidity: number
+  rayleigh: number
+}
+
+const CLEAR_SKY: SkySettings = { turbidity: 7, rayleigh: 1.6 }
 const ENVIRONMENT = 0.45
 
 export function interiorFactor(position: Vector3, interior: InteriorSettings | undefined): number {
@@ -50,11 +57,13 @@ export function Atmosphere({
   haze,
   shadows,
   interior,
+  sky = CLEAR_SKY,
 }: {
   sun: SunSettings
   haze: HazeSettings
   shadows: boolean
   interior?: InteriorSettings
+  sky?: SkySettings
 }) {
   const ambient = useRef<HemisphereLight>(null)
   const inside = useRef(0)
@@ -93,9 +102,9 @@ export function Atmosphere({
 
   return (
     <>
-      <Sky distance={SKY_DISTANCE} sunPosition={skyPosition} turbidity={7} rayleigh={1.6} mieCoefficient={0.006} mieDirectionalG={0.86} />
+      <Sky distance={SKY_DISTANCE} sunPosition={skyPosition} turbidity={sky.turbidity} rayleigh={sky.rayleigh} mieCoefficient={0.006} mieDirectionalG={0.86} />
       <Environment frames={1} resolution={128} environmentIntensity={ENVIRONMENT}>
-        <Sky sunPosition={skyPosition} turbidity={7} rayleigh={1.6} mieCoefficient={0.006} mieDirectionalG={0.86} />
+        <Sky sunPosition={skyPosition} turbidity={sky.turbidity} rayleigh={sky.rayleigh} mieCoefficient={0.006} mieDirectionalG={0.86} />
       </Environment>
       <fogExp2 attach="fog" args={[hazeColor, haze.density]} />
       <hemisphereLight ref={ambient} args={['#c9d6e8', '#6b5440', AMBIENT]} />

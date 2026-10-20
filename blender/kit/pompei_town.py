@@ -220,11 +220,13 @@ def balcony(builder, x0, x1, z, wood):
          MATTE, tuple(c * 0.7 for c in wood))
     quad(builder, [(x0 - 0.2, -1.3, z + 2.2), (x1 + 0.2, -1.3, z + 2.2), (x1 + 0.2, 0.0, z + 2.6),
                    (x0 - 0.2, 0.0, z + 2.6)], (0, -1, 1), TILES)
-    for x in (x0 + 0.1, x1 - 0.1):
-        tube(builder, [(x, -0.95, z - 2.4), (x, -0.95, z)], [0.07, 0.07], tuple(c * 0.8 for c in wood), 5)
+    for x in (x0 + 0.3, (x0 + x1) / 2, x1 - 0.3):
+        first = len(builder.polygons)
+        builder.box((x - 0.07, -1.0, z - 0.16), (x + 0.07, 0.0, z), MATTE)
+        builder.tint(first, tuple(c * 0.75 for c in wood))
 
 
-def flat_text(text, letter_height):
+def flat_text(text, letter_height, color=RED_PAINT):
     curve = bpy.data.curves.new("programme_text", type="FONT")
     curve.font = roman_font()
     curve.body = text
@@ -241,7 +243,7 @@ def flat_text(text, letter_height):
     for vertex in mesh.vertices:
         builder.point((vertex.co.x, 0.0, vertex.co.y))
     for polygon in mesh.polygons:
-        builder.face(list(polygon.vertices), MATTE, color=RED_PAINT)
+        builder.face(list(polygon.vertices), MATTE, color=color)
     width = max((v.co.x for v in mesh.vertices), default=0.0) - min((v.co.x for v in mesh.vertices), default=0.0)
     bpy.data.objects.remove(holder)
     bpy.data.curves.remove(curve)
@@ -260,13 +262,28 @@ def programme(text, width_limit, seed):
     split = max(1, len(words) - 1 if len(words) > 3 else len(words))
     lines = [" ".join(words[:split]), " ".join(words[split:])] if split < len(words) else [text]
     builder = MeshBuilder()
+    slant = Matrix.Identity(4)
+    slant[0][2] = math.tan(math.radians(rng.uniform(2.0, 4.0)))
+    condense = Matrix.Diagonal((0.7, 1.0, 1.0, 1.0))
     z = 0.0
+    widest = 0.0
     for index, line in enumerate(lines):
         size = 0.32 if index == 0 else 0.22
         text_builder, width = flat_text(line, size)
-        scale = min(1.0, width_limit / max(width, 1e-3))
-        builder.merge(text_builder, Matrix.Translation((rng.uniform(-0.1, 0.1), 0.0, z)) @ Matrix.Scale(scale, 4))
+        scale = min(1.0, width_limit / max(width * 0.7, 1e-3))
+        builder.merge(text_builder, Matrix.Translation((rng.uniform(-0.1, 0.1), 0.0, z)) @ slant
+                      @ Matrix.Scale(scale * rng.uniform(0.92, 1.08), 4) @ condense)
+        widest = max(widest, width * 0.7 * scale)
         z -= size * 1.4 * scale
+    old = PROGRAMMES[rng.randrange(len(PROGRAMMES))].split()
+    faded = tuple(0.93 * 0.7 + c * 0.3 for c in RED_PAINT)
+    ghost, ghost_width = flat_text(" ".join(old[:3]), 0.2, faded)
+    ghost_scale = min(1.0, widest / max(ghost_width * 0.7, 1e-3))
+    builder.merge(ghost, Matrix.Translation((rng.uniform(-0.3, 0.3), 0.004, z + 0.02)) @ Matrix.Scale(ghost_scale, 4)
+                  @ condense)
+    half = widest / 2 + 0.25
+    quad(builder, [(-half, 0.012, z - 0.2), (half, 0.012, z - 0.2), (half, 0.012, 0.32),
+                   (-half, 0.012, 0.32)], (0, -1, 0), "plaster", (0.93, 0.91, 0.86))
     return builder
 
 
@@ -352,6 +369,100 @@ def street_mesh(street, others, ground, step=2.0):
                                  (-facing.x, -facing.y, 0.0), STONE)
                 builder.tint(first, (0.55, 0.53, 0.50))
     return builder, rows
+
+
+def project(points, p):
+    best = None
+    for a, b in zip(points[:-1], points[1:]):
+        ab = b - a
+        t = max(0.0, min(1.0, (p - a).dot(ab) / max(ab.length_squared, 1e-9)))
+        q = a + ab * t
+        d = (p - q).length
+        if best is None or d < best[0]:
+            best = (d, q, ab.normalized())
+    return best
+
+
+def crossings(specs):
+    from mathutils.geometry import intersect_line_line_2d
+    streets = [spec for spec in specs if spec["kind"] != "road"]
+    found = []
+    for index, a in enumerate(streets):
+        for b in streets[index + 1:]:
+            if (b["box"][2] < a["box"][0] or b["box"][0] > a["box"][2] or b["box"][3] < a["box"][1]
+                    or b["box"][1] > a["box"][3]):
+                continue
+            for a0, a1 in zip(a["points"][:-1], a["points"][1:]):
+                ta = (a1 - a0).normalized()
+                for b0, b1 in zip(b["points"][:-1], b["points"][1:]):
+                    tb = (b1 - b0).normalized()
+                    sine = abs(ta.x * tb.y - ta.y * tb.x)
+                    if sine < 0.3:
+                        continue
+                    hit = intersect_line_line_2d(a0 - ta * 2.0, a1 + ta * 2.0, b0 - tb * 2.0, b1 + tb * 2.0)
+                    if hit is None:
+                        continue
+                    hit = Vector(hit)
+                    if not (a["inside"](hit) and b["inside"](hit)):
+                        continue
+                    if any((hit - other[0]).length < 3.0 for other in found):
+                        continue
+                    found.append((hit, a, b, ta, tb, sine))
+    return found
+
+
+def crossing_patch(builder, crossing, ground, cell=2.5):
+    centre, a, b, ta, tb, sine = crossing
+    reach_s = (b["half"] + 2.3) / sine
+    reach_t = (a["half"] + 2.3) / sine
+    count_s = max(2, int(math.ceil(2 * reach_s / cell)))
+    count_t = max(2, int(math.ceil(2 * reach_t / cell)))
+    orientation = 1 if ta.x * tb.y - ta.y * tb.x > 0 else -1
+    grid = []
+    uvs = []
+    for i in range(count_s + 1):
+        s = -reach_s + 2 * reach_s * i / count_s
+        row = []
+        row_uv = []
+        for j in range(count_t + 1):
+            t = -reach_t + 2 * reach_t * j / count_t
+            p = centre + ta * s + tb * t
+            da, qa, _ = project(a["points"], p)
+            db, qb, _ = project(b["points"], p)
+            za, zb = ground(*qa), ground(*qb)
+            first, second = ((da, a, za), (db, b, zb)) if a["rank"] >= b["rank"] else ((db, b, zb), (da, a, za))
+            if first[0] <= first[1]["half"] + 0.2:
+                z = first[2]
+            elif second[0] <= second[1]["half"] + 0.2:
+                z = second[2]
+            else:
+                z = min(za, zb)
+            row.append(builder.point((p.x, p.y, z - 0.03)))
+            across = t * sine * orientation
+            row_uv.append((s, (across + a["road"] / 2) / a["road"] * 4.0))
+        grid.append(row)
+        uvs.append(row_uv)
+    for i in range(count_s):
+        for j in range(count_t):
+            cells = [(i, j), (i + 1, j), (i + 1, j + 1), (i, j + 1)]
+            if orientation < 0:
+                cells = list(reversed(cells))
+            builder.face([grid[r][c] for r, c in cells], "basalt", uvs=[uvs[r][c] for r, c in cells])
+
+
+def crossing_stones(crossing, ground):
+    centre, a, b, ta, tb, sine = crossing
+    stones = []
+    for street, other, tangent in ((a, b, ta), (b, a, tb)):
+        offset = (other["road"] / 2 + other["walk"] / 2) / sine
+        normal = Vector((-tangent.y, tangent.x))
+        for side in (-1, 1):
+            position = centre + tangent * side * offset
+            if not street["inside"](position) or not other["inside"](position):
+                continue
+            z = ground(*project(street["points"], position)[1])
+            stones.append((position, math.atan2(normal.y, normal.x), z, 3 if street["kind"] == "main" else 2))
+    return stones
 
 
 def stepping_stones(count, spacing, height):

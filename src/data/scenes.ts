@@ -528,4 +528,164 @@ export const scenes: Scene[] = [
       }
     ]
   },
+  {
+    "id": "pompei",
+    "title": "Pompéi et l'éruption du Vésuve",
+    "status": "ready",
+    "year": 79,
+    "lat": 40.74941,
+    "lon": 14.485429,
+    "summary": "Le 24 août 79 (ou fin octobre, la date reste débattue), vers 14 heures. Au nord, le Vésuve projette une colonne de ponces et de cendres haute de plus de 30 km, que le vent pousse vers Pompéi. Les ponces commencent à tomber sur la ville, encore en chantier depuis le séisme de 62 ou 63 ; les habitants ferment les boutiques et partent avec ce qu'ils peuvent porter. La déferlante qui tuera ceux qui sont restés n'arrivera que le lendemain matin.",
+    "ambience": [
+      {
+        "layer": "wind",
+        "volume": 0.5
+      },
+      {
+        "layer": "evening-city",
+        "volume": 0.3
+      },
+      {
+        "layer": "animals",
+        "volume": 0.3
+      },
+      {
+        "layer": "cart",
+        "volume": 0.45,
+        "points": [
+          "la-rue",
+          "la-porte-marine"
+        ]
+      },
+      {
+        "layer": "harbour",
+        "volume": 0.5,
+        "points": [
+          "la-porte-marine"
+        ]
+      }
+    ],
+    "points": [
+      {
+        "id": "le-forum",
+        "title": "Le forum et le Capitole",
+        "text": "Le forum est le cœur civique de Pompéi : une place dallée d'environ 142 mètres sur 38, fermée aux chars et bordée de portiques à deux étages, doriques en bas et ioniques en haut. Au nord se dresse le temple de Jupiter, devenu Capitole, sur un haut podium ; le Vésuve se découpe derrière lui, un peu sur la gauche. Le séisme de 62 ou 63 a gravement endommagé le temple. En 79, où en est la reconstruction ? Les archéologues en débattent : pour les uns, le chantier n'avait pas commencé ; pour d'autres, le forum était déjà largement remis en état.",
+        "sources": [
+          "Mau 1899, chapitres sur le forum et le temple de Jupiter",
+          "Dobbins 1994, AJA 98, p. 629 à 694",
+          "Maiuri, L'ultima fase edilizia di Pompei, 1942",
+          "Sénèque, Questions naturelles, VI, 1, 1 et 2 ; Tacite, Annales, XV, 22"
+        ]
+      },
+      {
+        "id": "la-rue",
+        "title": "La rue de l'Abondance",
+        "text": "La rue de l'Abondance, nom moderne, traverse la ville d'ouest en est. Sa chaussée de gros blocs de pierre volcanique est creusée d'ornières par les roues des chars ; de hauts trottoirs la bordent, et des pierres de passage permettent de traverser à pied sec. Sur les façades blanchies, des inscriptions peintes en rouge recommandent des candidats aux élections municipales. Au rez-de-chaussée s'ouvrent boutiques et thermopolia, comptoirs maçonnés où des jarres encastrées gardent nourriture et boissons. Ce jour-là, les passants ferment les volets et lèvent les yeux vers le ciel qui noircit.",
+        "sources": [
+          "E. Poehler, The Traffic Systems of Pompeii, OUP, 2017",
+          "CIL IV (programmes électoraux de Pompéi)",
+          "Parc archéologique de Pompéi, notices des thermopolia (pompeiisites.org/en/?p=3266 et ?p=26830)"
+        ]
+      },
+      {
+        "id": "la-maison",
+        "title": "La maison des Vettii",
+        "text": "Cette demeure appartient en 79 à deux affranchis, Aulus Vettius Restitutus et Aulus Vettius Conviva ; une inscription peinte fait de ce dernier un membre du collège des Augustales. On entre par un atrium ouvert sur le ciel au-dessus d'un bassin, sans tablinum, puis on gagne un vaste péristyle : un jardin entouré de colonnes, avec fontaines et statuettes. Les murs, repeints après le séisme de 62 ou 63, illustrent le quatrième style pompéien : faux marbres en bas, architectures fantastiques, tableaux mythologiques au centre des parois. Sous la pluie de ponces, les pierres tombent dans l'atrium et pèsent sur les toits.",
+        "sources": [
+          "Pleiades 531536068",
+          "Mau 1899, chap. XLI",
+          "Luongo et al., JVGR 126 (2003), p. 169 à 200 (effondrement des toits sous les ponces)"
+        ]
+      },
+      {
+        "id": "la-porte-marine",
+        "title": "La porte Marine et le rivage",
+        "text": "La porte Marine ouvre la ville vers l'ouest et la mer. Deux passages voûtés de largeur inégale y montent en forte pente : le plus étroit pour les piétons, l'autre pour les bêtes et les véhicules. En 79, le rivage est plus proche qu'aujourd'hui, probablement à environ un kilomètre en retrait de la côte actuelle. Tout près, le sanctuaire de Vénus, protectrice de la colonie, domine la baie ; son temple, abattu par le séisme, est encore en reconstruction. Fuir par mer est difficile : à Stabies, de l'autre côté du golfe, le vent contraire empêche les fugitifs de prendre le large.",
+        "sources": [
+          "Mau 1899, description de la porte Marine et chap. XVIII",
+          "Pescatore et al., Quaternary Research 55.1 (2001), p. 77 à 85, DOI 10.1006/qres.2000.2186",
+          "Parc archéologique de Pompéi, notice du sanctuaire de Vénus ; Pleiades 663121962",
+          "Pline le Jeune, Lettres, VI, 16, 12 et 17"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "colisee",
+    "title": "Le Colisée et le Forum romain",
+    "status": "ready",
+    "year": 107,
+    "lat": 41.890169,
+    "lon": 12.492269,
+    "summary": "Été 107, sous Trajan. Pour célébrer la conquête de la Dacie, l'empereur offre des jeux d'une ampleur inédite. L'amphithéâtre flavien, inauguré par Titus en 80, est plein ; les marins de la flotte de Misène manœuvrent le velum au-dessus des gradins. En contrebas, la Voie sacrée passe sous l'arc de Titus et mène au Forum romain, entre basiliques, temples et rostres, au pied du Palatin.",
+    "ambience": [
+      {
+        "layer": "arena-crowd",
+        "volume": 0.6,
+        "points": [
+          "vue-d-ensemble",
+          "l-arene",
+          "la-facade"
+        ]
+      },
+      {
+        "layer": "market",
+        "volume": 0.45,
+        "points": [
+          "le-forum",
+          "la-voie-sacree"
+        ]
+      },
+      {
+        "layer": "evening-city",
+        "volume": 0.4
+      },
+      {
+        "layer": "birds-day",
+        "volume": 0.3
+      }
+    ],
+    "points": [
+      {
+        "id": "l-arene",
+        "title": "L'arène et ses coulisses",
+        "text": "Sous le sable de l'arène, longue d'environ 86 m, s'étend un sous-sol de couloirs, de cages et de treuils, attribué à Domitien. L'archéologue Heinz-Jürgen Beste y a reconnu les traces de 24 à 28 monte-charges, capables de faire surgir bêtes et décors par des trappes. Pour fêter sa victoire sur les Daces, Trajan offre selon Cassius Dion 123 jours de spectacles, où périssent quelque 11 000 animaux et combattent 10 000 gladiateurs. Ces chiffres, transmis par un abrégé byzantin, sont peut-être arrondis.",
+        "sources": [
+          "Cassius Dion, LXVIII, 15, 1 (abrégé de Xiphilin)",
+          "Platner et Ashby 1929, s.v. Amphitheatrum Flavium",
+          "Smithsonian Magazine, juin 2015 (travaux de H.-J. Beste)"
+        ]
+      },
+      {
+        "id": "la-facade",
+        "title": "Une façade de travertin",
+        "text": "La façade s'élève à près de 48,5 m sur quatre niveaux. Trois étages de 80 arcades superposent les ordres dorique, ionique et corinthien ; l'attique, rythmé de pilastres et de petites fenêtres, porte les consoles où s'emboîtaient les mâts du velarium, immense toile tendue au-dessus des gradins. Les arcades du rez-de-chaussée sont numérotées : chacun gagne sa place selon son rang, les sénateurs au bord de l'arène, les chevaliers derrière eux, les femmes tout en haut. Le public est estimé à environ 50 000 personnes.",
+        "sources": [
+          "Platner et Ashby 1929, s.v. Amphitheatrum Flavium",
+          "CIL VI, 1796 = 32263 et CIL VI, 2059 = 32363",
+          "Suétone, Auguste, 44 ; Domitien, 8, 3"
+        ]
+      },
+      {
+        "id": "le-forum",
+        "title": "Le Forum romain",
+        "text": "Au creux de la vallée, le Forum reste le coeur civique de l'Empire. Sur ses longs côtés s'alignent la basilique Julia, longue d'environ 101 m, où siègent les tribunaux, et la basilique Paulli aux colonnes de marbre africain. Au nord-est, la Curie restaurée par Domitien accueille le Sénat ; devant le Capitole, les Rostres d'Auguste, ornés d'éperons de navires, servent de tribune. Les temples de Saturne, de Castor et du Divin Jules encadrent la place. L'arc de Septime Sévère et la basilique de Maxence n'existent pas encore.",
+        "sources": [
+          "Platner et Ashby 1929, s.v. Basilica Iulia, Basilica Aemilia, Curia Iulia, Rostra Augusti",
+          "Res Gestae, 19 et 20",
+          "Jérôme, Chronique (Curie restaurée par Domitien)"
+        ]
+      },
+      {
+        "id": "la-voie-sacree",
+        "title": "La Voie sacrée et l'arc de Titus",
+        "text": "La Voie sacrée relie le Forum au sommet de la Velia. Selon la tradition, c'est le chemin des triomphes vers le Capitole : Vespasien et Titus l'ont emprunté en 71 après la prise de Jérusalem, et le cortège de Trajan y passe sans doute en 107. Au point haut se dresse l'arc de Titus, dédié par le Sénat après la mort de l'empereur, haut de 15,40 m ; ses reliefs montrent le chandelier à sept branches du Temple porté en triomphe. Plus bas, près de l'amphithéâtre, ruisselle la Meta Sudans, fontaine conique d'époque flavienne.",
+        "sources": [
+          "CIL VI, 945",
+          "Flavius Josèphe, Guerre des Juifs, VII, 5, 3 à 7",
+          "Platner et Ashby 1929, s.v. Arcus Titi et Meta Sudans"
+        ]
+      }
+    ]
+  },
 ]

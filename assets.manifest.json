@@ -16,6 +16,13 @@
       "file": "ba96f0151ee3-cannes.glb"
     },
     {
+      "path": "scenes/colisee/colisee.glb",
+      "bytes": 8106468,
+      "sha256": "1373f24addbbfd5d4bd3c33b3d178d39723a656bc9bf0c201d891b8076f1fb5c",
+      "release": "assets-v12",
+      "file": "1373f24addbb-colisee.glb"
+    },
+    {
       "path": "scenes/nimes/nimes.glb",
       "bytes": 8397984,
       "sha256": "e8b6723f9150ef167866020e3d6c7968508feda6859efbd92be01c27326e2c01",
@@ -28,6 +35,13 @@
       "sha256": "356690e404ac6928959b50c10ba0b8d998e1740cffc5d56bd1e10a0a89c73e12",
       "release": "assets-v10",
       "file": "356690e404ac-pantheon.glb"
+    },
+    {
+      "path": "scenes/pompei/pompei.glb",
+      "bytes": 11475544,
+      "sha256": "9a575d0eeab5ee3921d69191fe6f287934c76839294d8e6c24f591fb1b50a495",
+      "release": "assets-v11",
+      "file": "9a575d0eeab5-pompei.glb"
     },
     {
       "path": "scenes/pont-du-gard/pont-du-gard.glb",

@@ -832,3 +832,153 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 - **Hypothèse retenue** : Les figurines tombent progressivement, surtout pendant l'encerclement (environ 75 % de l'infanterie romaine à la fin) ; compteurs Polybe et Tite-Live côte à côte.
 - **Pourquoi un doute** : La chronologie des pertes n'est pas transmise ; les totaux divergent (de 48 200 à 70 000 morts romains).
 - **Décision** : à trancher
+
+## Scène de Pompéi (79)
+
+### 1. Restitution
+
+- **Hypothèse retenue** : Pre-79 Vesuvius modelled as one blunt cone, rim about 1190 m with a shallow summit caldera floor at about 1105 m (Strabo's flat summit). The height is unknown; do not show a figure on the site.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 2. Restitution
+
+- **Hypothèse retenue** : Ancient shoreline set about 1 km inland of the modern coast near Pompeii, following Pescatore et al. 2001, tapering to about 450 m far from the town. 79 deposits of 1.5 to 5 m are removed from the plain only.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 3. Restitution
+
+- **Hypothèse retenue** : Forum orientation (-15 degrees) and centre are derived from the Pleiades Temple of Jupiter point plus the reported forum dimensions. The Pleiades reprPoints for Apollo and the Basilica fall near the portico line, so the precincts were placed just outside it.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 4. Restitution
+
+- **Hypothèse retenue** : The western Via dell'Abbondanza is drawn bending from the forum's SE corner (bearing 70 degrees) to the Holconius crossroads, then straight (57 degrees) to Porta Sarno, to reconcile the Pleiades points.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 5. Restitution
+
+- **Hypothèse retenue** : Capitolium shown as option B of the proposal: temple standing, one front column replaced by timber shoring, part of the roof open with rafters visible, raking shores, scaffolding and a crane. The east portico has an unfinished 26 m stretch with no upper storey, under scaffolding.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 6. Restitution
+
+- **Hypothèse retenue** : Venus sanctuary: no standing temple. Shown are the old podium core, a new foundation in basalt blocks, marble drums and a shaft on rollers, a provisional wooden chapel on the podium, scaffolding and block piles. Podium about 15 x 29 m after Barnabei, still to be checked.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 7. Restitution
+
+- **Hypothèse retenue** : Vettii house plan is simplified: fauces, atrium without tablinum opening straight onto the peristyle, two arcae, impluvium with pumice falling in. The entrance is placed on the street east of the insula. The real orientation of the entrance has not been checked.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 8. Restitution
+
+- **Hypothèse retenue** : Electoral programmes use attested 79-era candidates (C. Julius Polybius, Cn. Helvius Sabinus, M. Holconius Priscus, A. Vettius Firmus, L. Ceius Secundus, M. Cerrinius Vatia, M. Epidius Sabinus, C. Cuspius Pansa, L. Popidius Secundus), written in Cinzel capitals. Their exact positions are invented.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 9. Restitution
+
+- **Hypothèse retenue** : Pumice cover is shown partial (scattered lapilli, drifts in gutters and at kerbs) rather than a continuous 10 to 15 cm layer, so the street paving stays readable.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 10. Restitution
+
+- **Hypothèse retenue** : Cushions tied on heads (Pliny VI, 16, 16, at Stabiae) are applied to a few figures, as the proposal allows with caution. No togas, no bodies, no lava.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 11. Restitution
+
+- **Hypothèse retenue** : Pumice is a visual compromise for about 14:00. Exposed surfaces show 35 to 45 percent granular cover with drifts: sidewalks 35, forum paving 40, basalt road 30 plus pumice in the joints, roofs 40. Sheltered floors (porticoes, atrium, peristyle, thermopolium) show 8 percent. Clast colour is (0.63, 0.60, 0.54). This is less than the proposal's 10 to 15 cm, so the paving stays readable. It belongs in docs/A_VERIFIER.md.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 12. Restitution
+
+- **Hypothèse retenue** : The Odeon is placed west of Via Stabiana and north-east of the large theatre: theatre point + 34 m along the grid axis + 48 m across, 26 x 30 m. Its exact position relative to the Pleiades theatre point has not been checked.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+
+## Scène du Colisée et du Forum (107)
+
+### 1. Restitution
+
+- **Hypothèse retenue** : Colosseum long-axis bearing taken as 112 degrees (WNW-ESE). I found no surveyed figure: it is derived from published descriptions of a WNW-ESE axis and from the west axis pointing at the Meta Sudans. Should go in docs/A_VERIFIER.md.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 2. Restitution
+
+- **Hypothèse retenue** : Meta Sudans moved to (-126, 22) m, about 128 m from the Colosseum centre, because the proposal coordinate (41.8905, 12.4912) falls inside the 17.5 m travertine pavement ring. Uncertain by roughly 10 to 20 m.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 3. Restitution
+
+- **Hypothèse retenue** : Arch of Titus level set to 31 m and Forum pavement to 13.5 m. The DEM gives about 38 m at the arch coordinate (smoothed modern ground at the foot of the Palatine). The 31 m figure is a compromise between that value and the ancient summit of the Sacra Via, usually put around 28 to 30 m (not checked). The road is cut into the Palatine slope with banks graded over 45 m.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 4. Restitution
+
+- **Hypothèse retenue** : Velia ridge raised artificially (crest 34 m, about 70 m wide) between the vestibule and the Oppius to undo the 1930s cut. Shape is a hypothesis.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 5. Restitution
+
+- **Hypothèse retenue** : Forum layout comes from my own frame (centre at (-560, 245) m, long axis bearing 299 degrees), checked against Platner and Ashby dimensions. The proposal's monument coordinates (about 10 m precision) disagreed with one another by up to 30 m, so positions are good to about 15 m.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 6. Restitution
+
+- **Hypothèse retenue** : Palace complex (Domus Flavia front facing bearing 30, Augustana, garden stadium), the Domus Tiberiana, the Baths of Titus, Trajan's baths as a building site, the Claudianum and the Temple of Peace are schematic volumes, not surveyed plans.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 7. Restitution
+
+- **Hypothèse retenue** : Colossus: nude Sol about 32 m tall with a seven-ray crown, a globe in the raised right hand and a rudder in the left. Attributes and the 6 m pedestal are hypotheses. The vestibule is restored as a 120 x 100 m four-sided portico at 29.5 m.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 8. Restitution
+
+- **Hypothèse retenue** : Arcade numbering: north entrance between XXXVIII and XXXIX (I recalled this; not checked against a source), sequence I to XIX starting after the south entrance and running anticlockwise. Numerals are only modelled on bays 14 to 41, the north-west quadrant.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 9. Restitution
+
+- **Hypothèse retenue** : Velarium stripes in linen, saffron and madder, with a 7 m open ring over the arena. Colour and layout are not attested.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 10. Restitution
+
+- **Hypothèse retenue** : Sailors on the attic, the hydraulis organ and horns, and the lion cage rising through an open trapdoor follow the proposal, but their attestation for the year 107 is debated (see the proposal's doubts list).
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 11. Restitution
+
+- **Hypothèse retenue** : Portico of Nero along the Sacra Via restored as plain Tuscan colonnades with shops between the Regia and the arch. Plausible; their form in 107 is uncertain.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 12. Restitution
+
+- **Hypothèse retenue** : Imperial forum footprints and levels are placed in the scene's own Forum frame from general plans, not surveyed: Caesar 160 x 75 m behind the Curia, axis along the Forum; Augustus 125 x 118 m to its north-east, axis turned 90 degrees; Nerva 45 x 120 m between Augustus and the Temple of Peace. Positions are good to roughly 20 to 30 m. Calibrate on Lanciani FUR sheets 22, 29 and 30.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+

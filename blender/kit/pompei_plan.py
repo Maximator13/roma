@@ -188,7 +188,7 @@ def sites():
         "stabian_baths": rect_around(PLEIADES["thermes-de-stabies"], GV, 40.0, 30.0),
         "central_baths": rect_around(PLEIADES["thermes-centraux"], GV, 30.0, 28.0),
         "theatre": ellipse_polygon(PLEIADES["grand-theatre"], GU, 36.0, 36.0),
-        "odeon": rect_around(PLEIADES["grand-theatre"] + GU * 58.0 + GV * 6.0, GU, 15.0, 17.0),
+        "odeon": rect_around(PLEIADES["grand-theatre"] + GU * 34.0 + GV * 48.0, GU, 13.0, 15.0),
         "quadriporticus": rect_around(PLEIADES["grand-theatre"] - GV * 70.0 + GU * 8.0, GU, 34.0, 30.0),
         "triangular_forum": rect_around(PLEIADES["forum-triangulaire"] - GV * 10.0 - GU * 12.0, GV, 48.0, 22.0),
         "palaestra": rect_around(PLEIADES["grande-palestre"], GU, 70.5, 53.5),
