@@ -1,6 +1,6 @@
 import { PerformanceMonitor, useProgress } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { EffectComposer, N8AO, ToneMapping, Vignette } from '@react-three/postprocessing'
+import { Bloom, EffectComposer, N8AO, ToneMapping, Vignette } from '@react-three/postprocessing'
 import { ToneMappingMode } from 'postprocessing'
 import { Component, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { HalfFloatType, UnsignedByteType } from 'three'
@@ -10,18 +10,34 @@ import { MapStage, type UiInsets } from '../map/MapStage.tsx'
 import { findScene } from '../scenes/registry.ts'
 import { useApp } from '../store.ts'
 import { DebugHud, StatsProbe } from './DebugHud.tsx'
-import { gradingAt } from './grading.ts'
+import { gradingAt, SCENE_LOOK } from './grading.ts'
 import { GradingEffect } from './GradingEffect.ts'
 import { QUALITY, isDebug, stepQuality, type QualityTier } from './quality.ts'
 import { SceneHost } from './SceneHost.tsx'
 import { useSceneSwap } from './useSceneSwap.ts'
 
-const TERRAIN_SEGMENTS = { low: 256, medium: 448, high: 640 } as const
+const TERRAIN_SEGMENTS = { low: 320, medium: 640, high: 1024 } as const
 const TERRAIN_DETAIL = { low: 0.4, medium: 1, high: 1 } as const
+const SCENE_EXPOSURE = 1.12
+const SCENE_SATURATION = 1.15
 
-function Effects({ multisampling, halfFloat, ambientOcclusion }: { multisampling: number; halfFloat: boolean; ambientOcclusion: AmbientOcclusion }) {
+function Effects({
+  multisampling,
+  halfFloat,
+  ambientOcclusion,
+  bloom,
+}: {
+  multisampling: number
+  halfFloat: boolean
+  ambientOcclusion: AmbientOcclusion
+  bloom: boolean
+}) {
   const grading = useMemo(() => new GradingEffect(), [])
-  useFrame(() => grading.applyGrading(gradingAt(useApp.getState().view.center, eras)))
+  useFrame(() => {
+    const { view, route } = useApp.getState()
+    const base = gradingAt(view.center, eras)
+    grading.applyGrading(route.name === 'scene' ? { ...base, exposure: base.exposure * SCENE_EXPOSURE * SCENE_LOOK.exposure, saturation: base.saturation * SCENE_SATURATION } : base)
+  })
   return (
     <EffectComposer multisampling={multisampling} frameBufferType={halfFloat ? HalfFloatType : UnsignedByteType}>
       <N8AO
@@ -32,9 +48,10 @@ function Effects({ multisampling, halfFloat, ambientOcclusion }: { multisampling
         distanceFalloff={1}
         intensity={2.2}
       />
-      <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
+      {bloom ? <Bloom mipmapBlur luminanceThreshold={1.6} luminanceSmoothing={0.3} intensity={0.45} radius={0.7} /> : <></>}
+      <ToneMapping mode={ToneMappingMode.NEUTRAL} />
       <primitive object={grading} dispose={null} />
-      <Vignette offset={0.3} darkness={0.55} />
+      <Vignette offset={0.35} darkness={0.4} />
     </EffectComposer>
   )
 }
@@ -141,6 +158,7 @@ export default function Stage() {
             multisampling={settings.multisampling}
             halfFloat={settings.halfFloat}
             ambientOcclusion={ambientOcclusionFor(shown !== null, quality)}
+            bloom={settings.halfFloat}
           />
           {debug && <StatsProbe />}
         </Canvas>

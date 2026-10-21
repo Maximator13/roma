@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import {
   BufferAttribute,
   BufferGeometry,
+  AdditiveBlending,
   CanvasTexture,
   DoubleSide,
   Euler,
@@ -12,7 +13,10 @@ import {
   MeshBasicMaterial,
   MeshLambertMaterial,
   PlaneGeometry,
+  PointLight,
   Quaternion,
+  Sprite,
+  SpriteMaterial,
   Vector3,
   type Mesh,
 } from 'three'
@@ -38,6 +42,7 @@ export interface PuffSettings {
 const SMOKE: PuffSettings = { particles: 28, life: 9, rise: 1.4, drift: [0.9, -0.4], sway: 0.35, scatter: 0, size: [1.2, 0.9], opacity: 0.5, color: '#7d7b7c' }
 const PLUME: PuffSettings = { particles: 300, life: 48, rise: 230, drift: [150, 95], sway: 60, scatter: 350, size: [900, 110], opacity: 0.95, color: '#463e37' }
 const ASH: PuffSettings = { particles: 700, life: 70, rise: -4.5, drift: [1.2, 0.8], sway: 1.5, scatter: 450, size: [0.35, 0], opacity: 0.9, color: '#3c3732' }
+const BEACON_SMOKE: PuffSettings = { particles: 40, life: 14, rise: 4, drift: [3, -1.5], sway: 1.2, scatter: 0.6, size: [3, 2.2], opacity: 0.45, color: '#5d5550' }
 const BIRDS_PER_FLOCK = 22
 const DENSITY: Record<QualityTier, number> = { low: 0.5, medium: 1, high: 1 }
 
@@ -287,6 +292,60 @@ function Flocks({ centres, density }: { centres: Vector3[]; density: number }) {
   return <primitive object={mesh} />
 }
 
+function glowTexture(): CanvasTexture {
+  const canvas = document.createElement('canvas')
+  canvas.width = canvas.height = 128
+  const context = canvas.getContext('2d')!
+  const gradient = context.createRadialGradient(64, 64, 0, 64, 64, 64)
+  gradient.addColorStop(0, 'rgba(255,240,200,1)')
+  gradient.addColorStop(0.18, 'rgba(255,190,90,0.85)')
+  gradient.addColorStop(0.5, 'rgba(255,120,30,0.25)')
+  gradient.addColorStop(1, 'rgba(255,90,20,0)')
+  context.fillStyle = gradient
+  context.fillRect(0, 0, 128, 128)
+  return new CanvasTexture(canvas)
+}
+
+function Beacon({ position }: { position: Vector3 }) {
+  const reducedMotion = useMemo(() => prefersReducedMotion(), [])
+  const smoke = useMemo(() => [position.clone().setY(position.y + 3)], [position])
+  const parts = useMemo(() => {
+    const material = new SpriteMaterial({ map: glowTexture(), blending: AdditiveBlending, depthWrite: false, toneMapped: false })
+    material.color.setScalar(2.4)
+    const glow = new Sprite(material)
+    glow.position.copy(position)
+    glow.renderOrder = 3
+    const light = new PointLight('#ffa64d', 9000, 900, 1.6)
+    light.position.copy(position)
+    return { glow, light }
+  }, [position])
+  const live = useRef(parts)
+  useEffect(
+    () => {
+      live.current = parts
+      return () => {
+        parts.glow.material.map?.dispose()
+        parts.glow.material.dispose()
+        parts.light.dispose()
+      }
+    },
+    [parts],
+  )
+  useFrame(({ clock }) => {
+    const time = reducedMotion ? 0 : clock.elapsedTime
+    const flicker = 0.85 + 0.1 * Math.sin(time * 13.0) + 0.05 * Math.sin(time * 31.0 + 1.3)
+    live.current.glow.scale.setScalar(26 * flicker)
+    live.current.light.intensity = 9000 * flicker
+  })
+  return (
+    <>
+      <primitive object={parts.glow} />
+      <primitive object={parts.light} />
+      <Puffs sources={smoke} settings={BEACON_SMOKE} />
+    </>
+  )
+}
+
 export function Life({ model, quality, shadows }: { model: SceneModel; quality: QualityTier; shadows: boolean }) {
   const density = DENSITY[quality]
   return (
@@ -295,6 +354,7 @@ export function Life({ model, quality, shadows }: { model: SceneModel; quality: 
       {model.smokes.length > 0 && <Puffs sources={model.smokes} settings={SMOKE} />}
       {model.anchors.has('eruption_vent') && <Puffs sources={[model.anchors.get('eruption_vent')!]} settings={PLUME} />}
       {model.ashes.length > 0 && <Puffs sources={model.ashes} settings={ASH} />}
+      {model.anchors.has('beacon') && <Beacon position={model.anchors.get('beacon')!} />}
       {model.flocks.length > 0 && <Flocks centres={model.flocks} density={density} />}
     </>
   )

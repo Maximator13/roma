@@ -20,7 +20,7 @@ export const ERA_GRADING: Record<EraId, Grading> = {
   royaute: {
     exposure: 0.92,
     contrast: 1.06,
-    saturation: 0.92,
+    saturation: 1.05,
     lift: [0.05, 0.02, 0.0],
     gain: [1.1, 0.96, 0.82],
     skyTop: [0.16, 0.1, 0.12],
@@ -33,7 +33,7 @@ export const ERA_GRADING: Record<EraId, Grading> = {
   republique: {
     exposure: 1.04,
     contrast: 1.1,
-    saturation: 1.04,
+    saturation: 1.14,
     lift: [0.03, 0.01, 0.0],
     gain: [1.04, 1.0, 0.93],
     skyTop: [0.3, 0.5, 0.78],
@@ -46,7 +46,7 @@ export const ERA_GRADING: Record<EraId, Grading> = {
   'haut-empire': {
     exposure: 1.02,
     contrast: 1.08,
-    saturation: 1.1,
+    saturation: 1.2,
     lift: [0.02, 0.02, 0.05],
     gain: [1.1, 1.0, 0.84],
     skyTop: [0.2, 0.42, 0.72],
@@ -59,7 +59,7 @@ export const ERA_GRADING: Record<EraId, Grading> = {
   'crise-du-iiie-siecle': {
     exposure: 0.82,
     contrast: 1.16,
-    saturation: 0.58,
+    saturation: 0.72,
     lift: [0.03, 0.03, 0.03],
     gain: [0.95, 0.98, 1.0],
     skyTop: [0.14, 0.15, 0.17],
@@ -72,9 +72,9 @@ export const ERA_GRADING: Record<EraId, Grading> = {
   'bas-empire': {
     exposure: 0.9,
     contrast: 1.08,
-    saturation: 0.84,
+    saturation: 1.1,
     lift: [0.03, 0.01, 0.05],
-    gain: [0.94, 0.96, 1.08],
+    gain: [0.98, 0.95, 1.03],
     skyTop: [0.2, 0.22, 0.32],
     skyHorizon: [0.7, 0.68, 0.74],
     fog: [0.6, 0.58, 0.64],
@@ -85,7 +85,7 @@ export const ERA_GRADING: Record<EraId, Grading> = {
   'empire-romain-d-orient': {
     exposure: 0.8,
     contrast: 1.14,
-    saturation: 1.06,
+    saturation: 1.15,
     lift: [0.0, 0.02, 0.07],
     gain: [1.14, 0.98, 0.76],
     skyTop: [0.04, 0.07, 0.2],
@@ -96,6 +96,8 @@ export const ERA_GRADING: Record<EraId, Grading> = {
     accent: [0.85, 0.66, 0.26],
   },
 }
+
+export const SCENE_LOOK = { exposure: 1 }
 
 const TRANSITION_YEARS = 20
 

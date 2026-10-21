@@ -1,5 +1,7 @@
-import { useMemo } from 'react'
+import { useFrame } from '@react-three/fiber'
+import { useEffect, useMemo } from 'react'
 import { Vector3, type Object3D } from 'three'
+import { SCENE_LOOK } from '../../stage/grading.ts'
 import { QUALITY } from '../../stage/quality.ts'
 import type { SceneProps } from '../registry.ts'
 import { Atmosphere, type HazeSettings, type InteriorSettings, type SkySettings, type SunSettings } from './Atmosphere.tsx'
@@ -8,6 +10,7 @@ import { Life } from './Life.tsx'
 import { LightShaft } from './LightShaft.tsx'
 import { markerForward, useSceneModel } from './model.ts'
 import { overviewStop, stopFromMarker, type CameraStop } from './rail.ts'
+import { WATER_TIME } from './Water.ts'
 
 export interface ModelSceneConfig {
   model: string
@@ -18,6 +21,7 @@ export interface ModelSceneConfig {
   interior?: InteriorSettings
   lightShaftRadius?: number
   sky?: SkySettings
+  exposure?: number
   views?: Record<string, { position: [number, number, number]; target: [number, number, number] }>
 }
 
@@ -38,6 +42,15 @@ export function markerStop(markers: Map<string, Object3D>, id: string): CameraSt
 export function ModelScene({ config, scene, point, insets, quality }: SceneProps & { config: ModelSceneConfig }) {
   const shadows = QUALITY[quality].shadows || config.forceShadows === true
   const model = useSceneModel(config.model, shadows)
+  useFrame(({ clock }) => {
+    WATER_TIME.value = clock.elapsedTime
+  })
+  useEffect(() => {
+    SCENE_LOOK.exposure = config.exposure ?? 1
+    return () => {
+      SCENE_LOOK.exposure = 1
+    }
+  }, [config.exposure])
   const stops = useMemo<CameraStop[]>(() => {
     const viewStop = (id: string): CameraStop | null => {
       const view = config.views?.[id]
@@ -52,7 +65,7 @@ export function ModelScene({ config, scene, point, insets, quality }: SceneProps
   }, [model, scene, config])
   return (
     <>
-      <Atmosphere sun={config.sun} haze={config.haze} shadows={shadows} interior={config.interior} sky={config.sky} />
+      <Atmosphere sun={config.sun} haze={config.haze} shadows={shadows} shadowMapSize={QUALITY[quality].shadowMapSize} interior={config.interior} sky={config.sky} />
       <primitive object={model.root} />
       <Life model={model} quality={quality} shadows={shadows} />
       {model.anchors.has('oculus') && model.anchors.has('sunbeam_target') && (

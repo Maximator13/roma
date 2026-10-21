@@ -2,7 +2,7 @@ import { statSync } from 'node:fs'
 import sharp from 'sharp'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { MAP_BOUNDS, RELIEF_SIZE, decodeElevation } from '../../src/map/geo.ts'
-import { RELIEF_FILE } from './relief.ts'
+import { RELIEF_FILE, SIZE_TARGET } from './relief.ts'
 
 let pixels: Uint8Array
 
@@ -25,7 +25,7 @@ describe('relief raster', () => {
 
   it('has the map size and stays under the weight target', () => {
     expect(pixels.length).toBe(RELIEF_SIZE.width * RELIEF_SIZE.height)
-    expect(statSync(RELIEF_FILE).size).toBeLessThanOrEqual(1_000_000)
+    expect(statSync(RELIEF_FILE).size).toBeLessThanOrEqual(SIZE_TARGET)
   })
 
   it('keeps a clear gap between water and land around sea level', () => {

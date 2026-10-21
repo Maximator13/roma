@@ -7,12 +7,13 @@ export interface QualitySettings {
   multisampling: number
   halfFloat: boolean
   shadows: boolean
+  shadowMapSize: number
 }
 
 export const QUALITY: Record<QualityTier, QualitySettings> = {
-  low: { maxDpr: 1, multisampling: 0, halfFloat: false, shadows: false },
-  medium: { maxDpr: 1.25, multisampling: 2, halfFloat: true, shadows: true },
-  high: { maxDpr: 2, multisampling: 4, halfFloat: true, shadows: true },
+  low: { maxDpr: 1, multisampling: 0, halfFloat: false, shadows: false, shadowMapSize: 1024 },
+  medium: { maxDpr: 1.25, multisampling: 2, halfFloat: true, shadows: true, shadowMapSize: 2048 },
+  high: { maxDpr: 2, multisampling: 4, halfFloat: true, shadows: true, shadowMapSize: 4096 },
 }
 
 function isQualityTier(value: string | null): value is QualityTier {

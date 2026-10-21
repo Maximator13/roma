@@ -1,6 +1,6 @@
 export const MAP_BOUNDS = { west: -13, east: 53, south: 22, north: 59 } as const
 
-export const RELIEF_SIZE = { width: 2048, height: 1152 } as const
+export const RELIEF_SIZE = { width: 3960, height: 2220 } as const
 
 export const RELIEF_ENCODING = { maxLand: 4800, maxDepth: 6000 } as const
 

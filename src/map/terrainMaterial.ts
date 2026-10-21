@@ -72,9 +72,9 @@ float reveal(float from, float to, float fromSoft, float toSoft, float progress,
 }
 
 vec3 groundColor(float h) {
-  vec3 lowland = vec3(0.42, 0.40, 0.25);
-  vec3 hills = vec3(0.50, 0.42, 0.28);
-  vec3 mountain = vec3(0.40, 0.35, 0.31);
+  vec3 lowland = vec3(0.39, 0.43, 0.24);
+  vec3 hills = vec3(0.53, 0.43, 0.26);
+  vec3 mountain = vec3(0.44, 0.36, 0.30);
   vec3 snow = vec3(0.86, 0.86, 0.84);
   vec3 color = mix(lowland, hills, smoothstep(80.0, 700.0, h));
   color = mix(color, mountain, smoothstep(700.0, 2300.0, h));
@@ -93,12 +93,12 @@ void main() {
   float coastWidth = max(fwidth(h), 1.0);
   float land = smoothstep(-coastWidth, coastWidth, h);
 
-  vec3 ground = groundColor(h) * (0.9 + 0.2 * noise(vUv * vec2(1400.0, 780.0)) * detail);
+  vec3 ground = groundColor(h) * (0.88 + 0.16 * noise(vUv * vec2(1400.0, 780.0)) * detail + 0.08 * noise(vUv * vec2(7000.0, 3900.0)) * detail);
   float diffuse = max(dot(normal, sunDirection), 0.0);
   vec3 landLit = ground * (ambientColor + sunColor * diffuse * 1.15);
 
   float depth = clamp(-h / 3500.0, 0.0, 1.0);
-  vec3 water = mix(vec3(0.10, 0.30, 0.34), vec3(0.015, 0.05, 0.11), sqrt(depth));
+  vec3 water = mix(vec3(0.08, 0.34, 0.42), vec3(0.01, 0.06, 0.16), sqrt(depth));
   vec2 waveUv = vWorld.xz * 9.0;
   float waveA = noise(waveUv + vec2(time * 0.35, time * 0.12)) + 0.5 * noise(waveUv * 2.7 - vec2(time * 0.2, time * 0.4));
   float waveB = noise(waveUv.yx * 1.3 + vec2(time * 0.18, -time * 0.3)) + 0.5 * noise(waveUv * 3.1 + vec2(-time * 0.25, time * 0.1));
@@ -128,7 +128,7 @@ void main() {
 
   float outside = land * (1.0 - max(romanFill, rivalFill));
   vec3 muted = vec3(dot(color, vec3(0.3, 0.59, 0.11)));
-  color = mix(color, mix(muted, color, 0.35) * 0.6, outside);
+  color = mix(color, mix(muted, color, 0.6) * 0.78, outside);
   color = mix(color, color * (0.7 + territoryColor * 0.75) * 1.1, romanFill);
   color = mix(color, color * (0.65 + secondaryColor * 0.8), rivalFill);
   color += territoryColor * (romanLine * 1.5 + romanGlow * 0.3) * pulse * landBorder;

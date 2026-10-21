@@ -16,7 +16,6 @@ export interface HazeSettings {
   density: number
 }
 
-const SHADOW_MAP_SIZE = 2048
 const MIN_SHADOW_EXTENT = 140
 const MAX_SHADOW_EXTENT = 1400
 const SUN_DISTANCE = 3000
@@ -35,7 +34,7 @@ export interface InteriorSettings {
   ambientScale: number
 }
 
-const AMBIENT = 0.3
+const AMBIENT = 0.55
 
 export interface SkySettings {
   turbidity: number
@@ -43,7 +42,7 @@ export interface SkySettings {
 }
 
 const CLEAR_SKY: SkySettings = { turbidity: 7, rayleigh: 1.6 }
-const ENVIRONMENT = 0.45
+const ENVIRONMENT = 0.75
 
 export function interiorFactor(position: Vector3, interior: InteriorSettings | undefined): number {
   if (!interior) return 0
@@ -56,12 +55,14 @@ export function Atmosphere({
   sun,
   haze,
   shadows,
+  shadowMapSize = 2048,
   interior,
   sky = CLEAR_SKY,
 }: {
   sun: SunSettings
   haze: HazeSettings
   shadows: boolean
+  shadowMapSize?: number
   interior?: InteriorSettings
   sky?: SkySettings
 }) {
@@ -103,17 +104,17 @@ export function Atmosphere({
   return (
     <>
       <Sky distance={SKY_DISTANCE} sunPosition={skyPosition} turbidity={sky.turbidity} rayleigh={sky.rayleigh} mieCoefficient={0.006} mieDirectionalG={0.86} />
-      <Environment frames={1} resolution={128} environmentIntensity={ENVIRONMENT}>
+      <Environment frames={1} resolution={256} environmentIntensity={ENVIRONMENT}>
         <Sky sunPosition={skyPosition} turbidity={sky.turbidity} rayleigh={sky.rayleigh} mieCoefficient={0.006} mieDirectionalG={0.86} />
       </Environment>
       <fogExp2 attach="fog" args={[hazeColor, haze.density]} />
-      <hemisphereLight ref={ambient} args={['#c9d6e8', '#6b5440', AMBIENT]} />
+      <hemisphereLight ref={ambient} args={['#cfdcef', '#8a6a48', AMBIENT]} />
       <directionalLight
         ref={light}
         color={sun.color}
         intensity={sun.intensity}
         castShadow={shadows}
-        shadow-mapSize={[SHADOW_MAP_SIZE, SHADOW_MAP_SIZE]}
+        shadow-mapSize={[shadowMapSize, shadowMapSize]}
         shadow-bias={-0.0004}
         shadow-normalBias={0.6}
         shadow-camera-near={10}

@@ -7,7 +7,7 @@ import { MAP_BOUNDS, RELIEF_SIZE, encodeElevation } from '../../src/map/geo.ts'
 
 const CACHE = '.cache/geo'
 export const RELIEF_FILE = 'public/geo/relief.webp'
-const SIZE_TARGET = 1_000_000
+export const SIZE_TARGET = 2_500_000
 const SHORE_METERS = 2
 const ETOPO_CELLS_PER_DEGREE = 60
 const ETOPO_WIDTH = (MAP_BOUNDS.east - MAP_BOUNDS.west) * ETOPO_CELLS_PER_DEGREE

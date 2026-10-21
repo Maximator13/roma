@@ -5,6 +5,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import { groupRoutes } from './paths.ts'
+import { addGroundDetail, isGroundMaterial } from './GroundDetail.ts'
+import { isWaterMaterial, makeWater } from './Water.ts'
 
 const MARKER_PREFIX = 'poi_'
 const ROUTE_PREFIX = 'walk_'
@@ -41,7 +43,7 @@ export interface SceneModel {
   anchors: Map<string, Vector3>
 }
 
-const ANCHOR_NAMES = new Set(['oculus', 'sunbeam_target', 'eruption_vent'])
+const ANCHOR_NAMES = new Set(['oculus', 'sunbeam_target', 'eruption_vent', 'beacon'])
 
 export function castsShadow(node: Object3D): boolean {
   for (let current: Object3D | null = node; current; current = current.parent) {
@@ -107,7 +109,10 @@ export function useSceneModel(path: string, shadows: boolean): SceneModel {
   useEffect(() => {
     model.root.traverse((child) => {
       if (!(child instanceof Mesh)) return
-      child.castShadow = shadows && castsShadow(child)
+      const water = materialsOf(child).filter(isWaterMaterial)
+      water.forEach(makeWater)
+      materialsOf(child).filter(isGroundMaterial).forEach(addGroundDetail)
+      child.castShadow = shadows && water.length === 0 && castsShadow(child)
       child.receiveShadow = shadows
       if (child.name.startsWith(WALKER_PREFIX)) child.visible = false
     })
