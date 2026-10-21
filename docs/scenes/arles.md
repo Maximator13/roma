@@ -263,4 +263,4 @@ Corrections principales :
 
 Le plan de caméra et le budget restent tenables. Les lightmaps supposent l'encodage ETC1S, et le plan 09 peut devenir un fondu si le terrain jusqu'à Barbegal dépasse la marge. Les deux vidéos font environ 15 et 12,5 Mo.
 
-Aucun fichier du projet n'a été créé ni modifié. Les PDF du MDAA ont été lus depuis C:\Users\maxim\.claude\projects\C--Users-maxim-Projets-VSCode-roma\2e179357-9289-4eed-8f90-6b2aedc6ab31\tool-results\.
+Aucun fichier du projet n'a été créé ni modifié. Les PDF du MDAA ont été lus en local.

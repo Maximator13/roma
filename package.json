@@ -13,7 +13,7 @@
     "preview": "vite preview",
     "validate": "node scripts/validate-data.ts",
     "check:style": "node scripts/check-style.ts",
-    "lint": "eslint .",
+    "lint": "eslint src scripts tests *.ts",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
     "test:e2e": "playwright test",
