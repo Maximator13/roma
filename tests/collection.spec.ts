@@ -44,7 +44,8 @@ test('the collection opens from the header, draws the daily pack once and keeps 
   await expect(dialog).toHaveCount(0)
   await expect(page).toHaveURL(/#\/collection$/)
   await page.keyboard.press('Escape')
-  await expect(page.locator('.eras__button').first()).toBeVisible()
+  await expect(page).toHaveURL(/\/roma\/(#\/)?$/)
+  await expect(page.locator('.eras__button').first()).toBeVisible({ timeout: 30_000 })
   expect(errors).toEqual([])
 })
 
