@@ -251,7 +251,7 @@ export default function CollectionPage() {
                   <li key={card.id}>
                     <button
                       type="button"
-                      className={owned ? 'binder__slot' : `binder__slot binder__slot--missing binder__slot--${card.rarity}`}
+                      className={owned ? 'binder__slot' : `binder__slot binder__slot--missing binder__slot--${card.rarity} binder__slot--${card.kind}`}
                       aria-label={owned ? COLLECTION_UI.open(card.name) : COLLECTION_UI.openMissing(card.name)}
                       onClick={() => setSelected(card.id)}
                     >

@@ -1225,3 +1225,57 @@
 .card-dialog__subtitle span {
   white-space: nowrap;
 }
+
+.rcard--kind-deity .rcard__frame::after {
+  content: '';
+  position: absolute;
+  inset: 1.4cqw;
+  border: 1px solid rgb(255 236 180 / 0.85);
+  border-radius: 4cqw;
+  box-shadow:
+    0 0 2.4cqw rgb(150 200 255 / 0.65),
+    inset 0 0 2.4cqw rgb(150 200 255 / 0.5);
+  pointer-events: none;
+}
+
+.rcard--kind-deity .rcard__window::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 32% at 50% 0%, rgb(255 230 150 / 0.55), transparent 70%),
+    radial-gradient(circle at 18% 14%, rgb(255 255 255 / 0.9) 0 0.5cqw, transparent 0.9cqw),
+    radial-gradient(circle at 82% 9%, rgb(255 255 255 / 0.8) 0 0.4cqw, transparent 0.8cqw),
+    radial-gradient(circle at 70% 24%, rgb(255 255 255 / 0.7) 0 0.35cqw, transparent 0.7cqw),
+    radial-gradient(circle at 30% 30%, rgb(255 255 255 / 0.6) 0 0.3cqw, transparent 0.6cqw),
+    linear-gradient(to bottom, rgb(40 70 160 / 0.35), transparent 40%);
+  mix-blend-mode: screen;
+  animation: deity-twinkle 5s ease-in-out infinite;
+}
+
+.rcard--kind-deity .rcard__kind {
+  border-color: rgb(170 210 255 / 0.85);
+  background: rgb(14 22 52 / 0.75);
+  color: #cfe4ff;
+}
+
+.binder__slot--deity .ghost {
+  border-style: solid;
+  border-color: rgb(150 200 255 / 0.45);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgb(150 200 255 / 0.18), transparent 60%),
+    rgb(20 30 70 / 0.25);
+}
+
+@keyframes deity-twinkle {
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rcard--kind-deity .rcard__window::after {
+    animation: none;
+  }
+}

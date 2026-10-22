@@ -19,7 +19,7 @@ describe('card catalog', () => {
 
   it('keeps the announced rarity distribution', () => {
     const counts = Object.fromEntries(['common', 'uncommon', 'rare', 'epic', 'legendary'].map((rarity) => [rarity, catalog.filter((card) => card.rarity === rarity).length]))
-    expect(counts).toEqual({ common: 38, uncommon: 32, rare: 26, epic: 17, legendary: 8 })
+    expect(counts).toEqual({ common: 41, uncommon: 40, rare: 32, epic: 20, legendary: 9 })
   })
 
   it('assigns border years to the earlier era', () => {

@@ -1275,3 +1275,9 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 - **Hypothèse retenue** : 8 légendaires (César, Auguste, Constantin, Justinien, Hannibal, le Colisée, Sainte-Sophie, le feu grégeois), 17 épiques (dont Caligula), 26 rares, 32 peu communes, 38 communes, selon l'importance historique et la notoriété.
 - **Pourquoi un doute** : classement éditorial ; on peut défendre Romulus, Cléopâtre ou Constantin XI en légendaires.
 - **Décision** : à trancher
+
+### 5. Panthéon : dates et illustrations
+
+- **Hypothèse retenue** : chaque dieu porte l'année de son premier temple ou de son arrivée à Rome selon la tradition (Jupiter, Junon et Minerve en 509 av. J.-C., Vesta et Janus sous Numa, Quirinus avec la mort de Romulus, Apollon en 431, Cybèle en 204, Mithra vers 80, Sol Invictus en 274). Les dates royales sont traditionnelles. Pour Bacchus, la carte retient la répression des bacchanales (186 av. J.-C.), Liber étant bien plus ancien.
+- **Pourquoi un doute** : dates légendaires ou approchées ; la Junon Ludovisi est sans doute Antonia la Jeune représentée en Junon, la Cérès de la galerie Borghèse une statue-portrait restaurée en Cérès, l'as de Janus et le denier de Quirinus des monnaies (aucune statue de culte romaine conservée pour ces dieux).
+- **Décision** : à trancher

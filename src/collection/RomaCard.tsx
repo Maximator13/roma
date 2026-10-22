@@ -11,6 +11,7 @@ const KIND_ICON: Record<CardKind, string> = {
   place: 'M3 21h18v-2H3zm2-3h2v-7H5zm4 0h2v-7H9zm4 0h2v-7h-2zm4 0h2v-7h-2zM2 10h20L12 3z',
   relic: 'M9 2h6v2l-1 1v2c3 1 5 4 5 8c0 4-3 7-7 7s-7-3-7-7c0-4 2-7 5-8V5L9 4z',
   unit: 'M12 2l8 3v6c0 5-3.4 9.4-8 11c-4.6-1.6-8-6-8-11V5zm0 4l-3 3l3 3l3-3z',
+  deity: 'M12 1l1.8 4.6L18.5 4l-1.6 4.7L22 10l-4.7 1.6L19 16.5l-4.6-1.8L12 19l-2.4-4.3L5 16.5l1.7-4.9L2 10l5.1-1.3L5.5 4l4.7 1.6zM12 8a3 3 0 1 0 0 6a3 3 0 0 0 0-6zM6 21h12v2H6z',
 }
 
 export function KindIcon({ kind }: { kind: CardKind }) {
@@ -48,7 +49,7 @@ export function RomaCard({ card, size = 'small', interactive = true }: { card: C
   const pips = rank(card.rarity) + 1
   return (
     <div
-      className={`rcard rcard--${card.rarity} rcard--${size}`}
+      className={`rcard rcard--${card.rarity} rcard--${size} rcard--kind-${card.kind}`}
       onPointerMove={interactive ? trackPointer : undefined}
       onPointerLeave={interactive ? resetPointer : undefined}
     >

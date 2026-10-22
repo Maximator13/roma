@@ -21,6 +21,7 @@ export const KIND_LABEL: Record<CardKind, { one: string; many: string }> = {
   place: { one: 'Lieu', many: 'Lieux' },
   relic: { one: 'Relique', many: 'Reliques et objets' },
   unit: { one: 'Armée', many: 'Armées et unités' },
+  deity: { one: 'Divinité', many: 'Dieux de Rome' },
 }
 
 export const ERA_SHORT: Record<EraId, string> = {

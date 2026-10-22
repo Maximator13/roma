@@ -31,6 +31,7 @@ interface Meta {
   sourceUrl?: string
   focusX?: number
   focusY?: number
+  zoom?: number
 }
 
 function render(card: string, file: string, title: string, script: string, focusX = 0.5, focusY = 0.5, zoom = 1): Source {
@@ -77,7 +78,7 @@ function fromMeta(id: string): Source {
   if (meta.date) art.date = meta.date.trim()
   if (meta.licenseUrl) art.licenseUrl = meta.licenseUrl.replace(/^\/\//, 'https://')
   if (meta.sourceUrl) art.sourceUrl = meta.sourceUrl
-  return { file: rawFile(id, meta), focusX: meta.focusX ?? 0.5, focusY: meta.focusY ?? 0.4, zoom: 1, grade: false, art }
+  return { file: rawFile(id, meta), focusX: meta.focusX ?? 0.5, focusY: meta.focusY ?? 0.4, zoom: meta.zoom ?? 1, grade: false, art }
 }
 
 function cropBox(width: number, height: number, source: Source) {

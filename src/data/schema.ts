@@ -162,7 +162,7 @@ export const sceneSchema = z.strictObject({
   ambience: z.array(ambienceSchema).optional(),
 })
 
-export const CARD_KINDS = ['person', 'place', 'relic', 'unit'] as const
+export const CARD_KINDS = ['person', 'place', 'relic', 'unit', 'deity'] as const
 export const RARITIES = ['common', 'uncommon', 'rare', 'epic', 'legendary'] as const
 
 export const cardSchema = z

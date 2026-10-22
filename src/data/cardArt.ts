@@ -1064,5 +1064,194 @@ export const cardArt: CardArt[] = [
     "date": "1840",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Eug%C3%A8ne_Delacroix_-_Prise_de_Constantinople_par_les_crois%C3%A9s_(12_avril_1204).jpg"
+  },
+  {
+    "card": "jupiter",
+    "title": "Jupiter de Smyrne, marbre, musée du Louvre (détail)",
+    "creator": "Sculpteur romain inconnu ; photo : Marie-Lan Nguyen",
+    "license": "Domaine public",
+    "date": "IIe siècle apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/deed.fr",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jupiter_Smyrna_Louvre_Ma13,_Ausschnitt.jpg"
+  },
+  {
+    "card": "junon",
+    "title": "Junon Ludovisi, tête colossale, palais Altemps, Rome (sans doute Antonia la Jeune représentée en Junon)",
+    "creator": "Sculpteur romain inconnu",
+    "license": "Domaine public",
+    "date": "Ier siècle apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/deed.fr",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hera_Ludovisi_Altemps_Inv8631.jpg"
+  },
+  {
+    "card": "minerve",
+    "title": "Minerve d'Arezzo, bronze, musée archéologique national de Florence",
+    "creator": "Bronzier inconnu ; photo : Sailko",
+    "license": "CC BY-SA 3.0",
+    "date": "début du IIIe siècle av. J.-C.",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Minerva_d%27arezzo_(da_chiesa_di_s._lorenzo),_inizi_III_sec._ac._02.JPG"
+  },
+  {
+    "card": "mars",
+    "title": "Statue colossale de Mars, du forum de Nerva, musées du Capitole, Rome",
+    "creator": "Sculpteur romain inconnu ; photo : Carole Raddato",
+    "license": "CC BY-SA 2.0",
+    "date": "fin du Ier siècle apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Colossal_statue_of_Mars,_end_of_1st_century_AD,_from_the_Forum_Transitorium_in_Rome,_Capitoline_Museums_(12879072994).jpg"
+  },
+  {
+    "card": "venus",
+    "title": "Vénus Pompéienne et Cupidon, fresque, antiquarium de Pompéi",
+    "creator": "Peintre romain inconnu ; photo : MumblerJamie",
+    "license": "CC BY-SA 2.0",
+    "date": "Ier siècle apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Venus_Pompeiana_with_Cupid_-_Pompeii_Antiquarium.jpg"
+  },
+  {
+    "card": "apollon",
+    "title": "Apollon citharède, fresque de la maison d’Auguste, Palatin, Rome",
+    "creator": "Peintre romain inconnu",
+    "license": "Domaine public",
+    "date": "vers 30 av. J.-C.",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/deed.fr",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fresco_Apollo_kitharoidos_Palatino_Inv379982_n2.jpg"
+  },
+  {
+    "card": "diane",
+    "title": "Diane de Versailles, marbre, musée du Louvre",
+    "creator": "Sculpteur romain inconnu ; photo : Shonagon",
+    "license": "CC0 1.0",
+    "date": "Ier ou IIe siècle apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Diane_de_Versailles_-_Mus%C3%A9e_du_Louvre_AGER_Ma_589.jpg"
+  },
+  {
+    "card": "mercure",
+    "title": "Statuette de Mercure, bronze incrusté d’argent et de cuivre, gallo-romaine",
+    "creator": "Bronzier gallo-romain inconnu ; photo : Mary Harrsch",
+    "license": "CC BY 4.0",
+    "date": "de 120 à 140 apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Statuette_of_Mercury_Gallo-Roman_120-140_CE_Bronze_Silver_Copper.jpg"
+  },
+  {
+    "card": "neptune",
+    "title": "Neptune et Amphitrite, mosaïque murale, Herculanum",
+    "creator": "Mosaïste romain inconnu ; photo : Jebulon",
+    "license": "CC0 1.0",
+    "date": "Ier siècle apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Neptune_Amphitrite_mosaic_Herculaneum_cropped.jpg"
+  },
+  {
+    "card": "vesta",
+    "title": "Statue de grande vestale, maison des Vestales, Forum romain",
+    "creator": "Sculpteur romain inconnu ; photo : Rabax63",
+    "license": "CC BY-SA 4.0",
+    "date": "IIIe siècle apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:VestalisMaxima.jpg"
+  },
+  {
+    "card": "janus",
+    "title": "As de bronze à la tête de Janus, Rome",
+    "creator": "Atelier monétaire de Rome ; photo : Johny Sysel",
+    "license": "CC BY 4.0",
+    "date": "IIe siècle av. J.-C.",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Anonymous_Rome_Cr124-3.jpg"
+  },
+  {
+    "card": "quirinus",
+    "title": "Denier de Caius Memmius à la tête de Quirinus, BnF, Gallica",
+    "creator": "Atelier monétaire de Rome",
+    "license": "Domaine public",
+    "date": "56 av. J.-C.",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/deed.fr",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Caius_Memmius_denier_Gallica_21993_avers.jpg"
+  },
+  {
+    "card": "vulcain",
+    "title": "La Forge de Vulcain, huile sur toile, musée du Prado, Madrid",
+    "creator": "Diego Velázquez",
+    "license": "Domaine public",
+    "date": "1630",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/deed.fr",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vel%C3%A1zquez_-_La_Fragua_de_Vulcano_(Museo_del_Prado,_1630).jpg"
+  },
+  {
+    "card": "ceres",
+    "title": "Statue-portrait restaurée en Cérès, marbre, galerie Borghèse, Rome",
+    "creator": "Sculpteur romain inconnu ; photo : Daderot",
+    "license": "Domaine public",
+    "date": "IIe siècle apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/deed.fr",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Portrait_statue_restored_as_Ceres,_Roman,_2nd_century_AD,_marble_-_Galleria_Borghese_-_Rome,_Italy_-_DSC04764.jpg"
+  },
+  {
+    "card": "bacchus",
+    "title": "Bacchus et le Vésuve, fresque du laraire de la maison du Centenaire, Pompéi",
+    "creator": "Peintre romain inconnu ; photo : Chappsnet",
+    "license": "CC BY-SA 4.0",
+    "date": "Ier siècle apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lararium_fresco_of_Bacchus_and_Vesuvius,_House_of_the_Centenary,_Pompeii.jpg"
+  },
+  {
+    "card": "divus-julius",
+    "title": "Denier d'Auguste à l'étoile de César et à la légende DIVVS IVLIV(S)",
+    "creator": "Atelier monétaire romain ; photo : James St. John",
+    "license": "CC BY 2.0",
+    "date": "vers 19 av. J.-C.",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Comet_Caesar_(Roman_denarius).png"
+  },
+  {
+    "card": "divus-augustus",
+    "title": "Auguste en grand pontife, dit de la via Labicana, palais Massimo, Rome",
+    "creator": "Sculpteur romain inconnu ; photo : Bradley Weber",
+    "license": "CC BY 2.0",
+    "date": "fin du Ier siècle av. J.-C.",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Augustus_as_Pontifex_Maximus_or_Via_Labicana_Augustus_(8591667948).jpg"
+  },
+  {
+    "card": "isis",
+    "title": "Isis de la villa d'Hadrien, marbre, musées du Capitole, Rome",
+    "creator": "Sculpteur romain inconnu ; photo : Yair Haklai",
+    "license": "CC BY-SA 4.0",
+    "date": "de 117 à 138 apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Isis_from_Villa_Adriana_(Musei_Capitolini).jpg"
+  },
+  {
+    "card": "cybele",
+    "title": "Patère de Parabiago : Cybèle et Attis sur un char tiré par des lions, argent doré, musée archéologique de Milan",
+    "creator": "Orfèvre romain inconnu ; photo : Paolobon140",
+    "license": "CC BY-SA 4.0",
+    "date": "IVe siècle apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:La_cosiddetta_%27%22Patera_di_Parabiago%27%22,_conservata_al_Museo_archeologico_di_Milano.jpg"
+  },
+  {
+    "card": "mithra",
+    "title": "Mithra sacrifiant le taureau, fresque du mithraeum de Marino",
+    "creator": "Peintre romain inconnu",
+    "license": "Domaine public",
+    "date": "IIe siècle apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/deed.fr",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fresque_Mithraeum_Marino.jpg"
+  },
+  {
+    "card": "sol-invictus",
+    "title": "Tête de Sol, opus sectile de marbres colorés",
+    "creator": "Artisan romain inconnu ; photo : Chappsnet",
+    "license": "CC BY-SA 4.0",
+    "date": "IVe siècle apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fragmentary_opus_sectile_mosaic_depicting_the_head_of_the_god_Sol.jpg"
   }
 ]
