@@ -14,7 +14,7 @@ test('the collection opens from the header, draws the daily pack once and keeps 
   await page.goto('./')
   await page.getByRole('link', { name: 'Collection' }).click()
   await expect(page.getByRole('heading', { name: 'Collection', level: 1 })).toBeVisible()
-  await expect(page.locator('.collection__stats')).toContainText('0 sur 120 cartes')
+  await expect(page.locator('.collection__stats')).toContainText(/^0 sur \d+ cartes/)
 
   const open = page.getByRole('button', { name: 'Ouvrir le paquet du jour' })
   await open.focus()
@@ -30,10 +30,10 @@ test('the collection opens from the header, draws the daily pack once and keeps 
   await expect(page.locator('.opening .rcard:not(.rcard--back)')).toHaveCount(5)
   await page.keyboard.press('Enter')
 
-  await expect(page.locator('.collection__stats')).toContainText('5 sur 120 cartes')
+  await expect(page.locator('.collection__stats')).toContainText(/^5 sur \d+ cartes/)
   await expect(page.locator('.binder__grid .rcard')).toHaveCount(5)
   await page.reload()
-  await expect(page.locator('.collection__stats')).toContainText('5 sur 120 cartes')
+  await expect(page.locator('.collection__stats')).toContainText(/^5 sur \d+ cartes/)
   await expect(page.getByRole('button', { name: 'Ouvrir le paquet du jour' })).toHaveCount(0)
   await expect(page.getByText(/Prochain paquet dans/)).toBeVisible()
 

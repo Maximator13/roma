@@ -1254,7 +1254,7 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 
 ### 1. Identifications discutées des portraits
 
-- **Hypothèse retenue** : les cartes de Scipion l'Africain (tête de la Ny Carlsberg), de Sylla et de Marius (bustes « dits de » de la Glyptothèque de Munich), de Stilicon (diptyque de Monza), de Constantin XI (fresque de la Taxiarque d'Aigialeia) et d'Odoacre (trémissis au nom de Zénon, émission attribuée à Odoacre) utilisent des identifications traditionnelles, signalées comme telles dans le titre de l'illustration.
+- **Hypothèse retenue** : les cartes de Scipion l'Africain (tête de la Ny Carlsberg), de Caligula (buste cuirassé de la Ny Carlsberg, dont la couronne et la cuirasse peuvent être des restaurations), de Sylla et de Marius (bustes « dits de » de la Glyptothèque de Munich), de Stilicon (diptyque de Monza), de Constantin XI (fresque de la Taxiarque d'Aigialeia) et d'Odoacre (trémissis au nom de Zénon, émission attribuée à Odoacre) utilisent des identifications traditionnelles, signalées comme telles dans le titre de l'illustration.
 - **Pourquoi un doute** : aucune de ces identifications n'est assurée par une inscription ; elles reposent sur la tradition des musées ou sur la numismatique.
 - **Décision** : à trancher (garder avec la mention, ou remplacer par une œuvre narrative)
 
@@ -1272,6 +1272,6 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 
 ### 4. Rareté
 
-- **Hypothèse retenue** : 8 légendaires (César, Auguste, Constantin, Justinien, Hannibal, le Colisée, Sainte-Sophie, le feu grégeois), 16 épiques, 26 rares, 32 peu communes, 38 communes, selon l'importance historique et la notoriété.
+- **Hypothèse retenue** : 8 légendaires (César, Auguste, Constantin, Justinien, Hannibal, le Colisée, Sainte-Sophie, le feu grégeois), 17 épiques (dont Caligula), 26 rares, 32 peu communes, 38 communes, selon l'importance historique et la notoriété.
 - **Pourquoi un doute** : classement éditorial ; on peut défendre Romulus, Cléopâtre ou Constantin XI en légendaires.
 - **Décision** : à trancher

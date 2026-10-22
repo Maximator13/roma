@@ -154,6 +154,14 @@ export const people: Person[] = [
     "certainty": "attested"
   },
   {
+    "id": "caligula",
+    "name": "Caligula (Caius Julius Caesar Germanicus)",
+    "role": "Empereur de 37 à 41 apr. J.-C.",
+    "born": 12,
+    "died": 41,
+    "certainty": "attested"
+  },
+  {
     "id": "camille",
     "name": "Camille (Marcus Furius Camillus)",
     "role": "Général et dictateur romain",

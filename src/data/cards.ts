@@ -130,6 +130,22 @@ export const cards: Card[] = [
     sources: [ancient('Georges Sphrantzès', 'Chronique')],
   },
   {
+    id: 'caligula',
+    kind: 'person',
+    person: 'caligula',
+    name: 'Caligula',
+    rarity: 'epic',
+    year: 39,
+    text: "Fils de Germanicus, tué en 41 par des officiers de sa garde. Attestés : le pont de bateaux de Baïes, les navires de Nemi, la statue voulue au Temple de Jérusalem. Le cheval consul n'est qu'un projet prêté par Suétone ; sa folie est débattue.",
+    sources: [
+      ancient('Suétone', 'Vie des douze Césars', 'Caligula, 19, 22, 55 et 58'),
+      ancient('Dion Cassius', 'Histoire romaine', 'LIX'),
+      ancient('Philon d’Alexandrie', 'Ambassade à Caïus'),
+      ancient('Sénèque', 'De la constance du sage', '18'),
+      modern('Aloys Winterling', 'Caligula. Eine Biographie, Munich, 2003'),
+    ],
+  },
+  {
     id: 'pompee',
     kind: 'person',
     person: 'pompee',

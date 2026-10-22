@@ -110,6 +110,15 @@ export const cardArt: CardArt[] = [
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Konstantinos_XI_Palaiologos_fresco_(less_edited).jpg"
   },
   {
+    "card": "caligula",
+    "title": "Buste cuirassé de Caligula, trouvé à Rome, Ny Carlsberg Glyptotek, Copenhague",
+    "creator": "Sculpteur romain inconnu ; photo : Carole Raddato",
+    "license": "CC BY-SA 2.0",
+    "date": "de 37 à 41 apr. J.-C.",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cuirassed_bust_of_Caligula,_found_in_Rome,_AD_37-41,_Ny_Carlsberg_Glyptotek,_Copenhagen_(13192017765)_cropped.jpg"
+  },
+  {
     "card": "pompee",
     "title": "Portrait de Pompée le Grand, marbre, Ny Carlsberg Glyptotek, Copenhague",
     "creator": "Sculpteur romain inconnu ; photo : Carole Raddato",
