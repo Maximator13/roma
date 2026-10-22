@@ -7,6 +7,7 @@ export type Route =
   | { name: 'event'; id: string }
   | { name: 'scene'; id: string }
   | { name: 'page'; id: PageId }
+  | { name: 'collection' }
   | { name: 'not-found'; path: string }
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -22,6 +23,7 @@ export function parseHash(hash: string): Route {
   if (section === 'evenement' && id && SLUG.test(id) && rest.length === 0) return { name: 'event', id }
   if (section === 'scene' && id && SLUG.test(id) && rest.length === 0) return { name: 'scene', id }
   if (section && isPageId(section) && id === undefined) return { name: 'page', id: section }
+  if (section === 'collection' && id === undefined) return { name: 'collection' }
   return { name: 'not-found', path }
 }
 
@@ -35,6 +37,8 @@ export function routeToHash(route: Route): string {
       return `#/scene/${route.id}`
     case 'page':
       return `#/${route.id}`
+    case 'collection':
+      return '#/collection'
     case 'not-found':
       return `#/${route.path}`
   }

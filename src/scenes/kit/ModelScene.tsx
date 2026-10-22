@@ -5,6 +5,7 @@ import { SCENE_LOOK } from '../../stage/grading.ts'
 import { QUALITY } from '../../stage/quality.ts'
 import type { SceneProps } from '../registry.ts'
 import { Atmosphere, type HazeSettings, type InteriorSettings, type SkySettings, type SunSettings } from './Atmosphere.tsx'
+import { Clouds } from './Clouds.tsx'
 import { GuidedRail } from './GuidedRail.tsx'
 import { Life } from './Life.tsx'
 import { LightShaft } from './LightShaft.tsx'
@@ -22,10 +23,12 @@ export interface ModelSceneConfig {
   lightShaftRadius?: number
   sky?: SkySettings
   exposure?: number
+  clouds?: number
   views?: Record<string, { position: [number, number, number]; target: [number, number, number] }>
 }
 
 const OVERVIEW_MARKER = 'vue-d-ensemble'
+const DEFAULT_CLOUDS = 0.4
 const TARGET_SUFFIX = '_target'
 
 function worldPosition(marker: Object3D): Vector3 {
@@ -67,6 +70,7 @@ export function ModelScene({ config, scene, point, insets, quality }: SceneProps
     <>
       <Atmosphere sun={config.sun} haze={config.haze} shadows={shadows} shadowMapSize={QUALITY[quality].shadowMapSize} interior={config.interior} sky={config.sky} />
       <primitive object={model.root} />
+      {(config.clouds ?? DEFAULT_CLOUDS) > 0 && <Clouds bounds={model.bounds} cover={config.clouds ?? DEFAULT_CLOUDS} sunColor={config.sun.color} />}
       <Life model={model} quality={quality} shadows={shadows} />
       {model.anchors.has('oculus') && model.anchors.has('sunbeam_target') && (
         <LightShaft from={model.anchors.get('oculus')!} to={model.anchors.get('sunbeam_target')!} radius={config.lightShaftRadius ?? 4} />

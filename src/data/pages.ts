@@ -36,7 +36,7 @@ Ce site ne dépose aucun cookie et ne vous demande aucune donnée personnelle. T
 
 ## Stockage dans votre navigateur
 
-Le site peut enregistrer dans votre navigateur (\`localStorage\`) vos préférences, votre choix sur la mesure d'audience et, plus tard, votre progression dans les jeux de révision. Ces données restent sur votre appareil ; vous pouvez les effacer à tout moment depuis les réglages de votre navigateur.
+Le site peut enregistrer dans votre navigateur (\`localStorage\`) vos préférences, votre choix sur la mesure d'audience et votre progression dans la collection de cartes (cartes obtenues, deniers, scènes visitées et fiches lues, pour les récompenses). Ces données restent sur votre appareil ; vous pouvez les effacer à tout moment depuis les réglages de votre navigateur.
 
 ## Mesure d'audience
 
@@ -99,6 +99,7 @@ Les bornes des époques sont des conventions d'historiens, expliquées pour chac
 - Sons d'ambiance : enregistrements du domaine public et sous CC0 (Wikimedia Commons, Freesound, xeno-canto, OpenGameArt) ; vagues du port : « Smallwaves » par Torsten Nilsson, Work With Sounds, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), modifié. Détail dans le fichier CREDITS.md du dépôt.
 - Relief, cours d'eau et orthophotographie des scènes de Nîmes, d'Arles et du pont du Gard : IGN (RGE ALTI, BD TOPO, BD ORTHO), Licence Ouverte Etalab 2.0. Relief de Rome : TINITALY 1.1, INGV, CC BY 4.0, modifié. Relief de Pompéi et de Constantinople : Copernicus DEM GLO-30, © DLR e.V. et © Airbus Defence and Space GmbH, fourni dans le cadre de COPERNICUS par l'Union européenne et l'ESA, qui n'assument aucune responsabilité pour l'usage qui en est fait. Textures de matériaux : [Poly Haven](https://polyhaven.com) et [ambientCG](https://ambientcg.com), CC0.
 - Territoires romains année par année : J. S. Bennett, E. Mutch, A. Tollefson et al., [Cliopatria v0.2.1](https://github.com/Seshat-Global-History-Databank/cliopatria) (Seshat Global History Databank), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ; données modifiées (extraction des entités romaines, simplification, dates alignées sur le projet, lacune byzantine de 1402 à 1406 comblée par la géométrie identique des années voisines).
+- Illustrations des cartes de la collection : œuvres du domaine public et photographies sous CC0, CC BY ou CC BY-SA, surtout de Wikimedia Commons, recadrées et réduites ; chaque carte cite son œuvre, son auteur et sa licence, et les photographies sous CC BY-SA restent sous cette licence. Les cartes des scènes 3D et des unités de Cannes sont des rendus du projet (CC BY 4.0).
 
 La liste complète des ressources, avec leurs auteurs, licences et modifications, est tenue à jour dans le fichier [CREDITS.md](https://github.com/Maximator13/roma/blob/main/CREDITS.md) du dépôt.`,
   },

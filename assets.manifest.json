@@ -10,10 +10,10 @@
     },
     {
       "path": "scenes/arles/arles.glb",
-      "bytes": 7229856,
-      "sha256": "847b7352c44013172241ad8af749453579500846fe641a6eb87ab32539f5448e",
-      "release": "assets-v8",
-      "file": "847b7352c440-arles.glb"
+      "bytes": 7758200,
+      "sha256": "d4937d58a3c0009f0d1f8ca87a589068cb1c5c2394f1112f03596b1fd4b9def1",
+      "release": "assets-v15",
+      "file": "d4937d58a3c0-arles.glb"
     },
     {
       "path": "scenes/cannes/cannes.glb",
@@ -31,10 +31,10 @@
     },
     {
       "path": "scenes/constantinople/constantinople.glb",
-      "bytes": 14218368,
-      "sha256": "1064a60bc958dec57da508960063b0844f0af89a1ff816cbb02bf6deb9c8aeba",
-      "release": "assets-v14",
-      "file": "1064a60bc958-constantinople.glb"
+      "bytes": 14867628,
+      "sha256": "64984d698ee88163bb8262bd9eb8e4ee997eb838e310faa17201040505a33ab2",
+      "release": "assets-v18",
+      "file": "64984d698ee8-constantinople.glb"
     },
     {
       "path": "scenes/nimes/nimes.glb",
@@ -52,17 +52,17 @@
     },
     {
       "path": "scenes/pompei/pompei.glb",
-      "bytes": 11475544,
-      "sha256": "9a575d0eeab5ee3921d69191fe6f287934c76839294d8e6c24f591fb1b50a495",
-      "release": "assets-v11",
-      "file": "9a575d0eeab5-pompei.glb"
+      "bytes": 12550612,
+      "sha256": "c8ce72f96ef1144e58bcd2a8f9e1040a301920186d34d46fc968d0f2a840d1ca",
+      "release": "assets-v16",
+      "file": "c8ce72f96ef1-pompei.glb"
     },
     {
       "path": "scenes/pont-du-gard/pont-du-gard.glb",
-      "bytes": 4160392,
-      "sha256": "708fbac91203eec12526c58512f557e9ec4221be2f0feaa40404916c4a2c7d6a",
-      "release": "assets-v9",
-      "file": "708fbac91203-pont-du-gard.glb"
+      "bytes": 4678216,
+      "sha256": "64c956865b98e6377296eb5917bb48f254434068749721eda505e216c08e1312",
+      "release": "assets-v17",
+      "file": "64c956865b98-pont-du-gard.glb"
     }
   ]
 }

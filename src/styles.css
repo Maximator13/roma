@@ -176,6 +176,10 @@ a {
   background: linear-gradient(to bottom, rgb(10 7 5 / 0.85), rgb(10 7 5 / 0.45) 70%, transparent);
 }
 
+.site-nav a.site-nav__collection {
+  color: var(--accent-ink);
+}
+
 .site-nav a:hover {
   color: var(--ink);
   text-decoration: underline;

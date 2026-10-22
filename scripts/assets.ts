@@ -10,7 +10,7 @@ import sharp from 'sharp'
 const scenesRoot = '.cache/scenes'
 const buildRoot = '.cache/build/scenes'
 const ktxFolder = 'C:\\Program Files\\KTX-Software\\bin'
-const maxTextureSize: [number, number] = [1024, 1024]
+const maxTextureSize: [number, number] = [2048, 2048]
 const maxSceneBytes = 20_000_000
 
 type SceneReport = { raw: number; optimised: number; triangles: number; meshes: number; materials: number; textures: number }

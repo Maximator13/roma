@@ -120,7 +120,7 @@ function useUiInsets(): UiInsets {
   return insets
 }
 
-export default function Stage() {
+export default function Stage({ paused = false }: { paused?: boolean }) {
   const quality = useApp((state) => state.quality)
   const settings = QUALITY[quality]
   const debug = useMemo(() => isDebug(), [])
@@ -133,6 +133,7 @@ export default function Stage() {
     <>
       <div className="stage" aria-hidden="true">
         <Canvas
+          frameloop={paused ? 'never' : 'always'}
           shadows="percentage"
           dpr={[1, settings.maxDpr]}
           camera={{ position: [0, 40, 20], fov: 40, near: 0.05, far: 400 }}

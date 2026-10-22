@@ -162,6 +162,38 @@ export const sceneSchema = z.strictObject({
   ambience: z.array(ambienceSchema).optional(),
 })
 
+export const CARD_KINDS = ['person', 'place', 'relic', 'unit'] as const
+export const RARITIES = ['common', 'uncommon', 'rare', 'epic', 'legendary'] as const
+
+export const cardSchema = z
+  .strictObject({
+    id: slug,
+    kind: z.enum(CARD_KINDS),
+    rarity: z.enum(RARITIES),
+    year: projectYear,
+    person: slug.optional(),
+    city: slug.optional(),
+    place: slug.optional(),
+    scene: slug.optional(),
+    name: label.max(40).optional(),
+    subtitle: label.max(90).optional(),
+    text: label.max(260),
+    sources: z.array(sourceSchema).min(1),
+  })
+  .refine((card) => card.name !== undefined || card.person !== undefined || card.city !== undefined || card.place !== undefined, 'name is required without a reference')
+  .refine((card) => (card.kind === 'person') === (card.person !== undefined), 'person cards and only them reference a person')
+  .refine((card) => card.kind === 'place' || (card.city === undefined && card.place === undefined && card.scene === undefined), 'only place cards reference a city, a place or a scene')
+
+export const cardArtSchema = z.strictObject({
+  card: slug,
+  title: label,
+  creator: label,
+  date: label.optional(),
+  license: label,
+  licenseUrl: z.url().optional(),
+  sourceUrl: z.url().optional(),
+})
+
 export type EraId = (typeof ERA_IDS)[number]
 export type TrackId = (typeof TRACK_IDS)[number]
 export type Certainty = (typeof CERTAINTIES)[number]
@@ -178,3 +210,7 @@ export type Ambience = z.infer<typeof ambienceSchema>
 export type City = z.infer<typeof citySchema>
 export type Waypoint = z.infer<typeof waypointSchema>
 export type Itinerary = z.infer<typeof itinerarySchema>
+export type CardKind = (typeof CARD_KINDS)[number]
+export type Rarity = (typeof RARITIES)[number]
+export type Card = z.infer<typeof cardSchema>
+export type CardArt = z.infer<typeof cardArtSchema>

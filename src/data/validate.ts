@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { FIRST_YEAR, LAST_YEAR } from '../core/dates.ts'
-import { citySchema, eraSchema, eventSchema, personSchema, placeSchema, itinerarySchema, sceneSchema, trackSchema } from './schema.ts'
+import { cardArtSchema, cardSchema, citySchema, eraSchema, eventSchema, personSchema, placeSchema, itinerarySchema, sceneSchema, trackSchema } from './schema.ts'
 
 export interface Dataset {
   eras: unknown[]
@@ -11,6 +11,8 @@ export interface Dataset {
   scenes: unknown[]
   cities: unknown[]
   itineraries: unknown[]
+  cards: unknown[]
+  cardArt: unknown[]
 }
 
 const forbiddenDash = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`)
@@ -102,6 +104,31 @@ function cityErrors(cities: z.infer<typeof citySchema>[], sceneIds: Set<string>)
   })
 }
 
+function cardErrors(data: {
+  cards: z.infer<typeof cardSchema>[]
+  cardArt: z.infer<typeof cardArtSchema>[]
+  people: z.infer<typeof personSchema>[]
+  places: z.infer<typeof placeSchema>[]
+  cities: z.infer<typeof citySchema>[]
+  scenes: z.infer<typeof sceneSchema>[]
+}): string[] {
+  const known = {
+    person: new Set(data.people.map((item) => item.id)),
+    place: new Set(data.places.map((item) => item.id)),
+    city: new Set(data.cities.map((item) => item.id)),
+    scene: new Set(data.scenes.map((item) => item.id)),
+  }
+  const cardIds = new Set(data.cards.map((card) => card.id))
+  const references = data.cards.flatMap((card) =>
+    (['person', 'place', 'city', 'scene'] as const)
+      .filter((field) => card[field] !== undefined && !known[field].has(card[field] ?? ''))
+      .map((field) => `card ${card.id}: unknown ${field} ${card[field]}`),
+  )
+  const orphanArt = data.cardArt.filter((art) => !cardIds.has(art.card)).map((art) => `card art ${art.card}: unknown card`)
+  const repeatedArt = data.cardArt.filter((art, index) => data.cardArt.findIndex((other) => other.card === art.card) !== index).map((art) => `card art ${art.card}: duplicate`)
+  return [...references, ...orphanArt, ...repeatedArt]
+}
+
 export function validateDataset(dataset: Dataset): string[] {
   const schemaProblems = [
     ...schemaErrors('era', eraSchema, dataset.eras),
@@ -112,6 +139,8 @@ export function validateDataset(dataset: Dataset): string[] {
     ...schemaErrors('scene', sceneSchema, dataset.scenes),
     ...schemaErrors('city', citySchema, dataset.cities),
     ...schemaErrors('itinerary', itinerarySchema, dataset.itineraries),
+    ...schemaErrors('card', cardSchema, dataset.cards),
+    ...schemaErrors('card art', cardArtSchema, dataset.cardArt),
   ]
   const textProblems = dashErrors(dataset, 'data')
   if (schemaProblems.length > 0) return [...schemaProblems, ...textProblems]
@@ -124,6 +153,8 @@ export function validateDataset(dataset: Dataset): string[] {
     scenes: dataset.scenes.map((item) => sceneSchema.parse(item)),
     cities: dataset.cities.map((item) => citySchema.parse(item)),
     itineraries: dataset.itineraries.map((item) => itinerarySchema.parse(item)),
+    cards: dataset.cards.map((item) => cardSchema.parse(item)),
+    cardArt: dataset.cardArt.map((item) => cardArtSchema.parse(item)),
   }
   return [
     ...textProblems,
@@ -135,6 +166,8 @@ export function validateDataset(dataset: Dataset): string[] {
     ...duplicateErrors('scene', data.scenes),
     ...duplicateErrors('city', data.cities),
     ...duplicateErrors('itinerary', data.itineraries),
+    ...duplicateErrors('card', data.cards),
+    ...cardErrors(data),
     ...sceneErrors(data.scenes),
     ...cityErrors(data.cities, new Set(data.scenes.map((scene) => scene.id))),
     ...eraContinuityErrors(data.eras),

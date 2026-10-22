@@ -8,6 +8,7 @@ const POMPEI: ModelSceneConfig = {
   overview: { azimuth: 160, elevation: 30 },
   sky: { turbidity: 20, rayleigh: 3.5 },
   exposure: 0.78,
+  clouds: 0,
   views: { 'vue-d-ensemble': { position: [900, 600, 3200], target: [-2400, 1500, -4300] } },
 }
 

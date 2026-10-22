@@ -1,8 +1,10 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { ambienceTargets, playAmbience, pointIdAt } from './core/ambience.ts'
 import { formatDate } from './core/dates.ts'
+import { recordVisit } from './core/explore.ts'
 import { frenchSpacing } from './core/typography.ts'
 import { internalRoute, routeToHash, type Route } from './core/route.ts'
+import { COLLECTION_UI } from './data/collectionUi.ts'
 import { eras } from './data/eras.ts'
 import { events } from './data/events.ts'
 import { pages } from './data/pages.ts'
@@ -20,6 +22,7 @@ import { findScene, isPlayable } from './scenes/registry.ts'
 import { EraCaption, EventPanel, NotFoundPanel, PagePanel, ScenePanel, SceneShortcuts } from './ui/panels.tsx'
 
 const Stage = lazy(() => import('./stage/Stage.tsx'))
+const CollectionPage = lazy(() => import('./collection/CollectionPage.tsx'))
 
 function documentTitle(route: Route): string {
   if (route.name === 'event') {
@@ -34,6 +37,7 @@ function documentTitle(route: Route): string {
     const scene = findScene(route.id)
     if (scene) return `${scene.title} | ${SITE.name}`
   }
+  if (route.name === 'collection') return `${COLLECTION_UI.pageTitle} | ${SITE.name}`
   if (route.name === 'not-found') return `${UI.notFoundTitle} | ${SITE.name}`
   return SITE.title
 }
@@ -61,6 +65,7 @@ function useHashRoute() {
   }, [])
   useEffect(() => {
     document.title = documentTitle(route)
+    recordVisit(route)
   }, [route])
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -185,36 +190,45 @@ export function App() {
   return (
     <>
       <Suspense fallback={null}>
-        <Stage />
+        <Stage paused={route.name === 'collection'} />
       </Suspense>
-      <div className={inScene ? 'app app--scene' : 'app'}>
-        <header className="header">
-          <h1 className="brand-title">
-            <a className="brand" href="#/">
-              <span className="brand__name">{UI.brand}</span>
-              <span className="brand__subtitle">{UI.subtitle}</span>
-            </a>
-          </h1>
-          <nav className="site-nav" aria-label={UI.footerLabel}>
-            {PAGE_LINKS.map((link) => (
-              <a key={link.id} href={routeToHash({ name: 'page', id: link.id })}>
-                {link.label}
+      {route.name === 'collection' ? (
+        <Suspense fallback={null}>
+          <CollectionPage />
+        </Suspense>
+      ) : (
+        <div className={inScene ? 'app app--scene' : 'app'}>
+          <header className="header">
+            <h1 className="brand-title">
+              <a className="brand" href="#/">
+                <span className="brand__name">{UI.brand}</span>
+                <span className="brand__subtitle">{UI.subtitle}</span>
               </a>
-            ))}
-          </nav>
-        </header>
-        <main className="main">
-          {!inScene && (
-            <div className="main__side">
-              {!welcome && <EraCaption index={eraIndex} />}
-              {!welcome && <SceneShortcuts index={eraIndex} />}
-              {route.name === 'home' && <Intro />}
-            </div>
-          )}
-          <ActivePanel route={route} />
-        </main>
-        {!inScene && <Timeline />}
-      </div>
+            </h1>
+            <nav className="site-nav" aria-label={UI.footerLabel}>
+              <a className="site-nav__collection" href={routeToHash({ name: 'collection' })}>
+                {COLLECTION_UI.linkLabel}
+              </a>
+              {PAGE_LINKS.map((link) => (
+                <a key={link.id} href={routeToHash({ name: 'page', id: link.id })}>
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+          </header>
+          <main className="main">
+            {!inScene && (
+              <div className="main__side">
+                {!welcome && <EraCaption index={eraIndex} />}
+                {!welcome && <SceneShortcuts index={eraIndex} />}
+                {route.name === 'home' && <Intro />}
+              </div>
+            )}
+            <ActivePanel route={route} />
+          </main>
+          {!inScene && <Timeline />}
+        </div>
+      )}
       <ConsentBanner />
     </>
   )

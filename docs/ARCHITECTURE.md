@@ -15,17 +15,19 @@ Ce document décrit comment le site est construit et pourquoi. Il complète `doc
 ```
 .github/workflows/deploy.yml   contrôles, build, tests Playwright, déploiement Pages
 docs/                          BRIEF, PROGRESS, ARCHITECTURE, A_VERIFIER
-public/                        favicon, image de partage
+public/                        favicon, image de partage, cards/ (illustrations des cartes)
 scripts/
   check-style.ts               aucun commentaire dans le code, aucun tiret cadratin ni demi-cadratin
   validate-data.ts             validation zod et références croisées, avant chaque build
   postbuild.ts                 pages de partage, sitemap.xml, 404.html, budget du site
+  cards-art.ts                 recadrage WebP des illustrations des cartes, cardArt.ts et section de CREDITS.md
 src/
   core/      dates.ts (module de dates unique), route.ts, motion.ts, analytics.ts
   data/      schema.ts (zod), eras, tracks, events, places, people, scenes, pages, ui
   timeline/  viewport, ticks, layout (zoom sémantique), lanes, keys, Timeline.tsx
   stage/     Stage.tsx (Canvas), Backdrop, GradingEffect, grading, quality, DebugHud
   ui/        panels (cartels), Markdown, ConsentBanner
+  collection/  page Collection, chargée à la demande : tirage (game), catalogue, sauvegarde, cartes
   scenes/    une scène par dossier, à partir de la phase 2
 blender/     un script par scène, à partir de la phase 2
 tests/       smoke.spec.ts (fumée et poids du premier écran), look.spec.ts (captures)
@@ -113,14 +115,15 @@ Les graduations de la frise tombent sur des années historiques rondes des deux 
 - **Repères dans Blender** : pour chaque point d'intérêt, un nœud vide `poi_<id>` à la position de la caméra et un nœud vide `poi_<id>_target` sur le sujet regardé ; la paire `poi_vue-d-ensemble` et `poi_vue-d-ensemble_target`, facultative, remplace la vue d'ensemble calculée. Les positions suffisent, l'orientation des nœuds est ignorée. L'optimisation garde ces nœuds (`prune` avec `keepLeaves`).
 - **Vie dans les scènes** (`src/scenes/kit/Life.tsx`), lue dans le modèle : chaînes de nœuds vides `walk_<trajet>_<nn>` pour les trajets de promenade, maillages `walker_<variante>` (pieds à l'origine, placés hors scène) clonés en instances qui marchent en aller et retour, nœuds `smoke_<n>` pour la fumée (panneaux instanciés face à la caméra) et `birds_<n>` pour des vols d'oiseaux en cercle. Densité réduite de moitié en qualité basse ; mouvements figés avec `prefers-reduced-motion`.
 - **Effets lus dans le modèle** : nœud `eruption_vent` (colonne plinienne) et nœuds `ash_<n>` (chute de cendres) ; nœud `beacon` pour un feu (lueur scintillante, lumière ponctuelle et fumée) ; tout matériau nommé `water`, `sea`, `river` ou `river_water` devient une eau animée qui reflète le ciel (vagues filtrées selon la taille du pixel pour éviter le moirage) ; les matériaux `terrain*` et `ground*` (sauf `*_far`) reçoivent un grain en coordonnées monde qui s'efface au loin.
-- **Rendu des scènes** : tonemapping neutre (Khronos PBR Neutral), étalonnage par époque relevé en exposition et en saturation dans les scènes, exposition propre à une scène (`exposure` dans sa configuration, par exemple Pompéi sous la cendre), halo léger sur les sources très lumineuses en qualité moyenne et haute, ombres de 1024, 2048 ou 4096 px selon la qualité.
+- **Rendu des scènes** : tonemapping neutre (Khronos PBR Neutral), étalonnage par époque relevé en exposition et en saturation dans les scènes, exposition propre à une scène (`exposure` dans sa configuration, par exemple Pompéi sous la cendre), halo léger sur les sources très lumineuses en qualité moyenne et haute, ombres de 1024, 2048 ou 4096 px selon la qualité. Nuages en panneaux instanciés (deux couches, l'une à l'horizon, l'autre haute), réglables par scène (`clouds`, 0 pour Pompéi). Textures plafonnées à 2048 px à l'optimisation.
 - **Fichiers** : `npm run assets` optimise `.cache/scenes/<id>/<id>.glb` vers `.cache/build/scenes/<id>/<id>.glb` ; `npm run assets:publish` les publie ; `npm run assets:pull` les place dans `public/assets/` (ignoré par git), en CI avant le build.
 
 ## 8. Routage, état et pages de partage
 
-- **Routes** : `#/`, `#/evenement/<slug>`, `#/mentions-legales`, `#/confidentialite`, `#/conditions`, `#/sources` ; toute autre adresse affiche « Page introuvable ». Le titre du document suit la route.
+- **Routes** : `#/`, `#/evenement/<slug>`, `#/mentions-legales`, `#/confidentialite`, `#/conditions`, `#/sources`, `#/collection` ; toute autre adresse affiche « Page introuvable ». Le titre du document suit la route.
 - **Navigation interne** : `history.pushState`. Un écouteur global intercepte les liens internes, y compris ceux des textes markdown. Retour, avance et rechargement conservent l'état.
 - **Pages de partage** : le post-build copie `index.html` pour chaque événement dans `/roma/evenement/<slug>/`, avec un titre, une description, une URL canonique et une carte Open Graph et Twitter propres, plus un cartel statique dans `#root` pour les robots. Le visiteur arrive directement sur l'événement dans l'application, sans redirection. Contrairement à une redirection, cela permet aux moteurs d'indexer chaque événement.
+- **Collection** : `#/collection` monte une page à part, chargée à la demande avec ses styles ; la toile WebGL reste montée mais ne dessine plus (`frameloop="never"`), et la frise retrouve son état au retour. Le seul code de la collection présent dans l'application principale est `core/explore.ts`, qui note dans `localStorage` (`roma.explore`) les scènes visitées et les fiches lues ; la page les convertit en récompenses à l'ouverture. La progression est dans `roma.collection` (version 1, relue champ par champ). Le tirage est déterministe : graine `joueur:jour:date`, générateur mulberry32, probabilités et garanties dans `collection/game.ts`, couverts par des tests.
 - **État** : un magasin Zustand (`route`, `view`, `quality`). La fenêtre de la frise, modifiée à chaque image pendant un geste, est lue directement par la scène 3D sans passer par React.
 
 ## 9. Build, CI et budgets
