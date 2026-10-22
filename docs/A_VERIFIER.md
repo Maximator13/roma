@@ -982,3 +982,270 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 - **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
 - **Décision** : à trancher
 
+## Scène Alexandrie et son phare (130)
+
+### 1. Hauteur totale du phare et proportions des trois étages
+
+- **Hypothèse retenue** : Environ 103 m au total, base carrée de 30 m de côté, proportions d'étages d'après Thiersch.
+- **Pourquoi un doute** : Aucun texte antique ne chiffre la hauteur ; les mesures d'al-Balawi décrivent l'état médiéval ; la fourchette de 103 à 118 m est citée par Wikipédia d'après McKenzie (2011, p. 42), page non contrôlée sur l'ouvrage.
+- **Sources** : J. McKenzie, The Architecture of Alexandria and Egypt, 2007 (réimpr. 2011); D. Behrens-Abouseif, Muqarnas 23, 2006; H. Thiersch, Pharos, 1909; https://en.wikipedia.org/wiki/Lighthouse_of_Alexandria
+- **Décision** : à trancher
+
+### 2. Date d'achèvement du phare
+
+- **Hypothèse retenue** : Garder -283 (Eusèbe, Ol. 124, 1) avec l'indicateur « débattu » et citer la Souda (vers 297 av. J.-C., -296).
+- **Pourquoi un doute** : Carrez-Maratray (2025) défend 297 ; seul le résumé a été lu. La Souda ne donne pas d'année : elle situe la construction au moment de l'avènement de Pyrrhos.
+- **Sources** : Souda, s.v. Pharos (Suda On Line, phi 114); Eusèbe, Chronique, Ol. 124, 1 (https://www.attalus.org/translate/jerome1.html); doi:10.1515/apf-2025-0003
+- **Décision** : à trancher
+
+### 3. Identité de la statue sommitale
+
+- **Hypothèse retenue** : Figure masculine debout tenant un sceptre, non nommée à l'écran ; le cartel cite Zeus Sauveur, Poséidon et Hélios.
+- **Pourquoi un doute** : Les catalogues de monnaies divergent ; la mention de Zeus Sauveur chez Posidippe n'a pas été relue sur le texte ; Carrez-Maratray lit les « dieux Sauveurs » de la dédicace comme Ptolémée Ier et Bérénice.
+- **Sources** : https://numisview.com/reference/things/lighthouse-of-alexandria-pharos; https://www.deamoneta.com/auctions/view/1044/275; Posidippe, épigramme 115 Austin et Bastianini
+- **Décision** : à trancher
+
+### 4. Nombre de tritons
+
+- **Hypothèse retenue** : Quatre tritons aux angles de la première corniche.
+- **Pourquoi un doute** : Les monnaies (RPC II 2676 ; Antonin le Pieux an 12) n'en montrent que deux, de profil ; quatre est une restitution.
+- **Sources** : https://rpc.ashmus.ox.ac.uk/coins/2/2676; https://en.wikipedia.org/wiki/Lighthouse_of_Alexandria
+- **Décision** : à trancher
+
+### 5. Références des monnaies d'Hadrien au phare
+
+- **Hypothèse retenue** : Hémidrachmes des ans 17 à 19 (132/133 à 134/135, Emmett 1103) et an 2 (117/118, RPC III 5118).
+- **Pourquoi un doute** : Références relevées dans des catalogues de vente ; la référence Dattari-Savio 1664 (an 8) de la proposition initiale n'a pas été retrouvée et est retirée.
+- **Sources** : https://www.numisbids.com/sale/8432/lot/63; https://www.deamoneta.com/auctions/view/1044/241; RPC III en ligne
+- **Décision** : à trancher
+
+### 6. Date de pose des obélisques du Césaréum
+
+- **Hypothèse retenue** : 13 ou 12 av. J.-C., an 18 d'Auguste, d'après les crabes de bronze.
+- **Pourquoi un doute** : Le Metropolitan Museum date de 13 av. J.-C. ; le projet du Bard College propose une autre lecture ; sans effet sur la scène de 130, mais utile au cartel.
+- **Sources** : https://www.metmuseum.org/art/collection/search/551893; https://thecentralparkobelisk.commons.bgc.bard.edu/?p=126
+- **Décision** : à trancher
+
+### 7. Numéro CIL de l'inscription des crabes
+
+- **Hypothèse retenue** : CIL III 6588.
+- **Pourquoi un doute** : Numéro non retrouvé dans les sources consultées (ni le Met ni le projet du Bard College ne le citent) ; à contrôler dans l'EDCS.
+- **Sources** : https://db.edcs.eu/epigr/epi.php?s_sprache=fr; https://www.metmuseum.org/art/collection/search/551894
+- **Décision** : à trancher
+
+### 8. Paragraphe de Philon sur le Sebasteion
+
+- **Hypothèse retenue** : Ambassade à Caius, 150 et 151.
+- **Pourquoi un doute** : La description se trouve dans la plage 141 à 160 de la traduction Yonge ; numérotation exacte non contrôlée.
+- **Sources** : https://cts.perseids.org/read/greekLit/tlg0018/tlg031/1st1K-eng1/145-153
+- **Décision** : à trancher
+
+### 9. Date de construction de l'Heptastade
+
+- **Hypothèse retenue** : Valeur de commodité -280.
+- **Pourquoi un doute** : César l'attribue aux « rois précédents » ; Marriner, Goiran et Morhange (2008) la placent peu après la fondation, sur le modèle de Tyr.
+- **Sources** : César, Guerre civile, III, 112; https://www.ancientportsantiques.com/wp-content/uploads/Documents/PLACES/Levant/Alexandria-Tyr-Marriner2008.pdf
+- **Décision** : à trancher
+
+### 10. Ampleur de l'affaissement de la côte royale
+
+- **Hypothèse retenue** : Environ 6 m, à présenter comme « plusieurs mètres » à l'écran.
+- **Pourquoi un doute** : Le chiffre vient d'un article de vulgarisation (Archaeology, 1999) ; les causes et dates (séisme de 365 et suivants) divergent selon les sources.
+- **Sources** : https://archive.archaeology.org/9903/abstracts/map.html; F. Goddio et al., Alexandria: The Submerged Royal Quarters, 1998; Ammien Marcellin, XXVI, 10, 15 à 19 (séisme de 365)
+- **Décision** : à trancher
+
+### 11. État en 130 des palais du Lochias, d'Antirhodos et du Timonium
+
+- **Hypothèse retenue** : Bâtiments debout et entretenus, usage administratif, rendu sans faste royal.
+- **Pourquoi un doute** : Aucune source trouvée sur leur usage à l'époque d'Hadrien.
+- **Sources** : Strabon, XVII, 1, 9; Plutarque, Antoine, 69
+- **Décision** : à trancher
+
+### 12. Habitat de l'île de Pharos en 130
+
+- **Hypothèse retenue** : Peu de bâti : enceinte du phare, sanctuaire d'Isis Pharia, quelques maisons de marins.
+- **Pourquoi un doute** : Strabon décrit l'île à l'époque augustéenne ; rien sur une réoccupation au IIe siècle ; emplacement du sanctuaire d'Isis débattu.
+- **Sources** : Strabon, XVII, 1, 6; César, Guerre civile, III, 112
+- **Décision** : à trancher
+
+### 13. Ponts de l'Heptastade en 130
+
+- **Hypothèse retenue** : Deux passages ouverts, franchis par des ponts.
+- **Pourquoi un doute** : Strabon décrit l'état augustéen ; l'envasement progressif a pu en fermer un plus tôt ; largeur de la digue inconnue.
+- **Sources** : Strabon, XVII, 1, 6; Goiran et al. ; Hesse 1998
+- **Décision** : à trancher
+
+### 14. Mois du séjour d'Hadrien et date de la mort d'Antinoüs
+
+- **Hypothèse retenue** : Arrivée à l'été 130 ; Antinoopolis fondée le 30 octobre 130.
+- **Pourquoi un doute** : Leyde parle de la visite de l'été 130, E. Selim d'une visite de juillet ou août 130 au printemps 131 ; l'Histoire Auguste ne donne aucun mois ; la date du 30 octobre n'a été lue que dans des sources modernes (Global Egyptian Museum, Université de Munich), source antique non relue.
+- **Sources** : https://www.universiteitleiden.nl/en/preview/humanities/papyrological-institute/the-papyrus-collection/small-history-versus-big-history; https://www.globalegyptianmuseum.org/glossary.aspx?id=66; Histoire Auguste, Hadrien, 14, 5
+- **Décision** : à trancher
+
+### 15. Coordonnées des monuments et de la ville
+
+- **Hypothèse retenue** : Valeurs approchées pour la ville, Lochias, Antirhodos, Timonium, Heptastade et Césaréum.
+- **Pourquoi un doute** : Pleiades bloque la consultation automatique ; seul le phare (727197 : 31,214039 ; 29,885368) est confirmé par l'index de recherche ; le point représentatif de 727070 n'a pas été lu.
+- **Sources** : https://pleiades.stoa.org/places/727197; https://pleiades.stoa.org/places/727070; Plans de l'IEASM et du Centre d'études alexandrines
+- **Décision** : à trancher
+
+### 16. Restitution
+
+- **Hypothèse retenue** : Pharos total height is now 107.2 m, inside the proposal's 103 to 118 m range, with tier heights after Thiersch. The figure should be recorded under the existing height entry in docs/A_VERIFIER.md; that file is outside my scope, so the integrator must add it.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 17. Restitution
+
+- **Hypothèse retenue** : The summit is restored as an open columned hearth under a low stone cone with a gilded rim, with the statue on a pedestal. This is a hypothesis: it avoids the anachronistic dome and leaves room for the site's beacon smoke.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 18. Restitution
+
+- **Hypothèse retenue** : Enclosure towers are square with a plain coping, to avoid any likeness to the Qaitbay fort. The gate is shown open.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 19. Restitution
+
+- **Hypothèse retenue** : Royal palaces are reduced to 1 or 2 storeys, with small high windows, sea-facing colonnaded porches and paved courts with olive beds, on beaten-earth ground. The palaces are still not linked by stoas.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 20. Restitution
+
+- **Hypothèse retenue** : Anchored ships swing bow to the north under the etesian wind.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+
+## Scène Constantinople et Sainte-Sophie (562)
+
+### 1. Azimut exact de l'axe de Sainte-Sophie
+
+- **Hypothèse retenue** : Axe orienté vers le lever du soleil au solstice d'hiver, soit environ 121 à 124° (lever calculé à 121° le 24 décembre 562 ; « 33,7° au sud-est » selon un blog citant T. Detorakis).
+- **Pourquoi un doute** : Seul le résumé de Schibille (2009) a été lu, il confirme l'alignement mais pas la valeur ; le chiffre du blog n'est pas une mesure publiée ; mesurer l'axe sur le relevé OSM ou sur Mainstone avant de caler le soleil.
+- **Sources** : N. Schibille, Science in Context 22 (2009), p. 27 à 46, DOI 10.1017/S0269889708002068; https://www.johnsanidopoulos.com/2021/12/hagia-sophia-in-constantinople-and.html
+- **Décision** : à trancher
+
+### 2. Diamètre et hauteur de naissance de la coupole de 562
+
+- **Hypothèse retenue** : Diamètre d'environ 31 m (30,37 sur 31,87 m, légèrement elliptique), sommet à 55,6 m, naissance vers 40 m si la calotte est hémisphérique (calcul).
+- **Pourquoi un doute** : Les chiffres publiés divergent (30,37 à 31,87 m, 30,9 à 31,8 m, 31 m, 31,24 m, et 32,7 à 33,5 m dans l'article Hagia Sophia de Wikipédia) et la coupole actuelle a été en partie refaite deux fois.
+- **Sources** : R. J. Mainstone, Hagia Sophia, 1988; https://en.wikipedia.org/wiki/List_of_tallest_domes; https://en.wikipedia.org/wiki/Hagia_Sophia
+- **Décision** : à trancher
+
+### 3. Revêtement extérieur de Sainte-Sophie en 562
+
+- **Hypothèse retenue** : Brique sous enduit clair, conformément au cahier des charges.
+- **Pourquoi un doute** : Wikipédia en anglais, citant K. Dark (2019), affirme que l'extérieur était à l'origine plaqué de marbre ; à trancher avant de texturer.
+- **Sources** : https://en.wikipedia.org/wiki/Hagia_Sophia; K. Dark et J. Kostenec, Hagia Sophia in Context, Oxbow, 2019; https://centaur.reading.ac.uk/31388
+- **Décision** : à trancher
+
+### 4. Loci exacts de Théophane pour la seconde consécration
+
+- **Hypothèse retenue** : Théophane, AM 6055 (24 décembre, indiction 11).
+- **Pourquoi un doute** : Date du 24 décembre 562 confirmée par Mango (1972) et Wikipédia ; Malalas (p. 495) ne donne que l'indiction ; le passage de Théophane n'a pas été relu, et une source secondaire donne 563 (décalage de l'année byzantine).
+- **Sources** : Théophane, trad. Mango et Scott, 1997; https://projects.mcah.columbia.edu/medieval-architecture/htm/or/ma_or_gloss_collapse.htm; https://projects.mcah.columbia.edu/medieval-architecture/htm/or/ma_or_gloss_essay_paul.htm
+- **Décision** : à trancher
+
+### 5. Hauteur et emplacement de la colonne de Justinien, hauteur de la statue
+
+- **Hypothèse retenue** : Environ 35 à 50 m au total, sur le côté ouest de l'Augustéon, à l'est du Milion ; statue de quelques mètres.
+- **Pourquoi un doute** : Estimations de 50 m (compte rendu de Boeck, BMCR) à 70 m (Buondelmonti) ; BMCR rapporte une estimation de Boeck de 24,6 pieds pour la statue, à relire dans le livre (p. 60) ; source primaire de la date de 543 non relue.
+- **Sources** : https://bmcr.brynmawr.edu/?p=65424; https://en.wikipedia.org/wiki/Column_of_Justinian; E. Boeck 2021
+- **Décision** : à trancher
+
+### 6. Existence des murs de mer en 562
+
+- **Hypothèse retenue** : Murs de quai et courtines basses le long de la Marmara et de la Corne d'Or, d'après la mention de 439.
+- **Pourquoi un doute** : C. Mango doute de toute fortification maritime dans l'Antiquité tardive, faute de mention avant vers 700.
+- **Sources** : https://en.wikipedia.org/wiki/Walls_of_Constantinople; C. Mango, Le Développement urbain de Constantinople, 1985
+- **Décision** : à trancher
+
+### 7. Population de Constantinople en 562
+
+- **Hypothèse retenue** : De 200 000 à 300 000 habitants après la peste.
+- **Pourquoi un doute** : Estimations divergentes (300 000 en 542 et 100 000 vers 600 pour Livius, 500 000 avant la peste selon d'autres) ; l'article de D. Jacoby (Byzantion 31, 1961) n'a pas été consulté.
+- **Sources** : https://www.livius.org/articles/place/constantinople-istanbul/byzantine-capital/; D. Jacoby, « La population de Constantinople à l'époque byzantine », Byzantion 31 (1961)
+- **Décision** : à trancher
+
+### 8. Quadrige de bronze sur les carceres en 562
+
+- **Hypothèse retenue** : Ne pas le montrer.
+- **Pourquoi un doute** : Sa présence à l'hippodrome est attestée avant 1204, mais pas sa date d'installation ; son origine grecque ou romaine n'est pas établie.
+- **Sources** : https://en.wikipedia.org/wiki/Hippodrome_of_Constantinople; https://www.worldhistory.org/article/1158/the-hippodrome-of-constantinople/
+- **Décision** : à trancher
+
+### 9. Niveau de la piste de l'hippodrome
+
+- **Hypothèse retenue** : Piste de 2 à 4,5 m sous le sol actuel ; caler le sol de la scène sur la base sculptée de l'obélisque.
+- **Pourquoi un doute** : Encyclopaedia Romana donne environ 15 pieds, Wikipédia environ 2 m.
+- **Sources** : https://penelope.uchicago.edu/encyclopaedia_romana/circusmaximus/sphendone.html; https://en.wikipedia.org/wiki/Hippodrome_of_Constantinople
+- **Décision** : à trancher
+
+### 10. Obélisque maçonné en 562
+
+- **Hypothèse retenue** : Présent, en pierre nue (origine théodosienne).
+- **Pourquoi un doute** : Date d'origine inconnue ; seule la restauration du Xe siècle est attestée par l'inscription.
+- **Sources** : https://en.wikipedia.org/wiki/Walled_Obelisk
+- **Décision** : à trancher
+
+### 11. Date de la reconstruction de Sainte-Irène
+
+- **Hypothèse retenue** : Reconstruction justinienne achevée vers 548.
+- **Pourquoi un doute** : Procope (I, 2, 13) ne donne pas de date ; Wikipédia donne 548 dans le texte et 532 dans une légende ; date du séisme de 740 donnée au 26 ou au 20 octobre selon l'article.
+- **Sources** : https://en.wikipedia.org/wiki/Hagia_Irene; https://en.wikipedia.org/wiki/740_Constantinople_earthquake
+- **Décision** : à trancher
+
+### 12. Positions de la Chalkè, du Sénat et du kathisma
+
+- **Hypothèse retenue** : Chalkè au sud de l'Augustéon, Sénat à l'est, kathisma sur le côté est de l'hippodrome.
+- **Pourquoi un doute** : Topographie du Grand Palais débattue ; coordonnées estimées à environ 50 à 80 m près.
+- **Sources** : C. Mango, The Brazen House, 1959; https://livius.org/articles/place/constantinople-istanbul/constantinople-photos/constantinople-augusteon-square
+- **Décision** : à trancher
+
+### 13. Gréement des navires en 562
+
+- **Hypothèse retenue** : Navires marchands à voile latine ou carrée, dromons à un rang de rames avec voile latine.
+- **Pourquoi un doute** : Usage de la voile latine dans la Méditerranée du VIe siècle à confirmer dans les publications de Yenikapı (quatre galères y ont été trouvées).
+- **Sources** : https://isac.uchicago.edu/article/lecture-ufuk-kocaba%C5%9F-yenikapi-byzantine-shipwrecks; Procope, Histoire des guerres, III, 11, 15 et 16
+- **Décision** : à trancher
+
+### 14. Étendue des mosaïques de Sainte-Sophie en décembre 562
+
+- **Hypothèse retenue** : Voûtes d'or et croix complètes, comme les décrit Paul le Silentiaire en 563.
+- **Pourquoi un doute** : Wikipédia en anglais dit les premières mosaïques achevées sous Justin II (après 565).
+- **Sources** : Paul le Silentiaire, v. 489, 506 et 668; https://en.wikipedia.org/wiki/Hagia_Sophia
+- **Décision** : à trancher
+
+### 15. Restitution
+
+- **Hypothèse retenue** : Ambon à 6,5 m à l'est du centre, sur l'axe (Xydis, Mainstone), à confirmer.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 16. Restitution
+
+- **Hypothèse retenue** : Coupole de Sainte-Irène avant 740 restituée basse : rayon 8,3 m, flèche 5 m, sommet vers 23,4 m, 8 petites fenêtres.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 17. Restitution
+
+- **Hypothèse retenue** : Baptistère en HS(-40,-45) qui interrompt le portique nord de l'Augustéon : position débattue.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 18. Restitution
+
+- **Hypothèse retenue** : Gardes de la Chalkè en deux files devant les portes, tournés vers la place.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 19. Restitution
+
+- **Hypothèse retenue** : Faisceaux de lumière calculés pour un soleil à 138 degrés d'azimut et 13 degrés de hauteur. Ce sont des volumes translucides émissifs (matériau light_beam en mélange alpha), pas un éclairage réel.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher

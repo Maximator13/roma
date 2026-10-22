@@ -2,6 +2,13 @@
   "version": 1,
   "assets": [
     {
+      "path": "scenes/alexandrie/alexandrie.glb",
+      "bytes": 6911200,
+      "sha256": "66b697b797bc79043a1dec3e29af0d338eea23672c25d6cea8ef726a91530efa",
+      "release": "assets-v13",
+      "file": "66b697b797bc-alexandrie.glb"
+    },
+    {
       "path": "scenes/arles/arles.glb",
       "bytes": 7229856,
       "sha256": "847b7352c44013172241ad8af749453579500846fe641a6eb87ab32539f5448e",
@@ -21,6 +28,13 @@
       "sha256": "1373f24addbbfd5d4bd3c33b3d178d39723a656bc9bf0c201d891b8076f1fb5c",
       "release": "assets-v12",
       "file": "1373f24addbb-colisee.glb"
+    },
+    {
+      "path": "scenes/constantinople/constantinople.glb",
+      "bytes": 14218368,
+      "sha256": "1064a60bc958dec57da508960063b0844f0af89a1ff816cbb02bf6deb9c8aeba",
+      "release": "assets-v14",
+      "file": "1064a60bc958-constantinople.glb"
     },
     {
       "path": "scenes/nimes/nimes.glb",

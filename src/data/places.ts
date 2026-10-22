@@ -82,6 +82,14 @@ export const places: Place[] = [
     "pleiadesId": 108751
   },
   {
+    "id": "alexandrie",
+    "name": "Alexandrie (Égypte)",
+    "ancientName": "Alexandreia, Alexandria",
+    "lat": 31.2014,
+    "lon": 29.9098,
+    "pleiadesId": 727070
+  },
+  {
     "id": "constantinople",
     "name": "Constantinople (Istanbul)",
     "ancientName": "Constantinopolis (anciennement Byzantium)",

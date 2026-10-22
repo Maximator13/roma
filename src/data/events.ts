@@ -1546,6 +1546,45 @@ export const events: HistoricalEvent[] = [
     "scene": "pantheon"
   },
   {
+    "id": "hadrien-a-alexandrie",
+    "title": "Hadrien à Alexandrie",
+    "start": 130,
+    "precision": "year",
+    "certainty": "attested",
+    "era": "haut-empire",
+    "track": "rome",
+    "category": "politics",
+    "importance": 3,
+    "placeId": "alexandrie",
+    "people": [
+      "hadrien"
+    ],
+    "summary": "En 130, lors de son grand voyage en Orient, Hadrien séjourne à Alexandrie, capitale de l'Égypte romaine, et dispute avec les savants du Musée. Le phare de Sostratos veille toujours sur le Grand Port.",
+    "body": "L'empereur arrive en Égypte à l'été 130 : des papyrus montrent que les villages réunissent des provisions dès décembre 129 pour accueillir son cortège. À Alexandrie, il interroge les professeurs du Musée, qu'il accable de questions selon l'Histoire Auguste.\n\nPendant la remontée du Nil qui suit, son favori Antinoüs se noie. Hadrien fonde en sa mémoire Antinoopolis, le 30 octobre 130 selon la chronologie moderne usuelle.\n\nLa ville qu'il découvre est l'une des plus grandes du monde romain : le phare haut d'une centaine de mètres, l'Heptastade qui relie l'île de Pharos au continent, le Césaréum achevé sous Auguste, le Musée et sa bibliothèque.",
+    "sources": [
+      {
+        "kind": "ancient",
+        "author": "Histoire Auguste",
+        "work": "Vie d'Hadrien",
+        "locus": "14, 5 à 7 et 20, 2",
+        "url": "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Historia_Augusta/Hadrian/2*.html"
+      },
+      {
+        "kind": "ancient",
+        "author": "Dion Cassius",
+        "work": "Histoire romaine",
+        "locus": "LXIX, 11"
+      },
+      {
+        "kind": "modern",
+        "author": "Université de Leyde, Institut papyrologique",
+        "work": "« Small history versus big history »",
+        "url": "https://www.universiteitleiden.nl/en/preview/humanities/papyrological-institute/the-papyrus-collection/small-history-versus-big-history"
+      }
+    ],
+    "scene": "alexandrie"
+  },
+  {
     "id": "apogee-de-l-empire",
     "title": "Mort de Trajan : l'Empire à son apogée",
     "start": 117,
@@ -2871,6 +2910,46 @@ export const events: HistoricalEvent[] = [
         "work": "Hagia Sophia: Architecture, Structure and Liturgy of Justinian's Great Church (Thames and Hudson, 1988)"
       }
     ]
+  },
+  {
+    "id": "seconde-consecration-de-sainte-sophie",
+    "title": "Seconde consécration de Sainte-Sophie",
+    "start": 562,
+    "month": 12,
+    "day": 24,
+    "precision": "day",
+    "certainty": "attested",
+    "era": "empire-romain-d-orient",
+    "track": "orient",
+    "category": "building",
+    "importance": 3,
+    "placeId": "sainte-sophie",
+    "people": [
+      "justinien"
+    ],
+    "summary": "Le 24 décembre 562, le patriarche Eutychius consacre à nouveau Sainte-Sophie sous sa coupole reconstruite, plus haute que la première, effondrée en 558.",
+    "body": "La première coupole de la Grande Église s'effondre en mai 558, après les séismes de 553 et 557. Isidore le Jeune, neveu d'Isidore de Milet, la relève de plus de vingt pieds selon Théophane, de trente selon Jean Malalas.\n\nLa seconde consécration a lieu la veille de Noël 562, en présence de Justinien. Au début de 563, Paul le Silentiaire récite devant la cour sa Description de Sainte-Sophie, principal témoignage sur l'intérieur justinien : coupole percée de quarante fenêtres, marbres de toutes couleurs, ors des voûtes, lumière qui semble naître de l'intérieur.",
+    "sources": [
+      {
+        "kind": "ancient",
+        "author": "Jean Malalas",
+        "work": "Chronographie",
+        "locus": "p. 495 (éd. de Bonn)"
+      },
+      {
+        "kind": "ancient",
+        "author": "Théophane le Confesseur",
+        "work": "Chronographie",
+        "locus": "AM 6055"
+      },
+      {
+        "kind": "ancient",
+        "author": "Paul le Silentiaire",
+        "work": "Description de Sainte-Sophie",
+        "url": "https://projects.mcah.columbia.edu/medieval-architecture/htm/or/ma_or_gloss_essay_paul.htm"
+      }
+    ],
+    "scene": "constantinople"
   },
   {
     "id": "bataille-du-yarmouk",

@@ -688,4 +688,176 @@ export const scenes: Scene[] = [
       }
     ]
   },
+  {
+    "id": "alexandrie",
+    "title": "Alexandrie et son phare",
+    "status": "ready",
+    "year": 130,
+    "lat": 31.2014,
+    "lon": 29.9098,
+    "summary": "En 130 apr. J.-C., l'empereur Hadrien séjourne à Alexandrie, métropole de l'Égypte romaine et grand port du blé destiné à Rome. Fondée par Alexandre en 331 av. J.-C. entre la mer et le lac Maréotis, la cité s'étire sur une trentaine de stades le long de la côte, selon Strabon. Au large, l'île de Pharos porte la tour la plus célèbre du monde antique ; une digue la relie à la ville et sépare deux ports. Les anciens quartiers royaux des Ptolémées bordent le Grand Port. Une partie de ce rivage a depuis glissé sous la mer.",
+    "ambience": [
+      {
+        "layer": "harbour",
+        "volume": 0.55,
+        "points": [
+          "vue-d-ensemble",
+          "le-grand-port",
+          "l-heptastade"
+        ]
+      },
+      {
+        "layer": "wind",
+        "volume": 0.5,
+        "points": [
+          "le-phare"
+        ]
+      },
+      {
+        "layer": "market",
+        "volume": 0.45,
+        "points": [
+          "le-cesareum"
+        ]
+      },
+      {
+        "layer": "birds-day",
+        "volume": 0.3
+      }
+    ],
+    "points": [
+      {
+        "id": "le-phare",
+        "title": "Le phare",
+        "text": "Achevé au début du IIIe siècle av. J.-C. sous les premiers Ptolémées, le phare porte une dédicace de Sostratos de Cnide « pour le salut des navigateurs », rapporte Strabon. Les monnaies d'Alexandrie le montrent dès 92 apr. J.-C. coiffé d'une statue entre deux tritons ; les auteurs arabes le décrivent en trois étages : carré, octogonal, puis cylindrique. Aucun texte antique ne donne sa hauteur, estimée aujourd'hui à plus de 100 m. Au Ier siècle, Pline et Flavius Josèphe attestent qu'un feu y brûle la nuit pour guider les navires. La statue du sommet reste discutée : Zeus Sauveur, Poséidon ou Hélios.",
+        "sources": [
+          "Strabon, XVII, 1, 6",
+          "Pline l'Ancien, Histoire naturelle, XXXVI, 83",
+          "Flavius Josèphe, Guerre des Juifs, IV, 613",
+          "RPC II 2676",
+          "D. Behrens-Abouseif, Muqarnas 23, 2006",
+          "J. McKenzie, The Architecture of Alexandria and Egypt, 2007"
+        ]
+      },
+      {
+        "id": "le-grand-port",
+        "title": "Le Grand Port",
+        "text": "Le Grand Port, à l'est de la digue, s'ouvre entre la pointe de Pharos et le cap Lochias, où s'élevait un palais royal. Strabon décrit une entrée étroite, semée d'écueils, d'où l'utilité du phare. À l'abri des môles se pressent les navires de commerce ; d'ici partent les grands céréaliers chargés du blé d'Égypte, qui nourrit Rome quatre mois par an selon Josèphe. L'île d'Antirhodos, le port privé des rois et le Timonium d'Antoine bordaient ce bassin : ils reposent aujourd'hui sous plusieurs mètres d'eau, explorés depuis 1992 par l'équipe de Franck Goddio.",
+        "sources": [
+          "Strabon, XVII, 1, 6 et 9",
+          "Flavius Josèphe, Guerre des Juifs, II, 386",
+          "F. Goddio et al., Alexandria: The Submerged Royal Quarters, 1998"
+        ]
+      },
+      {
+        "id": "l-heptastade",
+        "title": "L'Heptastade",
+        "text": "L'Heptastade doit son nom à sa longueur : sept stades, soit environ 1,3 km ; César parle de 900 pas. Cette digue relie l'île de Pharos au continent et sépare le Grand Port, à l'est, du port d'Eunostos, le port « du bon retour », à l'ouest. Strabon y signale deux passages franchis par des ponts, qui laissent les bateaux aller d'un bassin à l'autre ; elle portait aussi l'aqueduc de l'île. César s'y battit pendant la guerre d'Alexandrie. Les alluvions l'ont depuis noyée dans un isthme, où s'est bâtie la ville ottomane.",
+        "sources": [
+          "Strabon, XVII, 1, 6",
+          "César, Guerre civile, III, 112",
+          "Pseudo-César, Guerre d'Alexandrie, 17 à 21",
+          "N. Marriner, J.-P. Goiran, C. Morhange, Geomorphology, 2008"
+        ]
+      },
+      {
+        "id": "le-cesareum",
+        "title": "Le Césaréum",
+        "text": "Commencé par Cléopâtre, sans doute en l'honneur de César ou d'Antoine, le Césaréum est achevé par Auguste et voué au culte impérial. Philon d'Alexandrie, contemporain de Caligula, y décrit portiques, bibliothèques, bosquets et propylées face au port. Devant le temple se dressent deux obélisques de Thoutmosis III, apportés d'Héliopolis sous Auguste et posés sur des crabes de bronze. Ce sont les « aiguilles de Cléopâtre », aujourd'hui à Londres et à New York. Le plan du sanctuaire reste inconnu : la maquette en propose une restitution.",
+        "sources": [
+          "Philon d'Alexandrie, Ambassade à Caius, 150 et 151",
+          "Pline l'Ancien, Histoire naturelle, XXXVI, 69",
+          "Metropolitan Museum, crabes 81.2.1 et 81.2.2"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "constantinople",
+    "title": "Constantinople et Sainte-Sophie",
+    "status": "ready",
+    "year": 562,
+    "lat": 41.0066,
+    "lon": 28.9656,
+    "summary": "Constantinople, matin du 24 décembre 562. Sur la pointe de la péninsule, entre la mer de Marmara, le Bosphore et la Corne d'Or, se serre le cœur de la capitale de l'Empire romain d'Orient : la Grande Église de Sainte-Sophie, consacrée ce jour-là pour la seconde fois, l'hippodrome, le Grand Palais et la place de l'Augustéon. Justinien règne depuis 527. Frappée par la peste en 542, la ville aurait alors perdu jusqu'à 100 000 habitants sur environ 300 000, chiffres très incertains. Ses habitants se disent Romains.",
+    "ambience": [
+      {
+        "layer": "interior",
+        "volume": 0.5,
+        "points": [
+          "sainte-sophie"
+        ]
+      },
+      {
+        "layer": "arena-crowd",
+        "volume": 0.45,
+        "points": [
+          "l-hippodrome"
+        ]
+      },
+      {
+        "layer": "market",
+        "volume": 0.45,
+        "points": [
+          "la-mese"
+        ]
+      },
+      {
+        "layer": "harbour",
+        "volume": 0.5,
+        "points": [
+          "la-corne-d-or",
+          "vue-d-ensemble"
+        ]
+      },
+      {
+        "layer": "birds-day",
+        "volume": 0.3
+      }
+    ],
+    "points": [
+      {
+        "id": "sainte-sophie",
+        "title": "Sainte-Sophie, la Grande Église",
+        "text": "Rebâtie après l'incendie de 532, la Grande Église est consacrée le 27 décembre 537. Sa première coupole s'effondre en partie le 7 mai 558 ; Isidore le Jeune la relève d'environ six mètres. Large d'environ 31 mètres, portée par quatre pendentifs, elle culmine à près de 56 mètres au-dessus d'une couronne de quarante fenêtres que chante Paul le Silentiaire au début de 563. L'or des voûtes porte des croix, les murs se couvrent de marbres de couleur : les mosaïques à personnages visibles aujourd'hui datent toutes d'après 843.",
+        "sources": [
+          "Procope, Sur les édifices, I, 1, 20 à 78",
+          "Théophane, AM 6030 et 6051 ; Agathias, Histoires, V, 9 ; Malalas, p. 495",
+          "Paul le Silentiaire, Description de Sainte-Sophie, trad. Mango 1972",
+          "Wikipédia (en), List of tallest domes et Hagia Sophia"
+        ]
+      },
+      {
+        "id": "l-hippodrome",
+        "title": "L'hippodrome",
+        "text": "Long d'environ 450 mètres, l'hippodrome accueille les courses de chars, et les factions des Bleus et des Verts s'y affrontent en chants, parfois en émeutes. Sur la spina, l'obélisque de Thoutmosis III, dressé par Théodose en 390, côtoie la colonne serpentine, offrande des Grecs à Delphes après Platées, et un obélisque de pierre maçonnée dont la date reste inconnue. À l'est, la loge impériale, le kathisma, communique directement avec le Grand Palais. C'est ici qu'en janvier 532 la sédition Nika faillit renverser Justinien.",
+        "sources": [
+          "Procope, Histoire des guerres, I, 24",
+          "Hérodote, IX, 81",
+          "Wikipédia (en), Hippodrome of Constantinople, Obelisk of Theodosius, Walled Obelisk"
+        ]
+      },
+      {
+        "id": "la-mese",
+        "title": "La Mésè et la colonne de Justinien",
+        "text": "La Mésè, la « rue du milieu », part du Milion, arc à quatre faces coiffé d'une coupole d'où l'on compte les distances de l'Empire. Large d'environ 25 mètres et bordée de portiques qui abritent des boutiques, elle file vers l'ouest jusqu'au forum de Constantin, puis vers la Porte d'Or. Sur la place voisine de l'Augustéon, une haute colonne porte depuis 543 environ la statue équestre de bronze de Justinien : l'empereur tient un globe surmonté d'une croix et tend la main droite vers l'Orient.",
+        "sources": [
+          "Procope, Sur les édifices, I, 2, 1 à 12",
+          "Wikipédia (en), Milion et Mese (Constantinople)",
+          "BMCR 2022.02.42 (compte rendu d'E. Boeck, The Bronze Horseman of Justinian, 2021)"
+        ]
+      },
+      {
+        "id": "la-corne-d-or",
+        "title": "La Corne d'Or",
+        "text": "Au nord de la péninsule, la Corne d'Or offre aux navires un mouillage profond et abrité. Sur sa rive sud s'ouvrent les ports du Néorion et du Prosphorion, face au faubourg de Sykai. Navires marchands et dromons, galères rapides à un seul rang de rames décrites par Procope, fréquentent les ports de la capitale, que ravitaille chaque année la flotte du blé d'Égypte. Sur la Marmara, le port de Théodose, fouillé à Yenikapı de 2004 à 2013, a livré 37 épaves du Ve au XIe siècle, qui montrent comment ces navires étaient construits.",
+        "sources": [
+          "Procope, Histoire des guerres, III, 11, 15 et 16 (dromons)",
+          "Justinien, Édit XIII (convois de blé d'Égypte)",
+          "ISAC, université de Chicago, conférence d'U. Kocabaş, Yenikapı Byzantine Shipwrecks (fouilles de 2004 à 2013, 37 épaves)",
+          "Wikipédia (en), Walls of Constantinople (Néorion, Prosphorion)"
+        ]
+      }
+    ]
+  }
 ]

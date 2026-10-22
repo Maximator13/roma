@@ -42,7 +42,7 @@ export interface PuffSettings {
 const SMOKE: PuffSettings = { particles: 28, life: 9, rise: 1.4, drift: [0.9, -0.4], sway: 0.35, scatter: 0, size: [1.2, 0.9], opacity: 0.5, color: '#7d7b7c' }
 const PLUME: PuffSettings = { particles: 300, life: 48, rise: 230, drift: [150, 95], sway: 60, scatter: 350, size: [900, 110], opacity: 0.95, color: '#463e37' }
 const ASH: PuffSettings = { particles: 700, life: 70, rise: -4.5, drift: [1.2, 0.8], sway: 1.5, scatter: 450, size: [0.35, 0], opacity: 0.9, color: '#3c3732' }
-const BEACON_SMOKE: PuffSettings = { particles: 40, life: 14, rise: 4, drift: [3, -1.5], sway: 1.2, scatter: 0.6, size: [3, 2.2], opacity: 0.45, color: '#5d5550' }
+const BEACON_SMOKE: PuffSettings = { particles: 40, life: 14, rise: 4, drift: [3, -1.5], sway: 1.2, scatter: 0.6, size: [3, 2.2], opacity: 0.35, color: '#8a817a' }
 const BIRDS_PER_FLOCK = 22
 const DENSITY: Record<QualityTier, number> = { low: 0.5, medium: 1, high: 1 }
 

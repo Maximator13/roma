@@ -213,7 +213,8 @@ export const cities: City[] = [
     "pleiadesId": 727070,
     "from": -330,
     "importance": 1,
-    "note": "Fondée par Alexandre le Grand en 331 av. J.-C., capitale des Ptolémées puis grande métropole de l'Égypte romaine."
+    "note": "Fondée par Alexandre le Grand en 331 av. J.-C., capitale des Ptolémées puis grande métropole de l'Égypte romaine.",
+    "scene": "alexandrie"
   },
   {
     "id": "nicee",
@@ -516,6 +517,7 @@ export const cities: City[] = [
     "pleiadesId": 520998,
     "from": 330,
     "importance": 1,
-    "note": "Inaugurée par Constantin le 11 mai 330, capitale de l'Empire romain d'Orient (hormis l'occupation latine de 1204 à 1261) jusqu'à sa prise par les Ottomans le 29 mai 1453."
+    "note": "Inaugurée par Constantin le 11 mai 330, capitale de l'Empire romain d'Orient (hormis l'occupation latine de 1204 à 1261) jusqu'à sa prise par les Ottomans le 29 mai 1453.",
+    "scene": "constantinople"
   }
 ]
