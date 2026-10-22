@@ -4,6 +4,7 @@ import { formatDate, formatYear } from '../src/core/dates.ts'
 import { events } from '../src/data/events.ts'
 import { scenes } from '../src/data/scenes.ts'
 import type { HistoricalEvent, Scene } from '../src/data/schema.ts'
+import { COLLECTION_UI } from '../src/data/collectionUi.ts'
 import { CERTAINTY } from '../src/data/ui.ts'
 import { SITE, SITE_URL } from '../src/site.ts'
 
@@ -104,6 +105,20 @@ export function sceneSharePage(template: string, scene: Scene): string {
   return withPageMeta(template, meta, staticScene(scene))
 }
 
+export const COLLECTION_PATH = 'collection/'
+
+export function collectionSharePage(template: string): string {
+  const meta = { title: `${COLLECTION_UI.pageTitle} | ${SITE.name}`, description: COLLECTION_UI.description, url: `${SITE_URL}${COLLECTION_PATH}` }
+  const content = [
+    '<article>',
+    `<h1>${escapeHtml(COLLECTION_UI.pageTitle)}</h1>`,
+    `<p>${escapeHtml(COLLECTION_UI.description)}</p>`,
+    `<p><a href="${SITE.base}#/collection">${escapeHtml(COLLECTION_UI.dailyOpen)}</a></p>`,
+    '</article>',
+  ].join('')
+  return withPageMeta(template, meta, content)
+}
+
 const NOT_FOUND_STYLE =
   'body{margin:0;background:#120d0a;color:#f3ead8;font:18px/1.6 Georgia,serif}main{max-width:40rem;margin:0 auto;padding:3rem 1.25rem}a{color:#e8d19c}h1{font-weight:normal;letter-spacing:.06em;text-transform:uppercase}'
 
@@ -170,9 +185,10 @@ function main() {
   events.forEach((event) => writePage(join(eventPath(event), 'index.html'), sharePage(template, event)))
   const ready = scenes.filter((scene) => scene.status === 'ready')
   ready.forEach((scene) => writePage(join(scenePath(scene), 'index.html'), sceneSharePage(template, scene)))
+  writePage(join(COLLECTION_PATH, 'index.html'), collectionSharePage(template))
   writePage('404.html', notFoundPage())
-  writePage('sitemap.xml', sitemap(events, new Date().toISOString().slice(0, 10), ready.map(scenePath)))
-  console.log(`Postbuild: ${events.length} event and ${ready.length} scene share pages, 404.html, sitemap.xml.`)
+  writePage('sitemap.xml', sitemap(events, new Date().toISOString().slice(0, 10), [...ready.map(scenePath), COLLECTION_PATH]))
+  console.log(`Postbuild: ${events.length} event and ${ready.length} scene share pages, the collection page, 404.html, sitemap.xml.`)
   checkSiteBudget()
 }
 

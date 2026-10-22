@@ -19,6 +19,15 @@ export function sceneFileErrors(scenes: { id: string; status: string }[], folder
   return [...missingFiles, ...orphans]
 }
 
+export function cardArtErrors(cardIds: string[], artCards: string[], exists: (path: string) => boolean): string[] {
+  const withArt = new Set(artCards)
+  const missingArt = cardIds.filter((id) => !withArt.has(id)).map((id) => `card ${id}: no illustration in src/data/cardArt.ts`)
+  const missingFiles = artCards.flatMap((id) =>
+    [`public/cards/${id}.webp`, `public/cards/${id}-s.webp`].filter((path) => !exists(path)).map((path) => `card ${id}: missing ${path}`),
+  )
+  return [...missingArt, ...missingFiles]
+}
+
 function sceneFolders(): string[] {
   return readdirSync('src/scenes', { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
@@ -26,7 +35,15 @@ function sceneFolders(): string[] {
 }
 
 if (import.meta.main) {
-  const problems = [...validateDataset(dataset), ...sceneFileErrors(dataset.scenes, sceneFolders(), existsSync)]
+  const problems = [
+    ...validateDataset(dataset),
+    ...sceneFileErrors(dataset.scenes, sceneFolders(), existsSync),
+    ...cardArtErrors(
+      dataset.cards.map((card) => card.id),
+      dataset.cardArt.map((art) => art.card),
+      existsSync,
+    ),
+  ]
   if (problems.length > 0) {
     console.error(problems.join('\n'))
     process.exit(1)

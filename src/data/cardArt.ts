@@ -567,11 +567,12 @@ export const cardArt: CardArt[] = [
   },
   {
     "card": "alesia",
-    "title": "Lionel Royer, Vercingétorix jette ses armes aux pieds de César, musée Crozatier, Le Puy-en-Velay",
-    "creator": "Lionel Royer",
-    "license": "Domaine public",
-    "date": "1899",
-    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lionel_Royer_-_Vercingetorix_Throwing_down_His_Weapons_at_the_feet_of_Julius_Caesar.jpg"
+    "title": "Fortifications romaines reconstituées avec les tentes du camp, MuséoParc Alésia, Alise-Sainte-Reine",
+    "creator": "Epona21",
+    "license": "CC BY-SA 4.0",
+    "date": "2021",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Reconstitution_des_fortifications_avec_les_tentes_romaines_%C2%A9_Viviane_Raveneau.jpg"
   },
   {
     "card": "rubicon",
@@ -642,11 +643,12 @@ export const cardArt: CardArt[] = [
   },
   {
     "card": "kalkriese",
-    "title": "Otto Albert Koch, La bataille de Varus (Varusschlacht), Lippisches Landesmuseum, Detmold",
-    "creator": "Otto Albert Koch",
-    "license": "Domaine public",
-    "date": "1909",
-    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Otto_Albert_Koch_Varusschlacht_1909.jpg"
+    "title": "Masque de casque de cavalerie romaine trouvé à Kalkriese, Museum und Park Kalkriese",
+    "creator": "Fabricant romain inconnu ; photo : Carole Raddato",
+    "license": "CC BY-SA 2.0",
+    "date": "début du Ier siècle apr. J.-C. (trouvé sur le site de la bataille de Varus, 9 apr. J.-C.)",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kalkriese_face_mask_for_Roman_cavalry_helmet,_Museum_und_Park_Kalkriese,_Germany_(9603014581).jpg"
   },
   {
     "card": "andrinople",

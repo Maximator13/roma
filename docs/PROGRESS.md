@@ -187,3 +187,23 @@ Tests : 117 tests unitaires et 14 tests Playwright (ordinateur et mobile), verts
 1. Valider le plan de design (`docs/DESIGN.md`).
 2. Regarder Pompéi, le Colisée, Alexandrie et Constantinople, faits sans validation, et me dire ce qui ne va pas. Valider les propositions de scènes vérifiées : Arles (`docs/scenes/arles.md`), pont du Gard (`docs/scenes/pont-du-gard.md`), Panthéon (`docs/scenes/pantheon.md`, une maquette sous licence NC-ND écartée sauf accord) et Cannes (`docs/scenes/cannes.md`).
 3. Toujours valables : mesures du HUD, relecture de `docs/A_VERIFIER.md` (165 points désormais), Search Console, GoatCounter (facultatif).
+
+## Collection de cartes (22 octobre 2026, en attente de ta validation)
+
+Page à part, `#/collection`, avec un lien discret « Collection » dans l'en-tête. La frise, la carte et les scènes ne changent pas : la toile 3D se met en pause tant que la page est ouverte.
+
+### Fait
+
+- **Mécanique validée** : un paquet de cinq cartes par jour, tiré de façon déterministe (date et identifiant de joueur), donc impossible à relancer en rechargeant ; 5 raretés (commune 60 %, peu commune 25 %, rare 10 %, épique 4 %, légendaire 1 %) ; au moins une rare par paquet, une épique au plus tard au 10e paquet, une légendaire au plus tard au 30e ; une épique ou une légendaire tirée est toujours une carte nouvelle tant qu'il en reste.
+- **Économie** : doublons changés en deniers (5 à 500 selon la rareté), fabrication d'une carte choisie (20 à 2 000 deniers). Première visite d'une scène 3D : la carte du lieu. Fiche d'événement lue : 5 deniers. Série complète (6 époques, 4 types) : un paquet bonus.
+- **120 cartes** générées à partir des données (personnes, villes, lieux, scènes) ou créées pour les reliques et les unités, validées par zod au build : 50 personnages, 30 lieux, 20 reliques et objets, 20 armées et unités ; 8 légendaires, 16 épiques, 26 rares, 32 peu communes, 38 communes. Chaque carte a un texte court et au moins une source.
+- **Illustrations (option A + B)** : 107 œuvres du domaine public et photos sous CC0, CC BY ou CC BY-SA (Wikimedia Commons, Met), vérifiées une à une ; 13 rendus Blender du projet (8 scènes et 5 cartes de Cannes, `blender/cards.py`). WebP 640 et 320 px, 13,6 Mo en tout, chargés seulement quand une carte est affichée. Crédits sur chaque carte, dans `CREDITS.md` et sur la page Sources.
+- **Design** : cadre par rareté (bronze, argent, lapis, pourpre, or), reflet holographique et inclinaison au survol pour les rares et au-delà, paquet scellé qui tremble puis éclate, cartes distribuées puis retournées une à une, rayons derrière les épiques et les légendaires. Avec le mouvement réduit, l'ouverture devient un simple fondu. Tout se joue au clavier (fenêtres modales natives, focus guidé).
+- **Tests** : 25 tests Vitest (tirage, probabilités sur 200 000 tirages, garanties, sauvegarde, catalogue) ; 2 tests Playwright (ouverture au clavier, rechargement, Échap ; mouvement réduit), sur ordinateur et mobile.
+- Points incertains (identifications de bustes, illustrations approchées, rareté) : section « Collection de cartes » de `docs/A_VERIFIER.md`.
+
+### Ce que j'attends de toi
+
+1. Ouvrir ton paquet du jour et dire si les effets et les couleurs sont assez spectaculaires.
+2. Juger les illustrations les plus ternes (moulages de la colonne Trajane, strigile, gladius) et les rendus Blender de Cannes, à refaire si tu veux.
+3. Trancher les points de `docs/A_VERIFIER.md` (rareté, portraits discutés).

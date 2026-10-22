@@ -1249,3 +1249,29 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 - **Hypothèse retenue** : Faisceaux de lumière calculés pour un soleil à 138 degrés d'azimut et 13 degrés de hauteur. Ce sont des volumes translucides émissifs (matériau light_beam en mélange alpha), pas un éclairage réel.
 - **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
 - **Décision** : à trancher
+
+## Collection de cartes (octobre 2026)
+
+### 1. Identifications discutées des portraits
+
+- **Hypothèse retenue** : les cartes de Scipion l'Africain (tête de la Ny Carlsberg), de Sylla et de Marius (bustes « dits de » de la Glyptothèque de Munich), de Stilicon (diptyque de Monza), de Constantin XI (fresque de la Taxiarque d'Aigialeia) et d'Odoacre (trémissis au nom de Zénon, émission attribuée à Odoacre) utilisent des identifications traditionnelles, signalées comme telles dans le titre de l'illustration.
+- **Pourquoi un doute** : aucune de ces identifications n'est assurée par une inscription ; elles reposent sur la tradition des musées ou sur la numismatique.
+- **Décision** : à trancher (garder avec la mention, ou remplacer par une œuvre narrative)
+
+### 2. Illustrations dont le sujet est approché
+
+- **Hypothèse retenue** : Valérien (relief de Naqsh-e Rostam, où l'empereur agenouillé est parfois identifié à Philippe l'Arabe) ; Bélisaire (tableau de David, sur la légende tardive du général aveugle) ; garde varangienne (miniature du Skylitzès de Madrid montrant le meurtre de Léon V en 820, avant la création de la garde vers 988) ; cataphractaires (cavaliers lourds du Skylitzès, non nommés ainsi) ; Hannibal (tableau attribué à Poussin, attribution discutée) ; Kalkriese (masque de cavalier rattaché à la défaite de Varus par la lecture archéologique habituelle) ; Leptis Magna (arc non identifié avec certitude sur Commons, probablement l'arc de Septime Sévère).
+- **Pourquoi un doute** : les images libres et colorées manquent pour ces sujets ; chaque titre d'illustration le précise.
+- **Décision** : à trancher
+
+### 3. Faits des textes de cartes
+
+- **Hypothèse retenue** : Trajan « premier empereur venu des provinces » (né à Italica) ; Colisée « plusieurs dizaines de milliers de spectateurs » (estimations de 50 000 à 65 000) ; Odoacre qui renvoie les insignes impériaux à Constantinople (Malchus, fragment 10, et Anonyme de Valois) ; Marius qui enrôle les citoyens sans fortune (Salluste, Jugurtha, 86 ; l'idée d'une « réforme » complète est discutée) ; Rome qui construit cent quinquérèmes « en quelques semaines » en 260 av. J.-C. (soixante jours selon Pline, Histoire naturelle, XVI, 192).
+- **Pourquoi un doute** : formulations courtes qui simplifient des débats d'historiens.
+- **Décision** : à trancher
+
+### 4. Rareté
+
+- **Hypothèse retenue** : 8 légendaires (César, Auguste, Constantin, Justinien, Hannibal, le Colisée, Sainte-Sophie, le feu grégeois), 16 épiques, 26 rares, 32 peu communes, 38 communes, selon l'importance historique et la notoriété.
+- **Pourquoi un doute** : classement éditorial ; on peut défendre Romulus, Cléopâtre ou Constantin XI en légendaires.
+- **Décision** : à trancher
