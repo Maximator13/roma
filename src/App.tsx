@@ -8,7 +8,7 @@ import { COLLECTION_UI } from './data/collectionUi.ts'
 import { eras } from './data/eras.ts'
 import { events } from './data/events.ts'
 import { pages } from './data/pages.ts'
-import { PAGE_LINKS, UI } from './data/ui.ts'
+import { LEARN, PAGE_LINKS, UI } from './data/ui.ts'
 import { SITE } from './site.ts'
 import { gradingAt, readableAccent, rgbToCss } from './stage/grading.ts'
 import { currentRoute, navigate, useApp } from './store.ts'
@@ -23,6 +23,8 @@ import { EraCaption, EventPanel, NotFoundPanel, PagePanel, ScenePanel, SceneShor
 
 const Stage = lazy(() => import('./stage/Stage.tsx'))
 const CollectionPage = lazy(() => import('./collection/CollectionPage.tsx'))
+const LearnPanel = lazy(() => import('./learn/LearnPanel.tsx').then((module) => ({ default: module.LearnPanel })))
+const SearchPanel = lazy(() => import('./learn/SearchPanel.tsx').then((module) => ({ default: module.SearchPanel })))
 
 function documentTitle(route: Route): string {
   if (route.name === 'event') {
@@ -38,6 +40,8 @@ function documentTitle(route: Route): string {
     if (scene) return `${scene.title} | ${SITE.name}`
   }
   if (route.name === 'collection') return `${COLLECTION_UI.pageTitle} | ${SITE.name}`
+  if (route.name === 'learn') return `${route.game ? LEARN.games[route.game].title : LEARN.title} | ${SITE.name}`
+  if (route.name === 'search') return `${LEARN.searchTitle} | ${SITE.name}`
   if (route.name === 'not-found') return `${UI.notFoundTitle} | ${SITE.name}`
   return SITE.title
 }
@@ -130,6 +134,16 @@ function ActivePanel({ route }: { route: Route }) {
     const scene = findScene(route.id)
     return scene ? <ScenePanel scene={scene} /> : <NotFoundPanel />
   }
+  if (route.name === 'learn') return (
+    <Suspense fallback={null}>
+      <LearnPanel game={route.game} />
+    </Suspense>
+  )
+  if (route.name === 'search') return (
+    <Suspense fallback={null}>
+      <SearchPanel />
+    </Suspense>
+  )
   if (route.name === 'not-found') return <NotFoundPanel />
   return null
 }
@@ -187,6 +201,7 @@ export function App() {
   const inScene = route.name === 'scene' && isPlayable(findScene(route.id))
   const fullTimeline = useApp((state) => state.view.span >= fullView().span * 0.99)
   const welcome = route.name === 'home' && fullTimeline
+  const mapGame = route.name === 'learn' && route.game === 'ou'
   return (
     <>
       <Suspense fallback={null}>
@@ -206,6 +221,8 @@ export function App() {
               </a>
             </h1>
             <nav className="site-nav" aria-label={UI.footerLabel}>
+              <a href={routeToHash({ name: 'learn' })}>{LEARN.navLearn}</a>
+              <a href={routeToHash({ name: 'search' })}>{LEARN.navSearch}</a>
               <a className="site-nav__collection" href={routeToHash({ name: 'collection' })}>
                 {COLLECTION_UI.linkLabel}
               </a>
@@ -217,7 +234,7 @@ export function App() {
             </nav>
           </header>
           <main className="main">
-            {!inScene && (
+            {!inScene && !mapGame && (
               <div className="main__side">
                 {!welcome && <EraCaption index={eraIndex} />}
                 {!welcome && <SceneShortcuts index={eraIndex} />}

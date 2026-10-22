@@ -150,6 +150,7 @@ Tests : 60 tests unitaires, 12 tests Playwright (6 sur ordinateur, 6 sur mobile)
   - **Constantinople et Sainte-Sophie** (`#/scene/constantinople`, 14,2 Mo) : matin du 24 décembre 562, seconde consécration ; Sainte-Sophie avec sa coupole relevée et son intérieur, hippodrome et spina, Mésè et colonne de Justinien, Corne d'Or et ses navires. Relief Copernicus DEM GLO-30.
   - Deux événements ajoutés (Hadrien à Alexandrie, seconde consécration de Sainte-Sophie) ; Alexandrie et Constantinople ouvrent leur scène depuis la carte. Fiches dans `docs/scenes/`, doutes dans `docs/A_VERIFIER.md`, captures dans `docs/screenshots/alexandrie/` et `docs/screenshots/constantinople/`. Produites **sans ta validation**.
   - Restent ouverts : environ 2 millions de triangles affichés pour Constantinople et 330 appels de dessin pour Alexandrie, à mesurer sur ton portable.
+- **Apprendre et Rechercher** (22 octobre 2026, porté depuis Hellas) : `#/apprendre` avec quatre jeux (quiz, remets dans l'ordre, situe la date avec av. ou apr. J.-C., où ? sur la carte, de 100 points sous 60 km à 0 au-delà de 900 km), fiches vues et meilleurs scores gardés sur l'appareil (`roma.progress`), `#/recherche` sur les événements, personnes et lieux sans accents ni casse. Sur téléphone, le jeu « Où ? » passe en feuille basse pour laisser la carte cliquable.
 - **Propositions de scènes vérifiées** : Nîmes vers 130 (validée, option A2 : le pont du Gard devient une scène à part) et Arles vers 160 (`docs/scenes/arles.md`, à valider).
 
 ### En cours

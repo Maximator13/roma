@@ -1,4 +1,4 @@
-import { useFrame, useLoader } from '@react-three/fiber'
+import { useFrame, useLoader, type ThreeEvent } from '@react-three/fiber'
 import { use, useEffect, useMemo, useRef } from 'react'
 import { Color, PlaneGeometry, TextureLoader, type Mesh, type PerspectiveCamera, type ShaderMaterial } from 'three'
 import { prefersReducedMotion } from '../core/motion.ts'
@@ -9,7 +9,7 @@ import { findScene, isPlayable } from '../scenes/registry.ts'
 import { gradingAt, readableAccent } from '../stage/grading.ts'
 import { useApp } from '../store.ts'
 import { approach, approachGoal, goalForBounds, goalForPlace, MAX_DISTANCE, type CameraGoal } from './camera.ts'
-import { MAP_SIZE } from './geo.ts'
+import { MAP_SIZE, project, unproject } from './geo.ts'
 import { MapOverlays } from './MapOverlays.tsx'
 import { createHeightSampler } from './reliefSampler.ts'
 import { createTerrainMaterial, LAND_SCALE } from './terrainMaterial.ts'
@@ -59,6 +59,35 @@ function focusPlace(): Focus | null {
   const event = events.find((candidate) => candidate.id === route.id)
   const place = places.find((candidate) => candidate.id === event?.placeId)
   return place ? { lon: place.lon, lat: place.lat, dive: false } : null
+}
+
+function pickOnMap(event: ThreeEvent<MouseEvent>) {
+  const { route, setMapPick } = useApp.getState()
+  if (route.name !== 'learn' || route.game !== 'ou') return
+  event.stopPropagation()
+  setMapPick(unproject(event.point.x, event.point.z))
+}
+
+const MARK_COLORS = { guess: '#f2d06b', answer: '#3dd9a0' } as const
+
+function MapMarks({ height }: { height: (lon: number, lat: number) => number }) {
+  const marks = useApp((state) => state.mapMarks)
+  const pick = useApp((state) => state.mapPick)
+  const shown = marks.length > 0 ? marks : pick ? [{ ...pick, kind: 'guess' as const }] : []
+  return (
+    <>
+      {shown.map((mark) => {
+        const point = project(mark.lon, mark.lat)
+        const ground = height(mark.lon, mark.lat)
+        return (
+          <mesh key={`${mark.kind}-${mark.lon}-${mark.lat}`} position={[point.x, ground + 0.6, point.z]}>
+            <cylinderGeometry args={[0.16, 0.03, 1.2, 12]} />
+            <meshBasicMaterial color={MARK_COLORS[mark.kind]} />
+          </mesh>
+        )
+      })}
+    </>
+  )
 }
 
 export function MapStage({
@@ -156,8 +185,9 @@ export function MapStage({
 
   return (
     <group visible={active}>
-      <mesh ref={terrain} geometry={geometry} material={material} frustumCulled={false} />
+      <mesh ref={terrain} geometry={geometry} material={material} frustumCulled={false} onClick={pickOnMap} />
       <MapOverlays height={heightAt} />
+      <MapMarks height={heightAt} />
     </group>
   )
 }

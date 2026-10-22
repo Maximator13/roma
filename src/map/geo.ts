@@ -25,6 +25,13 @@ export function project(lon: number, lat: number): MapPoint {
   }
 }
 
+export function unproject(x: number, z: number): { lon: number; lat: number } {
+  return {
+    lon: x / LONGITUDE_SCALE + (MAP_BOUNDS.west + MAP_BOUNDS.east) / 2,
+    lat: -z + (MAP_BOUNDS.south + MAP_BOUNDS.north) / 2,
+  }
+}
+
 export function toTextureUv(lon: number, lat: number): { u: number; v: number } {
   return {
     u: (lon - MAP_BOUNDS.west) / (MAP_BOUNDS.east - MAP_BOUNDS.west),

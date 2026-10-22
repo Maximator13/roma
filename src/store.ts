@@ -4,8 +4,18 @@ import { SITE } from './site.ts'
 import { initialQuality, type QualityTier } from './stage/quality.ts'
 import { fullView, type Viewport } from './timeline/viewport.ts'
 
+export interface MapMark {
+  lon: number
+  lat: number
+  kind: 'guess' | 'answer'
+}
+
 interface AppState {
   route: Route
+  mapPick: { lon: number; lat: number } | null
+  mapMarks: MapMark[]
+  setMapPick: (pick: { lon: number; lat: number } | null) => void
+  setMapMarks: (marks: MapMark[]) => void
   view: Viewport
   quality: QualityTier
   scenePoint: number
@@ -47,6 +57,10 @@ export function currentRoute(): Route {
 
 export const useApp = create<AppState>()((set) => ({
   route: currentRoute(),
+  mapPick: null,
+  mapMarks: [],
+  setMapPick: (mapPick) => set({ mapPick }),
+  setMapMarks: (mapMarks) => set({ mapMarks }),
   view: fullView(),
   quality: initialQuality(),
   scenePoint: 0,
@@ -58,8 +72,9 @@ export const useApp = create<AppState>()((set) => ({
   },
   setRoute: (route) =>
     set((state) => {
-      if (route.name !== 'scene') return { route, failedScene: null }
-      return isSameRoute(state.route, route) ? { route } : { route, scenePoint: 0 }
+      const marks = route.name === 'learn' ? {} : { mapMarks: [], mapPick: null }
+      if (route.name !== 'scene') return { route, failedScene: null, ...marks }
+      return isSameRoute(state.route, route) ? { route, ...marks } : { route, scenePoint: 0, ...marks }
     }),
   setScenePoint: (scenePoint) => set({ scenePoint }),
   setFailedScene: (failedScene) => set({ failedScene }),

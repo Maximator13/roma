@@ -9,10 +9,11 @@ import { places } from '../data/places.ts'
 import type { HistoricalEvent, Scene, Source } from '../data/schema.ts'
 import { CATEGORY, CERTAINTY, UI } from '../data/ui.ts'
 import { findScene, isPlayable } from '../scenes/registry.ts'
+import { markSeen } from '../learn/progress.ts'
 import { navigate, useApp } from '../store.ts'
 import { Markdown } from './Markdown.tsx'
 
-function Panel({
+export function Panel({
   kind,
   labelId,
   focusKey,
@@ -83,6 +84,9 @@ export function EventPanel({ event }: { event: HistoricalEvent }) {
   const place = places.find((candidate) => candidate.id === event.placeId)
   const persons = people.filter((person) => event.people?.includes(person.id))
   const certainty = CERTAINTY[event.certainty]
+  useEffect(() => {
+    markSeen(event.id)
+  }, [event.id])
   return (
     <Panel kind="event" labelId="panel-title" focusKey={event.id}>
       <p className="panel__eyebrow">
