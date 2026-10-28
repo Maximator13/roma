@@ -144,7 +144,7 @@ export default function Stage({ paused = false }: { paused?: boolean }) {
         >
           {!pinned && !loading && (
             <PerformanceMonitor
-              key={shown ?? 'map'}
+              key={`monitor-${shown ?? 'map'}`}
               bounds={() => [25, 58]}
               onIncline={() => changeQuality(1)}
               onDecline={() => changeQuality(-1)}
