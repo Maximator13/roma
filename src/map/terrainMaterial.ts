@@ -71,6 +71,10 @@ float reveal(float from, float to, float fromSoft, float toSoft, float progress,
   return mix(from, to, switchAt);
 }
 
+float fbm(vec2 p) {
+  return noise(p) * 0.5 + noise(p * 2.03 + 17.0) * 0.25 + noise(p * 4.07 - 9.0) * 0.15 + noise(p * 8.11 + 3.0) * 0.1;
+}
+
 vec3 groundColor(float h) {
   vec3 lowland = vec3(0.39, 0.43, 0.24);
   vec3 hills = vec3(0.53, 0.43, 0.26);
@@ -82,16 +86,30 @@ vec3 groundColor(float h) {
 }
 
 void main() {
+  float closeness = (1.0 - smoothstep(1.2, 9.0, length(cameraPosition - vWorld))) * detail;
+  vec2 offset = texel * (1.0 + closeness);
   float h = elevationAt(vUv);
-  float hl = max(elevationAt(vUv - vec2(texel.x, 0.0)), 0.0);
-  float hr = max(elevationAt(vUv + vec2(texel.x, 0.0)), 0.0);
-  float hd = max(elevationAt(vUv - vec2(0.0, texel.y)), 0.0);
-  float hu = max(elevationAt(vUv + vec2(0.0, texel.y)), 0.0);
+  float hl = max(elevationAt(vUv - vec2(offset.x, 0.0)), 0.0);
+  float hr = max(elevationAt(vUv + vec2(offset.x, 0.0)), 0.0);
+  float hd = max(elevationAt(vUv - vec2(0.0, offset.y)), 0.0);
+  float hu = max(elevationAt(vUv + vec2(0.0, offset.y)), 0.0);
   float relief = landScale * 3.0;
-  vec3 normal = normalize(vec3(-(hr - hl) * relief / (2.0 * texel.x * mapSize.x), 1.0, -(hd - hu) * relief / (2.0 * texel.y * mapSize.y)));
+  vec2 slope = vec2(hr - hl, hd - hu) / (2.0 * offset * mapSize);
 
-  float coastWidth = max(fwidth(h), 1.0);
-  float land = smoothstep(-coastWidth, coastWidth, h);
+  float coastNoise = 0.0;
+  if (closeness > 0.0) {
+    vec2 detailUv = vUv / texel * 0.3;
+    float rough = (abs(hr - hl) + abs(hu - hd)) * 0.5 + max(h, 0.0) * 0.04 + 15.0;
+    float e = 0.08;
+    float f0 = fbm(detailUv);
+    vec2 detailSlope = vec2(fbm(detailUv + vec2(e, 0.0)) - f0, f0 - fbm(detailUv + vec2(0.0, e))) / e * rough * 0.3 / (texel * mapSize / 0.3);
+    slope += detailSlope * closeness * step(0.0, h);
+    coastNoise = (fbm(detailUv * 1.7 + 5.0) - 0.5) * 14.0 * closeness;
+  }
+  vec3 normal = normalize(vec3(-slope.x * relief, 1.0, -slope.y * relief));
+
+  float coastWidth = max(fwidth(h + coastNoise), 1.0);
+  float land = smoothstep(-coastWidth, coastWidth, h + coastNoise);
 
   vec3 ground = groundColor(h) * (0.88 + 0.16 * noise(vUv * vec2(1400.0, 780.0)) * detail + 0.08 * noise(vUv * vec2(7000.0, 3900.0)) * detail);
   float diffuse = max(dot(normal, sunDirection), 0.0);
