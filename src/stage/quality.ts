@@ -12,7 +12,7 @@ export interface QualitySettings {
 
 export const QUALITY: Record<QualityTier, QualitySettings> = {
   low: { maxDpr: 1, multisampling: 0, halfFloat: false, shadows: false, shadowMapSize: 1024 },
-  medium: { maxDpr: 1.25, multisampling: 2, halfFloat: true, shadows: true, shadowMapSize: 2048 },
+  medium: { maxDpr: 1.25, multisampling: 0, halfFloat: true, shadows: true, shadowMapSize: 2048 },
   high: { maxDpr: 2, multisampling: 4, halfFloat: true, shadows: true, shadowMapSize: 4096 },
 }
 
@@ -42,6 +42,10 @@ export function initialQuality(search = location.search, device = navigator): Qu
 export function stepQuality(tier: QualityTier, direction: 1 | -1): QualityTier {
   const index = QUALITY_TIERS.indexOf(tier) + direction
   return QUALITY_TIERS[Math.min(QUALITY_TIERS.length - 1, Math.max(0, index))]!
+}
+
+export function isQualityPinned(search = location.search): boolean {
+  return isQualityTier(new URLSearchParams(search).get('quality'))
 }
 
 export function isDebug(search = location.search): boolean {

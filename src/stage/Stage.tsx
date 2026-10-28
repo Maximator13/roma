@@ -1,6 +1,6 @@
 import { PerformanceMonitor, useProgress } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Bloom, EffectComposer, N8AO, ToneMapping, Vignette } from '@react-three/postprocessing'
+import { Bloom, EffectComposer, N8AO, SMAA, ToneMapping, Vignette } from '@react-three/postprocessing'
 import { ToneMappingMode } from 'postprocessing'
 import { Component, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { HalfFloatType, UnsignedByteType } from 'three'
@@ -12,7 +12,7 @@ import { useApp } from '../store.ts'
 import { DebugHud, StatsProbe } from './DebugHud.tsx'
 import { gradingAt, SCENE_LOOK } from './grading.ts'
 import { GradingEffect } from './GradingEffect.ts'
-import { QUALITY, isDebug, stepQuality, type QualityTier } from './quality.ts'
+import { QUALITY, isDebug, isQualityPinned, stepQuality, type QualityTier } from './quality.ts'
 import { SceneHost } from './SceneHost.tsx'
 import { useSceneSwap } from './useSceneSwap.ts'
 
@@ -29,7 +29,7 @@ function Effects({
 }: {
   multisampling: number
   halfFloat: boolean
-  ambientOcclusion: AmbientOcclusion
+  ambientOcclusion: boolean
   bloom: boolean
 }) {
   const grading = useMemo(() => new GradingEffect(), [])
@@ -41,8 +41,7 @@ function Effects({
   return (
     <EffectComposer multisampling={multisampling} frameBufferType={halfFloat ? HalfFloatType : UnsignedByteType}>
       <N8AO
-        enabled={ambientOcclusion !== 'off'}
-        halfRes={ambientOcclusion === 'half'}
+        enabled={ambientOcclusion}
         quality="performance"
         aoRadius={2.5}
         distanceFalloff={1}
@@ -52,6 +51,7 @@ function Effects({
       <ToneMapping mode={ToneMappingMode.NEUTRAL} />
       <primitive object={grading} dispose={null} />
       <Vignette offset={0.35} darkness={0.4} />
+      {multisampling === 0 ? <SMAA /> : <></>}
     </EffectComposer>
   )
 }
@@ -72,14 +72,15 @@ class SceneBoundary extends Component<{ id: string; children: ReactNode }, { fai
   }
 }
 
-type AmbientOcclusion = 'off' | 'half' | 'full'
-
-function ambientOcclusionFor(sceneShown: boolean, quality: QualityTier): AmbientOcclusion {
-  if (!sceneShown || quality === 'low') return 'off'
-  return quality === 'high' ? 'full' : 'half'
+function ambientOcclusionFor(sceneShown: boolean, quality: QualityTier): boolean {
+  return sceneShown && quality === 'high'
 }
 
+let declined = false
+
 function changeQuality(direction: 1 | -1) {
+  if (direction === 1 && declined) return
+  if (direction === -1) declined = true
   const { quality, setQuality } = useApp.getState()
   setQuality(stepQuality(quality, direction))
 }
@@ -124,6 +125,7 @@ export default function Stage({ paused = false }: { paused?: boolean }) {
   const quality = useApp((state) => state.quality)
   const settings = QUALITY[quality]
   const debug = useMemo(() => isDebug(), [])
+  const pinned = useMemo(() => isQualityPinned(), [])
   const insets = useUiInsets()
   const veil = useRef<HTMLDivElement>(null)
   const { shown, loading, onReady } = useSceneSwap(veil)
@@ -140,12 +142,14 @@ export default function Stage({ paused = false }: { paused?: boolean }) {
           gl={{ antialias: false, stencil: false, powerPreference: 'high-performance' }}
           fallback={<p className="stage__fallback">{UI.webglMissing}</p>}
         >
-          <PerformanceMonitor
-            flipflops={3}
-            onIncline={() => changeQuality(1)}
-            onDecline={() => changeQuality(-1)}
-            onFallback={() => useApp.getState().setQuality('low')}
-          />
+          {!pinned && !loading && (
+            <PerformanceMonitor
+              key={shown ?? 'map'}
+              bounds={() => [25, 58]}
+              onIncline={() => changeQuality(1)}
+              onDecline={() => changeQuality(-1)}
+            />
+          )}
           <Suspense fallback={null}>
             <MapStage segments={TERRAIN_SEGMENTS[quality]} insets={insets} detail={TERRAIN_DETAIL[quality]} active={shown === null} />
           </Suspense>
