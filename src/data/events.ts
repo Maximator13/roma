@@ -3550,5 +3550,38 @@ export const events: HistoricalEvent[] = [
       }
     ],
     "scene": "rhodes"
+  },
+  {
+    "id": "hadrien-en-bretagne",
+    "title": "Hadrien en Bretagne, début du mur",
+    "start": 122,
+    "precision": "year",
+    "certainty": "attested",
+    "era": "haut-empire",
+    "track": "rome",
+    "category": "building",
+    "importance": 3,
+    "placeId": "mur-d-hadrien",
+    "summary": "Hadrien se rend en Bretagne, y corrige des abus et fait construire le premier mur de 80 milles. Le diplôme du 17 juillet 122 nomme le nouveau gouverneur A. Platorius Nepos, dont le nom figure sur les dalles des fortins (RIB 1634, 1637). La date de début du chantier est déduite de ce contexte.",
+    "body": "Hadrien se rend en Bretagne en 122, y corrige des abus et fait construire, selon l'Histoire Auguste, un mur de 80 milles « pour séparer les Barbares des Romains ». Le diplôme militaire du 17 juillet 122 nomme le nouveau gouverneur A. Platorius Nepos, dont le nom figure sur les dalles de construction des fortins (RIB 1634, 1637) : c'est de ce contexte que l'on déduit le début du chantier.\n\nLe mur court de la Tyne au Solway, sur environ 117 km. À l'est il est en pierre, à l'ouest d'abord en mottes de gazon. Un fortin garde chaque mille, deux tourelles s'intercalent entre deux fortins. Pendant les travaux, on décide de placer des forts sur la ligne même, comme Vercovicium (Housesteads), puis de creuser au sud le vallum, un grand fossé bordé de deux levées qui marque la limite de la zone militaire.\n\nLa scène montre le secteur de Housesteads vers 130, l'ouvrage achevé : la date est une convention, aucune inscription ne fixant l'achèvement du fort ni du vallum.",
+    "sources": [
+      {
+        "kind": "ancient",
+        "author": "Histoire Auguste",
+        "work": "Hadrien 11, 2 et 12, 1"
+      },
+      {
+        "kind": "ancient",
+        "author": "CIL XVI 69",
+        "work": "CIL XVI 69"
+      },
+      {
+        "kind": "ancient",
+        "author": "RIB 1637",
+        "work": "RIB 1637",
+        "url": "https://romaninscriptionsofbritain.org/inscriptions/1637"
+      }
+    ],
+    "scene": "mur-d-hadrien"
   }
 ]

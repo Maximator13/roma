@@ -335,5 +335,13 @@ export const places: Place[] = [
     "lat": 36.444,
     "lon": 28.224,
     "pleiadesId": 590030
+  },
+  {
+    "id": "mur-d-hadrien",
+    "name": "Mur d'Hadrien",
+    "ancientName": "Vercovicium",
+    "lat": 55.0131,
+    "lon": -2.3311,
+    "pleiadesId": 89311
   }
 ]

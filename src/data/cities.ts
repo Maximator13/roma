@@ -568,5 +568,17 @@ export const cities: City[] = [
     "importance": 3,
     "note": "Grande cité maritime de l'Égée, dont le Colosse, renversé en 227 ou 226 av. J.-C., gît encore à l'époque romaine.",
     "scene": "rhodes"
+  },
+  {
+    "id": "mur-d-hadrien",
+    "name": "Mur d'Hadrien",
+    "ancientName": "Vercovicium",
+    "lat": 55.0131,
+    "lon": -2.3311,
+    "pleiadesId": 89311,
+    "from": 122,
+    "importance": 3,
+    "note": "Fort auxiliaire de Vercovicium, sur la crête du Whin Sill, au milieu du mur construit à partir de 122 sur la frontière nord de la Bretagne.",
+    "scene": "mur-d-hadrien"
   }
 ]

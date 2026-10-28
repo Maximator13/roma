@@ -1845,3 +1845,126 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 - **Hypothèse retenue** : Insula size and harbour outlines are unchanged from the previous plan
 - **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
 - **Décision** : à trancher
+
+## Scène Le mur d'Hadrien à Housesteads (vers 130)
+
+### 1. Garnison de Housesteads en 130
+
+- **Hypothèse retenue** : Cohorte milliaire d'infanterie non identifiée, éventuellement avec un détachement de la IIe légion Auguste ; la Ire cohorte de Tongriens est encore à Vindolanda
+- **Pourquoi un doute** : English Heritage date la présence tongrienne de la fin du IIe siècle ; RIB 3364 et un diplôme de 146 placent l'unité à Vindolanda ; le détachement légionnaire repose sur une source secondaire (Roman-Britain.co.uk via Wikipédia)
+- **Sources** : https://www.english-heritage.org.uk/visit/places/housesteads-roman-fort-hadrians-wall/history/; https://romaninscriptionsofbritain.org/inscriptions/3364; https://en.wikipedia.org/wiki/Vercovicium; Crow 2004 ; Rushworth 2009
+- **Décision** : à trancher
+
+### 2. Date de construction du fort
+
+- **Hypothèse retenue** : Vers 124 à 128, achevé avant 130
+- **Pourquoi un doute** : English Heritage dit seulement « dans la décennie qui suit 122 » ; la date de 124 vient de synthèses secondaires ; une crémation sous l'angle nord-ouest suggère un intervalle de plus d'un an entre phases
+- **Sources** : https://www.english-heritage.org.uk/visit/places/housesteads-roman-fort-hadrians-wall/history/; Rushworth 2009
+- **Décision** : à trancher
+
+### 3. Phase de l'hôpital, des latrines et du praetorium
+
+- **Hypothèse retenue** : Présents en 130 sous une forme hadrianique
+- **Pourquoi un doute** : Les sources consultées ne datent pas ces bâtiments ; l'identification de l'hôpital est elle-même probable et non prouvée
+- **Sources** : https://www.english-heritage.org.uk/visit/places/housesteads-roman-fort-hadrians-wall/history/description/; Rushworth 2009, vol. 1
+- **Décision** : à trancher
+
+### 4. Position des latrines
+
+- **Hypothèse retenue** : Angle sud-est, le plus bas du fort
+- **Pourquoi un doute** : Wikipédia dit « l'angle le plus bas » ; un résumé de la page Description d'English Heritage indiquait le sud-ouest ; à trancher sur le plan publié
+- **Sources** : https://en.wikipedia.org/wiki/Vercovicium; https://www.english-heritage.org.uk/visit/places/housesteads-roman-fort-hadrians-wall/history/description/
+- **Décision** : à trancher
+
+### 5. Dimensions et orientation du fort
+
+- **Hypothèse retenue** : Environ 186 × 112 m, grand axe est-ouest, porte principale à l'est
+- **Pourquoi un doute** : Chiffres issus de sites de vulgarisation (610 × 367 pieds) ; orientation vers l'est souvent citée mais non vérifiée ici
+- **Sources** : https://www.undiscoveredscotland.co.uk/hexham/housesteads/index.html; Rushworth 2009, plan général
+- **Décision** : à trancher
+
+### 6. Vicus en 130
+
+- **Hypothèse retenue** : Absent ou réduit à quelques abris
+- **Pourquoi un doute** : Extension maximale au IIIe siècle, abandon vers la fin du IIIe ; aucune trace hadrianique citée dans les sources consultées
+- **Sources** : https://www.english-heritage.org.uk/visit/places/housesteads-roman-fort-hadrians-wall/history/
+- **Décision** : à trancher
+
+### 7. Profil original du vallum
+
+- **Hypothèse retenue** : Fossé à fond plat d'environ 6 m de large et 3 m de profondeur, bermes d'environ 10 m, levées d'environ 6 m de large
+- **Pourquoi un doute** : Chiffres issus d'une encyclopédie en ligne, pas d'une source archéologique ; tracé exact au sud de Housesteads à relever
+- **Sources** : https://www.newworldencyclopedia.org/entry/Hadrian%27s_Wall; Breeze, Handbook to the Roman Wall, 14e éd., 2006
+- **Décision** : à trancher
+
+### 8. État du chantier en 130 (courtine étroite, porte nord du fortin 37, tourelle 37a)
+
+- **Hypothèse retenue** : Courtine achevée ; porte nord du fortin 37 déjà réparée ou murée ; tourelle 37a encore debout
+- **Pourquoi un doute** : La porte nord s'est effondrée « peu après la construction » sans date ; la démolition de 37a n'est pas datée
+- **Sources** : https://keystothepast.info/Site-Details?PRN=N6555; https://co-curate.ncl.ac.uk/wall-mile-37-hadrians-wall
+- **Décision** : à trancher
+
+### 9. Hauteur, parapet et enduit du mur
+
+- **Hypothèse retenue** : Environ 4 à 4,5 m avec chemin de ronde et parapet ; pierre apparente
+- **Pourquoi un doute** : Bède donne 12 pieds ; existence du chemin de ronde et blanchiment débattus
+- **Sources** : Bède, Histoire ecclésiastique I, 12; https://en.wikipedia.org/wiki/Hadrian%27s_Wall
+- **Décision** : à trancher
+
+### 10. Toitures et élévations
+
+- **Hypothèse retenue** : Dalles de pierre ou tuiles pour les bâtiments centraux, élévation des casernes en pierre
+- **Pourquoi un doute** : Non documenté dans les sources consultées
+- **Sources** : Rushworth 2009
+- **Décision** : à trancher
+
+### 11. Coordonnées de la porte nord, du vallum et des tourelles
+
+- **Hypothèse retenue** : Valeurs indicatives converties depuis la grille britannique ou estimées
+- **Pourquoi un doute** : Seuls le fort (Wikipédia), le fortin 37 (NY 7850 6869) et les lacs sont repris de sources ; le reste est estimé
+- **Sources** : https://en.wikipedia.org/wiki/Milecastle_37; https://keystothepast.info/Site-Details?PRN=N6555
+- **Décision** : à trancher
+
+### 12. Identifiant Pleiades
+
+- **Hypothèse retenue** : 89311 pour Housesteads (Vercovicium)
+- **Pourquoi un doute** : Lu dans un résultat de recherche, la page Pleiades étant protégée contre les robots ; à confirmer dans un navigateur
+- **Sources** : https://pleiades.stoa.org/places/89311
+- **Décision** : à trancher
+
+### 13. Distance de Vindolanda
+
+- **Hypothèse retenue** : Environ 3 km au sud-ouest de Housesteads
+- **Pourquoi un doute** : Wikipédia donne environ 2 milles (3,2 km)
+- **Sources** : https://en.wikipedia.org/wiki/Vercovicium
+- **Décision** : à trancher
+
+### 14. Restitution
+
+- **Hypothèse retenue** : Fort de 183 sur 104 m, axe principal tourné de 12,3 degrés, relevé sur le LiDAR ; portes nord et sud sur la via principalis ; plan intérieur (greniers, principia, praetorium, hôpital, 10 casernes, latrines au sud-est) selon les fouilles publiées.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 15. Restitution
+
+- **Hypothèse retenue** : Fortin 37 recalé sur le mur ; fortins 36 et 38 et tourelles autres que 37a et 37b placés aux intervalles théoriques (un mille romain, un tiers de mille) ; tourelle 36b omise car démolie pour le fort.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 16. Restitution
+
+- **Hypothèse retenue** : Vallum restitué : fossé de 3 m, levées de 1,9 m à 16,5 m de l'axe ; tracé interpolé près du fort, environ 115 m au sud, avec une chaussée face à la porte sud.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 17. Restitution
+
+- **Hypothèse retenue** : Mur de 4,4 m jusqu'au chemin de ronde, parapet crénelé, pierre apparente ; toits en pavillon pour les tourelles.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 18. Restitution
+
+- **Hypothèse retenue** : Niveau des lacs (Crag, Greenlee, Broomlee, Grindon) tiré du LiDAR actuel.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher

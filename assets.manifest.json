@@ -58,6 +58,13 @@
       "file": "ddc42fe1499b-halicarnasse.glb"
     },
     {
+      "path": "scenes/mur-d-hadrien/mur-d-hadrien.glb",
+      "bytes": 9163464,
+      "sha256": "dcc0d9ff2158285ee333763bafa8e82d17fc6daf31fcda89ac30c2336372d29c",
+      "release": "assets-v24",
+      "file": "dcc0d9ff2158-mur-d-hadrien.glb"
+    },
+    {
       "path": "scenes/nimes/nimes.glb",
       "bytes": 8397984,
       "sha256": "e8b6723f9150ef167866020e3d6c7968508feda6859efbd92be01c27326e2c01",

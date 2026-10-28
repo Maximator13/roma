@@ -1252,5 +1252,85 @@ export const scenes: Scene[] = [
         ]
       }
     ]
+  },
+  {
+    "id": "mur-d-hadrien",
+    "title": "Le mur d'Hadrien à Housesteads",
+    "status": "ready",
+    "year": 130,
+    "lat": 55.0131,
+    "lon": -2.3311,
+    "summary": "Vers 130, le mur d'Hadrien suit la crête du Whin Sill, une barre de roche volcanique dont les falaises regardent le nord. Commencé vers 122, à l'époque où l'empereur visite la Bretagne, il traverse l'île sur 80 milles romains, environ 117 km (Histoire Auguste, Hadrien 11, 2). Le fort de Vercovicium, aujourd'hui Housesteads, s'accroche à la pente sud ; plus bas, un grand fossé, le vallum, trace une seconde limite. À l'ouest, le lac de Crag Lough dort au pied des falaises. Le relief est réel ; les bâtiments sont restitués d'après les fouilles.",
+    "ambience": [
+      {
+        "layer": "wind",
+        "volume": 0.6
+      },
+      {
+        "layer": "animals",
+        "volume": 0.3,
+        "points": [
+          "vue-d-ensemble",
+          "le-vallum"
+        ]
+      },
+      {
+        "layer": "market",
+        "volume": 0.25,
+        "points": [
+          "le-fort"
+        ]
+      },
+      {
+        "layer": "birds-day",
+        "volume": 0.25
+      }
+    ],
+    "points": [
+      {
+        "id": "le-mur",
+        "title": "Le mur de pierre",
+        "text": "Le mur avance de crête en crête. Prévu large de 10 pieds romains, environ 2,9 m, il a été réduit en cours de chantier : ici, un mur plus étroit repose sur des fondations larges. Tous les milles romains, un fortin abrite une porte et quelques hommes, comme le fortin 37 à l'ouest ; entre deux, deux tourelles. Trois légions ont bâti l'ouvrage : une dalle du fortin 37 nomme la IIe légion Auguste et le gouverneur Aulus Platorius Nepos (RIB 1634). Sur les falaises, pas de fossé : la roche suffit. Sa hauteur et son parapet restent débattus.",
+        "sources": [
+          "RIB 1634",
+          "RIB 1637",
+          "Keys to the Past, Northumberland, notice N6555",
+          "Co-Curate, Newcastle University, Wall Mile 39",
+          "Wikipedia (en), Hadrian's Wall"
+        ]
+      },
+      {
+        "id": "le-fort",
+        "title": "Vercovicium",
+        "text": "Le fort couvre 2,2 hectares, en forme de carte à jouer, pour une cohorte d'infanterie d'environ 800 hommes. Il n'était pas prévu au départ : ses murs recouvrent une tourelle déjà bâtie, démolie pour lui faire place. Au centre se trouvent le quartier général (principia), la maison du commandant et des greniers sur pilettes ; autour, au moins dix casernes. Quelle unité l'occupe en 130 ? On l'ignore. La Ire cohorte de Tongriens, bien connue ici, n'est attestée qu'à partir de la fin du IIe siècle ; elle tenait auparavant Vindolanda, à 3 km, d'où viennent les célèbres tablettes de bois.",
+        "sources": [
+          "English Heritage, History of Housesteads Roman Fort",
+          "English Heritage, Description of Housesteads Roman Fort",
+          "RIB 3364",
+          "Wikipedia (en), Vercovicium",
+          "Rushworth (dir.), Housesteads Roman Fort: The Grandest Station, 2009"
+        ]
+      },
+      {
+        "id": "la-porte-nord",
+        "title": "La porte nord",
+        "text": "Chaque côté du fort s'ouvre par une porte à deux passages, encadrée de tours. La porte nord perce le mur lui-même : en la franchissant, on quitte la province pour la lande. Son rôle exact reste débattu, comme celui des portes nord des fortins : sortie des patrouilles, contrôle des passages, peut-être des échanges avec les peuples du nord. En 130, elle est neuve et ouverte ; la pente rocheuse qui la précède rend tout charroi difficile. À la fin de l'époque romaine, elle sera murée, comme la porte ouest.",
+        "sources": [
+          "English Heritage, Description of Housesteads Roman Fort",
+          "Breeze et Dobson, Hadrian's Wall, 4e éd., 2000"
+        ]
+      },
+      {
+        "id": "le-vallum",
+        "title": "Le vallum",
+        "text": "Au sud du mur court le vallum, nom moderne d'un large fossé à fond plat bordé de deux levées de terre. Creusé après la décision d'installer les forts sur la ligne, ou en même temps, il délimite une bande militaire : on ne le traverse qu'aux chaussées placées face aux forts. Le mur arrête le nord, le vallum filtre le sud. La route militaire qui reliera plus tard forts et tourelles entre les deux n'existe pas encore : elle date très probablement du retour de l'armée après l'abandon du mur d'Antonin. Ses levées restent visibles dans les prés.",
+        "sources": [
+          "Co-Curate, Newcastle University, Wall Mile 37",
+          "Historic England, NHLE 1018585",
+          "Current Archaeology 382, compte rendu de D. Armstrong, The Hadrian's Wall Military Way",
+          "Wikipedia (en), Hadrian's Wall"
+        ]
+      }
+    ]
   }
 ]
