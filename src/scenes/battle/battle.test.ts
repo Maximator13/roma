@@ -114,7 +114,7 @@ describe('Cannae data', () => {
     const total = (side: Unit['side']) =>
       CANNAE.units.filter((item) => item.side === side && !item.id.startsWith('garnison') && !item.id.startsWith('garde')).reduce((sum, item) => sum + item.soldiers, 0)
     expect(total('rome')).toBe(76000)
-    expect(total('carthage')).toBe(48000)
+    expect(total('enemy')).toBe(48000)
   })
 
   it('stays within the figure budget at one figurine for 20 soldiers', () => {

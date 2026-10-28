@@ -17,7 +17,7 @@ import type { Arrow, Battle, Side } from './schema.ts'
 import { useBattle } from './store.ts'
 import { phaseIndexAt, placeFigure, stateAt, type Placement, type Slot, type UnitState, type UnitTrack } from './timeline.ts'
 
-export const SIDE_COLORS: Record<Side, string> = { rome: '#c2462f', carthage: '#3c78b4' }
+export const SIDE_COLORS: Record<Side, string> = { rome: '#c2462f', enemy: '#3c78b4' }
 
 const ACROSS = 10
 const DEEP = 2
@@ -106,7 +106,7 @@ export function Footprints({ battle, tracks, field }: { battle: Battle; tracks: 
   const slots = useMemo(() => footprintSlots(), [])
   const sides = useMemo(
     () =>
-      (['rome', 'carthage'] as const).map((side) => {
+      (['rome', 'enemy'] as const).map((side) => {
         const units = battle.units.flatMap((unit, index) => (unit.side === side ? [index] : []))
         const geometry = new BufferGeometry()
         geometry.setAttribute('position', new BufferAttribute(new Float32Array(units.length * slots.length * 3), 3))

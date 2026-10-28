@@ -22,7 +22,7 @@ export const CANNAE: Battle = {
   latitude: 41.3,
   declination: 21,
   tacticalScale: 3,
-  sides: { rome: 'Rome et ses alliés', carthage: "Armée d'Hannibal" },
+  sides: { rome: 'Rome et ses alliés', enemy: "Armée d'Hannibal" },
   phases: [
     {
       id: 'la-traversee',
@@ -35,8 +35,8 @@ export const CANNAE: Battle = {
       arrows: [
         { side: 'rome', kind: 'move', path: [[-2600, 980], [-1900, 760], [-1420, 620], [-1050, 260]] },
         { side: 'rome', kind: 'move', path: [[260, 990], [320, 560], [360, 230]] },
-        { side: 'carthage', kind: 'move', path: [[-4200, -660], [-3300, -680], [-2760, -660], [-1600, -500]] },
-        { side: 'carthage', kind: 'move', path: [[-4260, -780], [-3900, -1100], [-3560, -1150], [-2600, -1000], [-900, -620]] },
+        { side: 'enemy', kind: 'move', path: [[-4200, -660], [-3300, -680], [-2760, -660], [-1600, -500]] },
+        { side: 'enemy', kind: 'move', path: [[-4260, -780], [-3900, -1100], [-3560, -1150], [-2600, -1000], [-900, -620]] },
       ],
     },
     {
@@ -50,8 +50,8 @@ export const CANNAE: Battle = {
       arrows: [
         { side: 'rome', kind: 'attack', path: [[-500, 0], [-500, -100]] },
         { side: 'rome', kind: 'attack', path: [[150, 0], [150, -100]] },
-        { side: 'carthage', kind: 'attack', path: [[-560, -260], [-560, -165]] },
-        { side: 'carthage', kind: 'attack', path: [[190, -260], [190, -165]] },
+        { side: 'enemy', kind: 'attack', path: [[-560, -260], [-560, -165]] },
+        { side: 'enemy', kind: 'attack', path: [[190, -260], [190, -165]] },
       ],
     },
     {
@@ -63,8 +63,8 @@ export const CANNAE: Battle = {
       span: 1700,
       ground: { unit: 'cavalerie-romaine', along: -45, across: 150, look: 260, turn: -25 },
       arrows: [
-        { side: 'carthage', kind: 'attack', path: [[-1260, -430], [-1250, -190]] },
-        { side: 'carthage', kind: 'attack', path: [[-1350, 0], [-1600, 450], [-1750, 1000]] },
+        { side: 'enemy', kind: 'attack', path: [[-1260, -430], [-1250, -190]] },
+        { side: 'enemy', kind: 'attack', path: [[-1350, 0], [-1600, 450], [-1750, 1000]] },
         { side: 'rome', kind: 'flee', path: [[-1250, 60], [-1550, 500], [-1700, 1000]] },
       ],
     },
@@ -91,9 +91,9 @@ export const CANNAE: Battle = {
       span: 4600,
       ground: { unit: 'cavalerie-alliee', along: -90, across: -60, look: 300 },
       arrows: [
-        { side: 'carthage', kind: 'move', path: [[-1150, -150], [-1050, 430], [-300, 640], [500, 580], [1100, 420]] },
+        { side: 'enemy', kind: 'move', path: [[-1150, -150], [-1050, 430], [-300, 640], [500, 580], [1100, 420]] },
         { side: 'rome', kind: 'flee', path: [[1000, 120], [1700, 700], [2600, 1600]] },
-        { side: 'carthage', kind: 'attack', path: [[1050, -60], [1800, 600], [2500, 1400]] },
+        { side: 'enemy', kind: 'attack', path: [[1050, -60], [1800, 600], [2500, 1400]] },
       ],
     },
     {
@@ -105,8 +105,8 @@ export const CANNAE: Battle = {
       span: 2200,
       ground: { unit: 'libyens-ouest', along: -70, across: 40, look: 260 },
       arrows: [
-        { side: 'carthage', kind: 'attack', path: [[-920, -560], [-900, -400], [-720, -420]] },
-        { side: 'carthage', kind: 'attack', path: [[520, -560], [500, -400], [320, -420]] },
+        { side: 'enemy', kind: 'attack', path: [[-920, -560], [-900, -400], [-720, -420]] },
+        { side: 'enemy', kind: 'attack', path: [[520, -560], [500, -400], [320, -420]] },
       ],
     },
     {
@@ -118,9 +118,9 @@ export const CANNAE: Battle = {
       span: 2600,
       ground: { unit: 'cavalerie-d-hasdrubal', along: -55, across: 60, look: 260 },
       arrows: [
-        { side: 'carthage', kind: 'attack', path: [[700, 300], [200, 120], [-200, -200]] },
-        { side: 'carthage', kind: 'attack', path: [[-650, 200], [-560, -170]] },
-        { side: 'carthage', kind: 'attack', path: [[300, 220], [200, -180]] },
+        { side: 'enemy', kind: 'attack', path: [[700, 300], [200, 120], [-200, -200]] },
+        { side: 'enemy', kind: 'attack', path: [[-650, 200], [-560, -170]] },
+        { side: 'enemy', kind: 'attack', path: [[300, 220], [200, -180]] },
       ],
     },
     {
@@ -411,7 +411,7 @@ export const CANNAE: Battle = {
     {
       id: 'frondeurs-baleares',
       label: 'Frondeurs baléares',
-      side: 'carthage',
+      side: 'enemy',
       troop: 'frondeur',
       soldiers: 4000,
       labelled: true,
@@ -426,7 +426,7 @@ export const CANNAE: Battle = {
     {
       id: 'lonchophores',
       label: 'Lonchophores',
-      side: 'carthage',
+      side: 'enemy',
       troop: 'lonchophore',
       soldiers: 4000,
       start: { at: [-4300, -820], facing: 90, width: 160, depth: 80 },
@@ -440,7 +440,7 @@ export const CANNAE: Battle = {
     {
       id: 'cavalerie-d-hasdrubal',
       label: 'Cavalerie ibère et celte (Hasdrubal)',
-      side: 'carthage',
+      side: 'enemy',
       troop: 'cavalier',
       soldiers: 6500,
       labelled: true,
@@ -459,7 +459,7 @@ export const CANNAE: Battle = {
     {
       id: 'libyens-ouest',
       label: 'Libyens',
-      side: 'carthage',
+      side: 'enemy',
       troop: 'libyen',
       soldiers: 3000,
       labelled: true,
@@ -478,7 +478,7 @@ export const CANNAE: Battle = {
     {
       id: 'libyens-est',
       label: 'Libyens',
-      side: 'carthage',
+      side: 'enemy',
       troop: 'libyen',
       soldiers: 3000,
       labelled: true,
@@ -497,7 +497,7 @@ export const CANNAE: Battle = {
     {
       id: 'celtes-1',
       label: 'Celtes',
-      side: 'carthage',
+      side: 'enemy',
       troop: 'celte',
       soldiers: 4000,
       start: { at: [-4150, -600], facing: 90, width: 140, depth: 90 },
@@ -515,7 +515,7 @@ export const CANNAE: Battle = {
     {
       id: 'iberes-1',
       label: 'Ibères',
-      side: 'carthage',
+      side: 'enemy',
       troop: 'ibere',
       soldiers: 4000,
       start: { at: [-4150, -720], facing: 90, width: 140, depth: 90 },
@@ -533,7 +533,7 @@ export const CANNAE: Battle = {
     {
       id: 'celtes-2',
       label: 'Celtes',
-      side: 'carthage',
+      side: 'enemy',
       troop: 'celte',
       soldiers: 4000,
       labelled: true,
@@ -552,7 +552,7 @@ export const CANNAE: Battle = {
     {
       id: 'iberes-2',
       label: 'Ibères',
-      side: 'carthage',
+      side: 'enemy',
       troop: 'ibere',
       soldiers: 4000,
       labelled: true,
@@ -571,7 +571,7 @@ export const CANNAE: Battle = {
     {
       id: 'celtes-3',
       label: 'Celtes',
-      side: 'carthage',
+      side: 'enemy',
       troop: 'celte',
       soldiers: 4000,
       start: { at: [-4150, -940], facing: 90, width: 140, depth: 90 },
@@ -589,7 +589,7 @@ export const CANNAE: Battle = {
     {
       id: 'iberes-3',
       label: 'Ibères',
-      side: 'carthage',
+      side: 'enemy',
       troop: 'ibere',
       soldiers: 4000,
       start: { at: [-4350, -940], facing: 90, width: 140, depth: 90 },
@@ -607,7 +607,7 @@ export const CANNAE: Battle = {
     {
       id: 'numides',
       label: 'Cavaliers numides (Hannon)',
-      side: 'carthage',
+      side: 'enemy',
       troop: 'numide',
       soldiers: 3500,
       labelled: true,
@@ -624,7 +624,7 @@ export const CANNAE: Battle = {
     {
       id: 'garde-du-camp',
       label: 'Garde du camp carthaginois',
-      side: 'carthage',
+      side: 'enemy',
       troop: 'lonchophore',
       soldiers: 3000,
       start: { at: [-4280, -620], facing: 45, width: 260, depth: 110 },

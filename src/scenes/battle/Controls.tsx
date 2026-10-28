@@ -99,9 +99,9 @@ function Legend({ battle }: { battle: Battle }) {
   const view = useBattle((state) => state.view)
   return (
     <p className="battle__legend">
-      <span>{frenchSpacing(BATTLE_UI.scale(battle.scale))}</span>
+      <span>{frenchSpacing(battle.legend ?? BATTLE_UI.scale(battle.scale))}</span>
       {view === 'tactical' && <span className="battle__note">{frenchSpacing(BATTLE_UI.exaggerated(battle.tacticalScale))}</span>}
-      {(['rome', 'carthage'] as const).map((side) => (
+      {(['rome', 'enemy'] as const).map((side) => (
         <span key={side} className="battle__side">
           <i style={{ background: SIDE_COLORS[side] }} />
           {battle.sides[side]}

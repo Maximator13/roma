@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const SIDES = ['rome', 'carthage'] as const
+export const SIDES = ['rome', 'enemy'] as const
 export const ACTIONS = ['stand', 'march', 'charge', 'fight', 'skirmish', 'flee'] as const
 export const ARROW_KINDS = ['move', 'attack', 'flee'] as const
 
@@ -85,7 +85,8 @@ export const battleSchema = z
     latitude: z.number().min(-90).max(90),
     declination: z.number().min(-24).max(24),
     tacticalScale: z.number().min(1),
-    sides: z.strictObject({ rome: label, carthage: label }),
+    legend: label.optional(),
+    sides: z.strictObject({ rome: label, enemy: label }),
     phases: z.array(phaseSchema).min(1),
     units: z.array(unitSchema).min(1),
   })
