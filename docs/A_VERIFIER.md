@@ -1281,3 +1281,567 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 - **Hypothèse retenue** : chaque dieu porte l'année de son premier temple ou de son arrivée à Rome selon la tradition (Jupiter, Junon et Minerve en 509 av. J.-C., Vesta et Janus sous Numa, Quirinus avec la mort de Romulus, Apollon en 431, Cybèle en 204, Mithra vers 80, Sol Invictus en 274). Les dates royales sont traditionnelles. Pour Bacchus, la carte retient la répression des bacchanales (186 av. J.-C.), Liber étant bien plus ancien.
 - **Pourquoi un doute** : dates légendaires ou approchées ; la Junon Ludovisi est sans doute Antonia la Jeune représentée en Junon, la Cérès de la galerie Borghèse une statue-portrait restaurée en Cérès, l'as de Janus et le denier de Quirinus des monnaies (aucune statue de culte romaine conservée pour ces dieux).
 - **Décision** : à trancher
+
+## Scène Les pyramides de Gizeh (vers 165)
+
+### 1. Sommet de la Grande Pyramide à l'époque romaine
+
+- **Hypothèse retenue** : Le pyramidion manquait déjà et le sommet formait une petite plateforme (Pline : 16,5 pieds de tour ; Diodore : 6 coudées).
+- **Pourquoi un doute** : Chiffres de Pline variables selon les manuscrits ; interprétation débattue.
+- **Sources** : Pline l'Ancien, Histoire naturelle XXXVI, 80; Diodore de Sicile I, 63
+- **Décision** : à trancher
+
+### 2. Côté de la Grande Pyramide chez Pline
+
+- **Hypothèse retenue** : 833 pieds dans la traduction Bostock ; d'autres éditions donneraient 783 ou 883.
+- **Pourquoi un doute** : Texte latin de Mayhoff non consulté en ligne ; le chiffre est retiré du cartel en attendant.
+- **Sources** : https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.02.0137:book=36:chapter=17; Pline, éd. Mayhoff (Teubner) ou Loeb (Eichholz), XXXVI, 80
+- **Décision** : à trancher
+
+### 3. Date de l'arrachage du parement
+
+- **Hypothèse retenue** : Démontage surtout après le séisme de 1303 pour les constructions du Caire mamelouk ; Abd al-Latif al-Baghdadi voit encore des inscriptions sur le parement vers 1200.
+- **Pourquoi un doute** : Sources médiévales à citer précisément ; utile pour le cartel.
+- **Sources** : Abd al-Latif al-Baghdadi, Relation de l'Égypte, trad. S. de Sacy, 1810; Lehner 1997
+- **Décision** : à trancher
+
+### 4. Référence et texte du poème de Terentia
+
+- **Hypothèse retenue** : CIL III, 21 ; graffiti gravé vers 120 pour Decimus Terentius Gentianus, copié par Guillaume de Boldensele dans les années 1330 (1335 ou 1336 selon les auteurs).
+- **Pourquoi un doute** : Numéro CIL non confirmé en ligne ; date de la visite déduite de la carrière du frère.
+- **Sources** : https://www.roger-pearse.com/weblog/2014/01/14/an-ancient-latin-inscription-on-the-pyramids-of-giza/; https://en.wikipedia.org/wiki/Decimus_Terentius_Gentianus; Hemelrijk 2015
+- **Décision** : à trancher
+
+### 5. Inscription des réparations sous Marc Aurèle et Lucius Verus
+
+- **Hypothèse retenue** : Dédicace grecque des murs de l'enclos du Sphinx, années 161 à 169.
+- **Pourquoi un doute** : Rapport de Vyse inaccessible (numérisation Heidelberg bloquée) ; aucune édition moderne trouvée ; le cartel la présente au conditionnel de source.
+- **Sources** : Vyse 1842, III, appendice; Hassan 1949; Lehner 1991
+- **Décision** : à trancher
+
+### 6. Phase de rhabillage des flancs en petits blocs
+
+- **Hypothèse retenue** : Phase romaine, parfois rattachée aux Antonins.
+- **Pourquoi un doute** : L'attribution à Marc Aurèle prêtée à Lehner n'a pas été retrouvée ; le cartel dit seulement « époque romaine ».
+- **Sources** : Lehner 1991; Hassan 1949
+- **Décision** : à trancher
+
+### 7. Escalier romain et autel devant les pattes
+
+- **Hypothèse retenue** : Escalier et plateforme d'époque romaine, en usage aux Ier et IIe siècles ; escalier enlevé pendant le dégagement de Baraize (de 1925 à 1936).
+- **Pourquoi un doute** : Les légendes du Sphinx Project (archives Lacau) décrivent l'enlèvement d'un « large escalier d'époque romaine » sans date fine de construction ; datation de l'autel non vérifiée.
+- **Sources** : Open Context, archives photographiques du Sphinx Project; Hassan 1949; Lehner 1991
+- **Décision** : à trancher
+
+### 8. Décret de Busiris pour Néron et le préfet Balbillus
+
+- **Hypothèse retenue** : OGIS 666, trouvé près du Sphinx, préfecture de Balbillus de 55 à 59.
+- **Pourquoi un doute** : Texte et lieu de découverte non vérifiés en ligne ; à confirmer avant de le citer.
+- **Sources** : OGIS 666 (Dittenberger); E. Bernand, Inscriptions grecques d'Égypte et de Nubie : répertoire bibliographique des OGIS, 1982
+- **Décision** : à trancher
+
+### 9. État du visage du Sphinx en 165 (nez, barbe, couleur)
+
+- **Hypothèse retenue** : Visage teint de rouge (Pline) ; nez probablement intact avant la mutilation rapportée par al-Maqrizi au XIVe siècle ; barbe en place ou déjà tombée.
+- **Pourquoi un doute** : Pas de source romaine explicite sur le nez et la barbe.
+- **Sources** : Pline l'Ancien XXXVI, 77; al-Maqrizi, Khitat; Lehner 1991
+- **Décision** : à trancher
+
+### 10. Usage du temple d'Isis des pyramides à l'époque romaine
+
+- **Hypothèse retenue** : Culte encore actif ou temple abandonné.
+- **Pourquoi un doute** : Documentation du premier millénaire avant J.-C. solide, époque romaine incertaine.
+- **Sources** : Zivie-Coche 1991
+- **Décision** : à trancher
+
+### 11. Visite d'Hadrien à Gizeh en 130
+
+- **Hypothèse retenue** : Possible lors du voyage en Égypte, mais non attestée explicitement.
+- **Pourquoi un doute** : Raison pour laquelle cette date n'a pas été retenue.
+- **Sources** : Histoire Auguste, Hadrien 14; A. R. Birley, Hadrian, the Restless Emperor, 1997
+- **Décision** : à trancher
+
+### 12. Garnison de Babylon et équipement des soldats vers 165
+
+- **Hypothèse retenue** : Légion II Traiana Fortis à Nicopolis ; Babylon tenue par une unité auxiliaire ou un détachement ; armure de maille ou segmentée.
+- **Pourquoi un doute** : Strabon décrit l'état augustéen ; composition de la garnison au IIe siècle et équipement à confirmer.
+- **Sources** : Strabon XVII, 1, 30; https://en.wikipedia.org/wiki/Legio_II_Traiana_Fortis; Y. Le Bohec, L'armée romaine, 2002
+- **Décision** : à trancher
+
+### 13. Localisation de Busiris
+
+- **Hypothèse retenue** : Village au pied du plateau, identifié à Nazlet el-Samman ou Kafr el-Haram.
+- **Pourquoi un doute** : Identification moderne non sourcée.
+- **Sources** : Pline l'Ancien XXXVI, 76; Zivie-Coche 1991
+- **Décision** : à trancher
+
+### 14. Restitution
+
+- **Hypothèse retenue** : Babylon's position, about 9.6 km east and 3.3 km north, was computed from approximately 30.006 N, 31.230 E. Memphis is put on a flood island west of the drawn Nile at y = -14,500, because gizeh_plan's Nile course does not match the modern one. Both are approximate silhouettes.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 15. Restitution
+
+- **Hypothèse retenue** : The Mokattam ribbon follows the DEM rise at about x 13 to 15 km (the DEM gives 98 to 183 m at y = 6000). Its exact outline is stylised.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 16. Restitution
+
+- **Hypothèse retenue** : The short Greek and Latin graffiti texts other than Terentia's are invented typical formulas (HKO, ISTORESA, VIDI ET MIRATVS SVM), not specific attested inscriptions.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+
+## Scène Le temple d'Artémis à Éphèse (vers 150)
+
+### 1. Dimensions du temple
+
+- **Hypothèse retenue** : Les 425 x 225 pieds de Pline (environ 125,8 x 66,6 m) valent pour le plan commun aux deux temples ; le chiffre de 137 x 69 m est non sourcé.
+- **Pourquoi un doute** : Pline décrit en contexte le temple archaïque ; aucune mesure publiée de Bammer consultée.
+- **Sources** : Bammer 1972; Bammer et Muss 1996; Pline, HN XXXVI, 95
+- **Décision** : à trancher
+
+### 2. Nombre et disposition des colonnes
+
+- **Hypothèse retenue** : 127 colonnes, 36 à tambour sculpté ; disposition diptère octastyle à l'ouest.
+- **Pourquoi un doute** : Lecture du chiffre discutée dans les éditions de Pline.
+- **Sources** : Pline, HN XXXVI, 95; Bammer 1972
+- **Décision** : à trancher
+
+### 3. Couverture du sékos
+
+- **Hypothèse retenue** : Toit couvert sur charpente de cèdre (Pline XVI, 213) ; une cella hypèthre est aussi proposée.
+- **Pourquoi un doute** : Débat archéologique non tranché.
+- **Sources** : Pline, HN XVI, 213; Bammer et Muss 1996
+- **Décision** : à trancher
+
+### 4. Itinéraire de la procession de Salutaris
+
+- **Hypothèse retenue** : Entrée par la porte de Magnésie, sortie par la porte de Koressos.
+- **Pourquoi un doute** : Itinéraire donné par l'inscription (lignes citées par le Harvard CHS Research Bulletin, 2015) mais texte non lu directement.
+- **Sources** : IvEph 27; Rogers 1991, chapitre 3; https://research-bulletin.chs.harvard.edu/2015/02/20/a-stroll-along-the-sea/
+- **Décision** : à trancher
+
+### 5. Datation des copies d'Artémis
+
+- **Hypothèse retenue** : Grande Artémis (2,92 m) d'époque trajane, Belle Artémis d'époque hadrianique à début antonine.
+- **Pourquoi un doute** : Sources secondaires (Biblical Archaeology Society, Rhodes College) ; d'autres catalogues donnent Ier ou IIe s. sans précision.
+- **Sources** : Fleischer 1973; https://library.biblicalarchaeology.org/images/bsba420402920ljpg/
+- **Décision** : à trancher
+
+### 6. Date du sac gothique
+
+- **Hypothèse retenue** : 262, d'après l'ordre de l'Histoire Auguste ; 268 selon d'autres.
+- **Pourquoi un doute** : Chronologie des raids gothiques discutée.
+- **Sources** : Histoire Auguste, Les deux Galliens, 6, 2; Jordanès, Getica, XX, 107
+- **Décision** : à trancher
+
+### 7. Trait de côte, port et comblement de la baie de l'Artémision
+
+- **Hypothèse retenue** : Port romain à l'ouest de la grande rue, mer à quelques kilomètres plus à l'ouest ; baie de l'Artémision comblée à l'époque hellénistique.
+- **Pourquoi un doute** : Distances et date de comblement tirées de résumés secondaires.
+- **Sources** : Stock et al. 2013; Kraft et al.; Brückner et al.
+- **Décision** : à trancher
+
+### 8. Proconsul d'Asie en 150
+
+- **Hypothèse retenue** : Inconnu ; ne pas nommer.
+- **Pourquoi un doute** : Fastes proconsulaires non consultés.
+- **Sources** : Fastes proconsulaires d'Asie
+- **Décision** : à trancher
+
+### 9. Identifiant Pleiades du temple
+
+- **Hypothèse retenue** : Temple d'Artémis : 873985034 (Éphèse : 599612).
+- **Pourquoi un doute** : Pleiades protégé par Anubis, page non lisible ; l'identifiant apparaît dans des chemins de ressources intitulés Temple of Artemis.
+- **Sources** : https://pleiades.stoa.org/places/873985034; https://pleiades.stoa.org/places/599612
+- **Décision** : à trancher
+
+### 10. Date exacte du mur d'Auguste
+
+- **Hypothèse retenue** : 5 av. J.-C. (année -4), d'après la titulature.
+- **Pourquoi un doute** : Packhum donne 6/5 av. J.-C. et Sherk place Asinius Gallus vers 6/5 ou 5/4 : la titulature reste le critère.
+- **Sources** : CIL III 6070; Packhum 248086; Sherk, GRBS 2003
+- **Décision** : à trancher
+
+### 11. Hauteur du tambour sculpté
+
+- **Hypothèse retenue** : 1,82 m.
+- **Pourquoi un doute** : Notice du British Museum inaccessible (erreur 403) lors de la vérification.
+- **Sources** : British Museum 1872,0803.9
+- **Décision** : à trancher
+
+### 12. Mois Artémision
+
+- **Hypothèse retenue** : Correspond à peu près à mars et avril.
+- **Pourquoi un doute** : Équivalence du calendrier asiatique non revérifiée.
+- **Sources** : IvEph 24
+- **Décision** : à trancher
+
+### 13. Restitution
+
+- **Hypothèse retenue** : Hypaethral sekos chosen (option a), to match the naiskos after Bammer. This should be logged in docs/A_VERIFIER.md, which is outside my scope.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 14. Restitution
+
+- **Hypothèse retenue** : The bilingual Augusteum inscription (IvEph 1522) is carried by the existing propylon plaques; no Augusteum building is shown.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 15. Restitution
+
+- **Hypothèse retenue** : Theatre placed on the Panayir slope on the axis of the Arkadiane, with the orchestra at about 4.5 m. This is lower than the review's 8 to 10 m, to keep a walkable slope from the street.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 16. Restitution
+
+- **Hypothèse retenue** : Temple front widened to a 66.7 m krepis (225 feet); the column count stays at 110, not Pliny's 127. Adding a third front row would hit the cella antae.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 17. Restitution
+
+- **Hypothèse retenue** : The marshes north and north-east of the peribolos are approximate.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+
+## Scène Olympie et la statue de Zeus (vers 173)
+
+### 1. Dimensions intérieures de la cella et taille de l'intérieur à exporter
+
+- **Hypothèse retenue** : Naos intérieur d'environ 29 m de long sur 13 m de large ; nef centrale d'environ 6,5 m ; hauteur sous plafond d'environ 13 à 14 m ; base de la statue d'environ 9,9 × 6,6 m (9,93 × 6,25 m circule aussi) ; bassin d'huile d'environ 6,5 m de large. Repère interior_center au centre du sol de la cella.
+- **Pourquoi un doute** : Aucune source consultée (FHW compris) ne donne ces cotes.
+- **Sources** : Curtius et Adler, Olympia II, 1892; A. Mallwitz, Olympia und seine Bauten, 1972; Hesperia, article sur le sol devant l'image : https://www.ascsa.edu.gr/uploads/media/hesperia/147268.pdf
+- **Décision** : à trancher
+
+### 2. Hauteur de la statue
+
+- **Hypothèse retenue** : Environ 12,4 m ; 12 à 13 m selon les auteurs ; aucun chiffre antique conservé (Pausanias V, 11, 9 dit que les mesures existaient sans les citer ; Callimaque, Iambe 6, fragmentaire).
+- **Pourquoi un doute** : Estimations modernes divergentes.
+- **Sources** : https://en.wikipedia.org/wiki/Statue_of_Zeus_at_Olympia; Lapatin 2001; Callimaque, fr. 196 Pfeiffer
+- **Décision** : à trancher
+
+### 3. Date du nymphée de Regilla
+
+- **Hypothèse retenue** : Achevé vers 149 à 153 ; d'autres sources donnent 160.
+- **Pourquoi un doute** : Sources divergentes ; vérifier dans Bol 1984.
+- **Sources** : R. Bol, Olympische Forschungen XV, 1984; https://www.tap.gr/tapadb/components/com_jshopping/files/demo_products/063_Arxaia_Olympia_ENG.pdf
+- **Décision** : à trancher
+
+### 4. Répartition des statues du nymphée par niveau
+
+- **Hypothèse retenue** : Famille impériale au niveau inférieur, famille d'Hérode au niveau supérieur (Ancient Olympia Museum) ; Wikipédia (Regilla) décrit l'inverse.
+- **Pourquoi un doute** : Sources en ligne contradictoires ; trancher avec Bol 1984 avant modélisation.
+- **Sources** : https://ancientolympiamuseum.com/index.php/2025/11/23/the-nymphaion/; https://en.wikipedia.org/wiki/Appia_Annia_Regilla; R. Meyers, Representations of the Antonine Empresses on the Nymphaeum in Olympia, Acta ad archaeologiam et artium historiam pertinentia : https://journals.uio.no/acta/article/view/5754
+- **Décision** : à trancher
+
+### 5. Fonction de la maison dite de Néron en 173
+
+- **Hypothèse retenue** : Construite vers 65 à 67 (tuyau NERONIS AVG, EDH HD064272), usage en 173 inconnu, transformée en thermes au IIIe siècle.
+- **Pourquoi un doute** : Identification comme résidence de Néron débattue.
+- **Sources** : https://edh.ub.uni-heidelberg.de/edh/inschrift/HD064272; https://en.wikipedia.org/wiki/Villa_of_Nero
+- **Décision** : à trancher
+
+### 6. Datation de la voûte de la krypte
+
+- **Hypothèse retenue** : Fin du IIIe siècle av. J.-C. (Ancient Olympia Museum) ; certains auteurs attribuent la voûte à l'époque romaine.
+- **Pourquoi un doute** : Sources divergentes ; sans effet sur l'état de 173.
+- **Sources** : https://ancientolympiamuseum.com/index.php/2025/11/21/the-stadium/
+- **Décision** : à trancher
+
+### 7. Présence de soldats aux jeux
+
+- **Hypothèse retenue** : Le gouverneur romain loge au Léonidaion (attesté, V, 15, 2) ; escorte militaire non documentée pour 173.
+- **Pourquoi un doute** : Rendre la présence romaine visible sans inventer : notables en toge et quelques hommes d'escorte.
+- **Sources** : Pausanias V, 15, 2
+- **Décision** : à trancher
+
+### 8. Vêtement pourpre des hellanodices
+
+- **Hypothèse retenue** : Les juges éléens portaient la pourpre.
+- **Pourquoi un doute** : Source antique précise non vérifiée ici.
+- **Sources** : H.-V. Herrmann, Olympia, Heiligtum und Wettkampfstätte, 1972
+- **Décision** : à trancher
+
+### 9. Éclairage de la cella
+
+- **Hypothèse retenue** : Lumière seulement par la porte est (fenêtres hautes ou tuiles translucides : hypothèses débattues) ; lampes à huile.
+- **Pourquoi un doute** : Mode d'éclairage des cellas grecques débattu.
+- **Sources** : Pausanias V, 10, 10
+- **Décision** : à trancher
+
+### 10. Dimensions du Léonidaion, du Philippeion, de l'Héraion, du Métrôon et du portique d'Écho
+
+- **Hypothèse retenue** : Environ 75 × 81 m ; 15 m de diamètre ; 50 × 18,75 m ; 20 × 10 m ; 98 m de long.
+- **Pourquoi un doute** : Chiffres usuels non vérifiés dans une publication de fouille.
+- **Sources** : A. Mallwitz, Olympia und seine Bauten, 1972
+- **Décision** : à trancher
+
+### 11. Remaniement romain du Léonidaion
+
+- **Hypothèse retenue** : Cour transformée en jardin à bassins à l'époque romaine ; date et étude de 2024 (Académie autrichienne) à confirmer.
+- **Pourquoi un doute** : Référence non consultée.
+- **Sources** : https://ancientolympiamuseum.com/?p=5735
+- **Décision** : à trancher
+
+### 12. Coordonnées des monuments
+
+- **Hypothèse retenue** : Coordonnées approchées à environ 20 à 50 m près, à recaler sur le plan du DAI.
+- **Pourquoi un doute** : Pleiades protégé par une page anti robot lors de la vérification ; identifiant 570531 non relu.
+- **Sources** : https://pleiades.stoa.org/places/570531
+- **Décision** : à trancher
+
+### 13. Date de la visite de Pausanias
+
+- **Hypothèse retenue** : Livre V écrit vers 174 ; visite non datée.
+- **Pourquoi un doute** : Présence aux jeux de 173 non attestée.
+- **Sources** : Pausanias V, 1, 2
+- **Décision** : à trancher
+
+### 14. Restitution
+
+- **Hypothèse retenue** : Kronion: the cleaned DEM put the hill top only about 43 m above the Altis, at about (100 to 150, 300). A summit of about 80 m above the Altis (literature: about 123 m asl) is assumed, so a 36 m Gaussian bump was added at (112,305), faded out south of y 172 so the sanctuary is untouched. To verify against the raw DEM.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 15. Restitution
+
+- **Hypothèse retenue** : Gymnasium narrowed to x -180 to -112 (68 m instead of 90 m) so it stays at least 12 m from the Kladeos axis. build_outer now asserts this clearance. The true width is still to verify.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 16. Restitution
+
+- **Hypothèse retenue** : The treasury terrace now ends 3 m east of the last treasury (was 8 m) so that the crypt mouth is reachable at Altis level.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 17. Restitution
+
+- **Hypothèse retenue** : The terrain over the crypt is cut to a trench just around the barrel vault, so walkers stay on the crypt floor.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 18. Restitution
+
+- **Hypothèse retenue** : Interior furnishings follow Pausanias V, 12: a purple curtain heaped in the north aisle, an amber statuette of Augustus on a pedestal in the south aisle, and a table with three olive crowns and one oak crown. The positions are illustrative.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 19. Restitution
+
+- **Hypothèse retenue** : Charites and Horai above the throne back (V, 11, 7) and gold lions on the footstool (V, 11, 2) are simplified figures.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+
+## Scène Le mausolée d'Halicarnasse (vers 77)
+
+### 1. Statut juridique d'Halicarnasse sous le Haut-Empire
+
+- **Hypothèse retenue** : Cité grecque de la province d'Asie ; rattachement à un conventus (Alabanda, ou Halicarnasse même, comme le classe le catalogue Roman Provincial Coinage) ; liberté non attestée
+- **Pourquoi un doute** : Aucune source consultée ne fixe son statut en 77
+- **Sources** : Pline l'Ancien, Histoire naturelle, V, 105 à 109; Roman Provincial Coinage en ligne : https://rpc.ashmus.ox.ac.uk/coin/307181
+- **Décision** : à trancher
+
+### 2. Hauteur totale et valeur du pied
+
+- **Hypothèse retenue** : 140 pieds, soit 41,4 m (pied de 0,296 m) à 44,8 m (pied de 0,32 m)
+- **Pourquoi un doute** : Lectures du texte de Pline (périmètre 440 ou 411 pieds) et reconstitutions divergentes
+- **Sources** : Pline, XXXVI, 30 à 31; A. H. Smith, Catalogue of Sculpture, British Museum, II, 1900; Jeppesen, The Maussolleion at Halikarnassos
+- **Décision** : à trancher
+
+### 3. Matériaux et polychromie du Mausolée
+
+- **Hypothèse retenue** : Noyau en pierre volcanique verte et calcaire locaux, parement et sculpture en marbre ; frises sur fond bleu
+- **Pourquoi un doute** : Non confirmé par une source consultée
+- **Sources** : I. Jenkins, Greek Architecture and its Sculpture, 2006; B. F. Cook, Relief Sculpture of the Mausoleum at Halicarnassus, 2005
+- **Décision** : à trancher
+
+### 4. Réparations ou ajouts d'époque romaine au Mausolée et à sa terrasse
+
+- **Hypothèse retenue** : Aucun connu ; ne rien représenter
+- **Pourquoi un doute** : Aucune trace dans les sources consultées
+- **Sources** : Jeppesen, The Maussolleion at Halikarnassos
+- **Décision** : à trancher
+
+### 5. Lieu de la copie du décret pour Auguste et sanctuaire de Rome et d'Auguste
+
+- **Hypothèse retenue** : La copie prévue « dans l'enceinte de Rome et d'Auguste » vise le sanctuaire du koinon (probablement Pergame) ; Halicarnasse affiche la sienne par ses magistrats, emplacement inconnu
+- **Pourquoi un doute** : Seul le premier fragment est conservé au British Museum ; la notice Heurist résume le second
+- **Sources** : GIBM IV, 894; Heurist, Judaism and Rome, notice 286 : https://heurist.huma-num.fr/heurist/judaism_and_rome/hml/286
+- **Décision** : à trancher
+
+### 6. Référence Braund, Augustus to Nero, n° 123
+
+- **Hypothèse retenue** : Traduction anglaise de GIBM IV, 894
+- **Pourquoi un doute** : Numéro non vérifié ; retiré des sources en attendant
+- **Sources** : D. Braund, Augustus to Nero, 1985
+- **Décision** : à trancher
+
+### 7. Position du temple de Mars
+
+- **Hypothèse retenue** : Sur la crête de Göktepe, au centre du haut de la ville
+- **Pourquoi un doute** : Aucune identification archéologique sûre
+- **Sources** : Vitruve, II, 8, 11
+- **Décision** : à trancher
+
+### 8. Capacité et datation du théâtre
+
+- **Hypothèse retenue** : 10 000 à 13 000 places après l'agrandissement romain ; première phase du IVe, du IIIe ou de la fin du IIe siècle av. J.-C.
+- **Pourquoi un doute** : Chiffres de compilation en ligne, à confirmer dans la publication de fouille
+- **Sources** : The Ancient Theatre Archive; F. Sear, Roman Theatres, 2006
+- **Décision** : à trancher
+
+### 9. Coordonnées approximatives (Salmacis, temple de Mars, agora) et ligne de côte antique
+
+- **Hypothèse retenue** : Côte proche de l'actuelle, remblais modernes au fond du port
+- **Pourquoi un doute** : Coordonnées estimées hors Pleiades ; pages Pleiades protégées contre les robots pendant la vérification (point du Mausolée confirmé par recherche)
+- **Sources** : Pleiades 599636, 461581651, 116852156; SDU, plan de la ville
+- **Décision** : à trancher
+
+### 10. Conducteur du quadrige et identité de Pythis
+
+- **Hypothèse retenue** : Char vide ou avec statues ; Pythis peut être l'architecte Pythéos
+- **Pourquoi un doute** : Débat de reconstitution et d'identification
+- **Sources** : Pline, XXXVI, 31; A. H. Smith, Catalogue of Sculpture, II, 1900
+- **Décision** : à trancher
+
+### 11. Guides de sanctuaires (exégètes) chez Pausanias
+
+- **Hypothèse retenue** : Pausanias mentionne des exégètes locaux (par exemple à Mégare, I, 41, 2)
+- **Pourquoi un doute** : Référence I, 13, 8 de la proposition non conforme ; passage exact à relire
+- **Sources** : Pausanias, Description de la Grèce, livre I
+- **Décision** : à trancher
+
+### 12. Licence des numérisations de l'Université de Heidelberg
+
+- **Hypothèse retenue** : CC BY-SA 4.0
+- **Pourquoi un doute** : Page protégée contre les robots pendant la vérification
+- **Sources** : https://digi.ub.uni-heidelberg.de/diglit/newton1862bd1
+- **Décision** : à trancher
+
+### 13. Restitution
+
+- **Hypothèse retenue** : Lions are kept on the stylobate edge. The alternative reconstruction, with the lions along the base of the pyramid, should be added to docs/A_VERIFIER.md (outside my scope).
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 14. Restitution
+
+- **Hypothèse retenue** : The statue poses (spear, gesture, striding) are generic hunting and portrait types. Jeppesen's three statue scales are approximated by 1.6x and 2.0x.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 15. Restitution
+
+- **Hypothèse retenue** : Pinakes are painted as dark-framed ochre, red and blue-black panels with an abstract lighter figure. Their content is not attested.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 16. Restitution
+
+- **Hypothèse retenue** : Skene roof: a low-pitched tile roof is kept, not a flat one. The real form is unknown.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+
+## Scène Rhodes et le Colosse à terre (vers 77)
+
+### 1. Emplacement du Colosse
+
+- **Hypothèse retenue** : Sanctuaire de la terrasse supérieure de l'acropole, au-dessus du stade, où les fragments seraient restés.
+- **Pourquoi un doute** : Aucun vestige identifié ; alternatives : abords de Mandraki ou fort Saint-Nicolas, site du palais des Grands Maîtres.
+- **Sources** : U. Vedder 2015; R. B. Kebric 2019 et son étude connexe sur l'emplacement (ATINER)
+- **Décision** : à trancher
+
+### 2. Disposition des fragments au sol
+
+- **Hypothèse retenue** : Jambes inférieures sur le piédestal, reste du corps couché devant ; cassure aux genoux.
+- **Pourquoi un doute** : Seul Strabon précise la cassure aux genoux ; direction de chute et morcellement inconnus.
+- **Sources** : Strabon XIV, 2, 5; Pline XXXIV, 41
+- **Décision** : à trancher
+
+### 3. Statut de Rhodes en 77
+
+- **Hypothèse retenue** : Privée de liberté depuis Vespasien ; rattachement à l'Asie ou à la Lycie-Pamphylie.
+- **Pourquoi un doute** : Rattachement exact et date de restitution (Titus selon von Arnim, Nerva ou Trajan selon Van Gelder) débattus.
+- **Sources** : Suétone, Vespasien 8, 4; Introduction LCL à Dion de Pruse, Discours 31
+- **Décision** : à trancher
+
+### 4. Dion de Pruse et les honorés romains
+
+- **Hypothèse retenue** : Au paragraphe 43, un interlocuteur objecte que la plupart des honorés sont des Romains ; formule retirée du cartel par prudence.
+- **Pourquoi un doute** : Passage lu dans la traduction LCL, mais c'est une objection rapportée, pas une affirmation de Dion ; datation du discours (Vespasien ou Titus) débattue.
+- **Sources** : https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Dio_Chrysostom/Discourses/31*.html
+- **Décision** : à trancher
+
+### 5. Dimensions et datation du temple dit d'Apollon Pythios et de l'odéon
+
+- **Hypothèse retenue** : Temple périptère dorique du IIe siècle av. J.-C. ; odéon d'environ 800 places.
+- **Pourquoi un doute** : Chiffres trouvés seulement dans des présentations générales ; publication de fouille à consulter (Éphorie du Dodécanèse).
+- **Sources** : Wikipedia, Acropolis of Rhodes; https://madainproject.com/acropolis_of_rhodes
+- **Décision** : à trancher
+
+### 6. Coordonnées des monuments
+
+- **Hypothèse retenue** : Valeurs approximatives à partir de la topographie actuelle ; Pleiades donne environ 36,44 N, 28,21 E pour le stade et 36,44 N, 28,23 E pour la ville.
+- **Pourquoi un doute** : Fiche Pleiades protégée par une vérification anti-robot : coordonnées précises non relevées.
+- **Sources** : https://pleiades.stoa.org/places/590030; https://pleiades.stoa.org/places/103328498
+- **Décision** : à trancher
+
+### 7. Armature de fer et piédestal de marbre
+
+- **Hypothèse retenue** : Tirants de fer et coque de bronze, lest de pierre, piédestal de marbre blanc.
+- **Pourquoi un doute** : Fer et marbre fondés sur Philon de Byzance, dont l'attribution et la fiabilité sont discutées ; seul le lest de pierre est chez Pline.
+- **Sources** : Philon de Byzance, De septem miraculis 4; U. Vedder 2015
+- **Décision** : à trancher
+
+### 8. Date de la vente des bronzes
+
+- **Hypothèse retenue** : 653 ou 654 apr. J.-C. (Théophane AM 6145).
+- **Pourquoi un doute** : Conrad 1996 juge le récit tendancieux ; seule borne de fin pour l'existence des fragments.
+- **Sources** : Théophane, Chronographie AM 6145; L. I. Conrad, JRAS 1996
+- **Décision** : à trancher
+
+### 9. Restitution
+
+- **Hypothèse retenue** : Colossus on the acropolis sanctuary (Vedder 2015), broken at the knees, falling east: a reconstruction choice
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 10. Restitution
+
+- **Hypothèse retenue** : The head lies face up and south with a roll of 60 degrees, and the loose right arm lies palm down so that Pliny's thumb can be embraced: staging choices, not attested
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 11. Restitution
+
+- **Hypothèse retenue** : Doric proportions h/D of about 7 for the Pythion (1.0 x 7.0 m) and the Athena temple (1.15 x 7.8 m) are typical Hellenistic values, not checked against the anastylosis. This should go into docs/A_VERIFIER.md, which is outside my scope
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 12. Restitution
+
+- **Hypothèse retenue** : Odeon reduced to about 750 seats (radius 14 m), following the proposal
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 13. Restitution
+
+- **Hypothèse retenue** : Porticoes kept on about 30 percent of the avenue blocks: Strabo praises the streets but does not attest colonnades
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 14. Restitution
+
+- **Hypothèse retenue** : Insula size and harbour outlines are unchanged from the previous plan
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher

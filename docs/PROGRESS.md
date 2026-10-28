@@ -151,6 +151,13 @@ Tests : 60 tests unitaires, 12 tests Playwright (6 sur ordinateur, 6 sur mobile)
   - Deux événements ajoutés (Hadrien à Alexandrie, seconde consécration de Sainte-Sophie) ; Alexandrie et Constantinople ouvrent leur scène depuis la carte. Fiches dans `docs/scenes/`, doutes dans `docs/A_VERIFIER.md`, captures dans `docs/screenshots/alexandrie/` et `docs/screenshots/constantinople/`. Produites **sans ta validation**.
   - Restent ouverts : environ 2 millions de triangles affichés pour Constantinople et 330 appels de dessin pour Alexandrie, à mesurer sur ton portable.
 - **Apprendre et Rechercher** (22 octobre 2026, porté depuis Hellas) : `#/apprendre` avec quatre jeux (quiz, remets dans l'ordre, situe la date avec av. ou apr. J.-C., où ? sur la carte, de 100 points sous 60 km à 0 au-delà de 900 km), fiches vues et meilleurs scores gardés sur l'appareil (`roma.progress`), `#/recherche` sur les événements, personnes et lieux sans accents ni casse. Sur téléphone, le jeu « Où ? » passe en feuille basse pour laisser la carte cliquable.
+- **Les merveilles du monde sous Rome** (28 octobre 2026, en autonomie : « toutes les merveilles du monde antiques appartenant aux romains », la période grecque restant au site Hellas) : cinq scènes datées à l'époque romaine, cartels centrés sur le chapitre romain de chaque merveille.
+  - **Gizeh vers 165** (`#/scene/gizeh`, 10,5 Mo) : pyramides encore revêtues de calcaire de Toura, grimpeurs et guides de Busiris, enclos du Sphinx avec l'escalier romain et ses stèles, graffiti grecs et latins dont le poème de Terentia, crue d'automne sur la plaine.
+  - **Éphèse vers 150** (`#/scene/ephese`, 11,9 Mo) : Artémision tardo-classique et ses colonnes sculptées, autel, statue d'Artémis Éphésienne dans la cella, port qui s'envase, procession de Vibius Salutaris.
+  - **Olympie vers 173** (`#/scene/olympie`, 11,7 Mo) : temple de Zeus et, à l'intérieur, la statue chryséléphantine de Phidias devant son bassin d'huile ; Altis, stade et ses spectateurs, ajouts romains (thermes, nymphée d'Hérode Atticus).
+  - **Halicarnasse vers 77** (`#/scene/halicarnasse`, 8,1 Mo) : Mausolée de 24 degrés et son quadrige, ville en théâtre autour du port selon Vitruve, théâtre, fontaine Salmacis.
+  - **Rhodes vers 77** (`#/scene/rhodes`, 10,5 Mo) : le Colosse à terre tel que le décrit Pline (membres rompus, pierres à l'intérieur), placé près du sanctuaire d'Hélios sur l'acropole, hypothèse débattue ; pas de Colosse enjambant le port, légende médiévale. Ports, ville en damier, temple d'Apollon Pythios et stade.
+  - Babylone est écartée (jamais romaine) ; Alexandrie était déjà faite. Cinq villes ou lieux et cinq événements ajoutés à la frise. Fiches dans `docs/scenes/`, doutes dans `docs/A_VERIFIER.md`, captures dans `docs/screenshots/<scène>/`. Produites **sans ta validation**. Olympie affiche encore environ 2 millions de triangles, à mesurer sur ton portable.
 - **Propositions de scènes vérifiées** : Nîmes vers 130 (validée, option A2 : le pont du Gard devient une scène à part) et Arles vers 160 (`docs/scenes/arles.md`, à valider).
 
 ### En cours
@@ -186,8 +193,8 @@ Tests : 117 tests unitaires et 14 tests Playwright (ordinateur et mobile), verts
 ### Ce que j'attends de toi
 
 1. Valider le plan de design (`docs/DESIGN.md`).
-2. Regarder Pompéi, le Colisée, Alexandrie et Constantinople, faits sans validation, et me dire ce qui ne va pas. Valider les propositions de scènes vérifiées : Arles (`docs/scenes/arles.md`), pont du Gard (`docs/scenes/pont-du-gard.md`), Panthéon (`docs/scenes/pantheon.md`, une maquette sous licence NC-ND écartée sauf accord) et Cannes (`docs/scenes/cannes.md`).
-3. Toujours valables : mesures du HUD, relecture de `docs/A_VERIFIER.md` (165 points désormais), Search Console, GoatCounter (facultatif).
+2. Regarder Pompéi, le Colisée, Alexandrie, Constantinople et les cinq merveilles, faits sans validation, et me dire ce qui ne va pas. Valider les propositions de scènes vérifiées : Arles (`docs/scenes/arles.md`), pont du Gard (`docs/scenes/pont-du-gard.md`), Panthéon (`docs/scenes/pantheon.md`, une maquette sous licence NC-ND écartée sauf accord) et Cannes (`docs/scenes/cannes.md`).
+3. Toujours valables : mesures du HUD, relecture de `docs/A_VERIFIER.md` (247 points désormais), Search Console, GoatCounter (facultatif).
 
 ## Collection de cartes (22 octobre 2026, en attente de ta validation)
 

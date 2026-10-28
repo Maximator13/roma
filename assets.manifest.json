@@ -37,11 +37,39 @@
       "file": "64984d698ee8-constantinople.glb"
     },
     {
+      "path": "scenes/ephese/ephese.glb",
+      "bytes": 11933784,
+      "sha256": "4b572473ecb0453d54fd08b7d4b75fc581a15fb19ccfcb5a41f91e6a44099473",
+      "release": "assets-v20",
+      "file": "4b572473ecb0-ephese.glb"
+    },
+    {
+      "path": "scenes/gizeh/gizeh.glb",
+      "bytes": 10534940,
+      "sha256": "e88876b0bc78352fc5e37cbd93e18394366db23467b70757336dbfab77a6d0bb",
+      "release": "assets-v19",
+      "file": "e88876b0bc78-gizeh.glb"
+    },
+    {
+      "path": "scenes/halicarnasse/halicarnasse.glb",
+      "bytes": 8068628,
+      "sha256": "ddc42fe1499bbd03cd8959c8b5c651d34c7f0e0b48e5feb7ec132cb6445a0ead",
+      "release": "assets-v22",
+      "file": "ddc42fe1499b-halicarnasse.glb"
+    },
+    {
       "path": "scenes/nimes/nimes.glb",
       "bytes": 8397984,
       "sha256": "e8b6723f9150ef167866020e3d6c7968508feda6859efbd92be01c27326e2c01",
       "release": "assets-v7",
       "file": "e8b6723f9150-nimes.glb"
+    },
+    {
+      "path": "scenes/olympie/olympie.glb",
+      "bytes": 11696248,
+      "sha256": "62f12d684b69f4436218627b2055f4ab653bb15d78c78d579bbf74aebafbccf6",
+      "release": "assets-v21",
+      "file": "62f12d684b69-olympie.glb"
     },
     {
       "path": "scenes/pantheon/pantheon.glb",
@@ -63,6 +91,13 @@
       "sha256": "64c956865b98e6377296eb5917bb48f254434068749721eda505e216c08e1312",
       "release": "assets-v17",
       "file": "64c956865b98-pont-du-gard.glb"
+    },
+    {
+      "path": "scenes/rhodes/rhodes.glb",
+      "bytes": 10504940,
+      "sha256": "f28fe87debe2b886486a2dcf3935d7b017397526920a324eacc40169c75fb8b7",
+      "release": "assets-v23",
+      "file": "f28fe87debe2-rhodes.glb"
     }
   ]
 }

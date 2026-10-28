@@ -3420,5 +3420,135 @@ export const events: HistoricalEvent[] = [
         "work": "Le Monde byzantin, t. III : Byzance et ses voisins (1204-1453), PUF, Nouvelle Clio, 2011"
       }
     ]
+  },
+  {
+    "id": "reparations-antonines",
+    "title": "Réparations de l'enclos du Sphinx sous Marc Aurèle et Lucius Verus",
+    "start": 161,
+    "precision": "year",
+    "certainty": "debated",
+    "era": "haut-empire",
+    "track": "rome",
+    "category": "culture",
+    "importance": 3,
+    "placeId": "gizeh",
+    "summary": "Une inscription grecque signalée par Vyse mentionnerait des réparations des murs de l'enclos sous Marc Aurèle et Lucius Verus ; texte et édition moderne non vérifiés.",
+    "body": "Une inscription grecque signalée par Vyse mentionnerait des réparations des murs de l'enclos sous Marc Aurèle et Lucius Verus ; texte et édition moderne non vérifiés.\n\nLe règne conjoint de Marc Aurèle et Lucius Verus (de 161 à 169) permet de montrer l'état romain le plus complet de l'enclos du Sphinx : escalier et terrasse romains (datation fine inconnue, voir doutes), stèles déjà dressées (décret de Busiris pour le stratège Cnaeus Pompeius Sabinus, 22 ou 23, Giza Archives objet 61388), poème de Terentia sur le parement (vers 120). Une inscription grecque de réparations sous Marc Aurèle et Lucius Verus, signalée par Vyse (1842), renforcerait ce choix mais n'a pas pu être vérifiée : le choix de 165 reste valable sans elle, puisque tous les éléments montrés existent avant cette date. Germanicus (19, Tacite, Annales II, 61) et Pline (avant 79) deviennent des événements de la frise. Hadrien (130) est écarté : sa venue à Gizeh n'est pas attestée par une source explicite. Automne : la crue, maximale en septembre, couvre encore la plaine en octobre (Strabon XVII, 1, 4 pour les villages en îles) ; matin : le soleil bas de l'est éclaire le visage du Sphinx, orienté à l'est, et les faces orientales des pyramides.",
+    "sources": [
+      {
+        "kind": "modern",
+        "author": "H. Vyse",
+        "work": "Operations, III, 1842, appendice"
+      },
+      {
+        "kind": "modern",
+        "author": "S. Hassan",
+        "work": "The Sphinx, 1949"
+      }
+    ],
+    "scene": "gizeh"
+  },
+  {
+    "id": "fondation-salutaris",
+    "title": "Fondation de la procession de Vibius Salutaris",
+    "start": 104,
+    "precision": "year",
+    "certainty": "attested",
+    "era": "haut-empire",
+    "track": "rome",
+    "category": "culture",
+    "importance": 3,
+    "placeId": "ephese",
+    "summary": "Un chevalier romain lègue statuettes d'argent et capitaux pour une procession entre l'Artémision et le théâtre.",
+    "body": "Un chevalier romain lègue statuettes d'argent et capitaux pour une procession entre l'Artémision et le théâtre.\n\nDate choisie au coeur de la paix antonine : la fondation de Salutaris (104) organise déjà les processions, Hadrien a donné à Éphèse sa deuxième néocorie, la lettre d'Antonin louant les constructions de Vedius Antoninus est datée de 145 (IvEph 1491) et les dédicaces du gymnase dit de Vedius de 147 à 149 (IvEph 431 et 438), et Pausanias écrit à cette génération. Elle précède la peste antonine (à partir de 165), l'édit du proconsul C. Popillius Carus Pedo sur le mois Artémision (IvEph 24, années 160) et la stoa couverte de Flavius Damianus vers l'Artémision (Philostrate, Vies des sophistes, II, 23 ; seconde moitié du IIe s., date exacte inconnue), donc on ne montre pas cette stoa. Elle est bien antérieure au sac gothique (262 ou 268, débattu). L'année 150 est une convention de scène, non un événement daté.",
+    "sources": [
+      {
+        "kind": "ancient",
+        "author": "IvEph 27",
+        "work": "IvEph 27"
+      },
+      {
+        "kind": "modern",
+        "author": "Rogers 1991",
+        "work": "Rogers 1991"
+      }
+    ],
+    "scene": "ephese"
+  },
+  {
+    "id": "mort-de-peregrinos",
+    "title": "Pérégrinos se jette dans les flammes à Olympie",
+    "start": 165,
+    "precision": "year",
+    "certainty": "attested",
+    "era": "haut-empire",
+    "track": "rome",
+    "category": "culture",
+    "importance": 3,
+    "placeId": "olympie",
+    "summary": "Après les jeux de la 236e Olympiade, le philosophe cynique Pérégrinos Proteus s'immole sur un bûcher près d'Olympie devant la foule, scène dont Lucien fut témoin et qu'il raille. L'événement est attesté ; l'année 165 est la datation usuelle (Olympiade de 165).",
+    "body": "Après les jeux de la 236e Olympiade, le philosophe cynique Pérégrinos Proteus s'immole sur un bûcher près d'Olympie devant la foule, scène dont Lucien fut témoin et qu'il raille. L'événement est attesté ; l'année 165 est la datation usuelle (Olympiade de 165).\n\nRecommandation : 173 (année astronomique 173, Olympiade 238 : 776 av. J.-C. = -775, et -775 + 4 × 237 = 173). C'est l'année de jeux la plus proche de la rédaction du livre V de Pausanias, vers 174 (il place la refondation de Corinthe, en 44 av. J.-C., soit -43, 217 ans avant son époque : Pausanias V, 1, 2 ; -43 + 217 = 174). Avantages : (1) l'intérieur du temple et la statue sont modélisés d'après sa description (V, 10 et V, 11) ; (2) la présence romaine est maximale et documentée : 21 boucliers dorés de Mummius sur le temple (V, 10, 5), statues de Trajan (offerte par tous les Grecs) et d'Hadrien (offerte par les cités achéennes) dans le temple, Auguste en ambre et quatre couronnes de Néron (V, 12, 6 à 8), statues d'empereurs dans le Métrôon (V, 20, 9), Léonidaion servant de logement aux gouverneurs romains (V, 15, 2), nymphée de Regilla (vers 149 à 153) ; (3) l'été de jeux justifie la foule et la lumière d'après-midi. Option alternative : été 67 (Néron, Suétone, Néron 23 et 24 ; Dion Cassius LXIII, 14), plus spectaculaire mais sans le nymphée ni les statues de Trajan et d'Hadrien, et l'épisode se déroule surtout à l'hippodrome, disparu et mal localisé ; il est traité ici comme événement lié. Le choix de 173 reste une convention : la date exacte de la visite de Pausanias et sa présence aux jeux de 173 ne sont pas attestées.",
+    "sources": [
+      {
+        "kind": "ancient",
+        "author": "Lucien",
+        "work": "Sur la mort de Pérégrinos 1, 35 et 36"
+      },
+      {
+        "kind": "ancient",
+        "author": "Aulu-Gelle",
+        "work": "Nuits attiques XII, 11 (sur le personnage, pas sur sa mort)"
+      }
+    ],
+    "scene": "olympie"
+  },
+  {
+    "id": "pline-decrit-le-mausolee",
+    "title": "Pline l'Ancien décrit le Mausolée",
+    "start": 77,
+    "precision": "year",
+    "certainty": "attested",
+    "era": "haut-empire",
+    "track": "rome",
+    "category": "culture",
+    "importance": 3,
+    "placeId": "halicarnasse",
+    "summary": "Dans l'Histoire naturelle dédiée à Titus, Pline donne les mesures du Mausolée, ses 36 colonnes, sa pyramide de 24 degrés, son quadrige et les noms de ses sculpteurs : la description qui fonde toutes les reconstitutions modernes.",
+    "body": "Dans l'Histoire naturelle dédiée à Titus, Pline donne les mesures du Mausolée, ses 36 colonnes, sa pyramide de 24 degrés, son quadrige et les noms de ses sculpteurs : la description qui fonde toutes les reconstitutions modernes.\n\nC'est la date du témoignage romain le plus précis sur le monument (Pline, Histoire naturelle, XXXVI, 30 à 31 : mesures, 36 colonnes, pyramide de 24 degrés, quadrige de Pythis, quatre sculpteurs ; la dédicace à Titus, consul pour la sixième fois, fixe 77). Pline écrit que les mains des artistes « rivalisent encore aujourd'hui » (hodieque certant manus, XXXVI, 31). Martial (Livre des spectacles, 1, en 80) en fait l'étalon des merveilles. Le Mausolée est alors debout : selon la SDU il tient peut-être jusqu'au XIIe siècle. Halicarnasse est dans la province d'Asie depuis environ deux siècles, relevée par Quintus Cicéron (Cicéron, Lettres à Quintus, I, 1, 25) et associée au culte d'Auguste (GIBM IV, 894). Le théâtre n'a pas encore reçu son agrandissement du IIe siècle apr. J.-C. Vitruve (vers 25 av. J.-C.) sert de plan de la ville.",
+    "sources": [
+      {
+        "kind": "ancient",
+        "author": "Pline l'Ancien",
+        "work": "Histoire naturelle, préface et XXXVI, 30 à 31"
+      }
+    ],
+    "scene": "halicarnasse"
+  },
+  {
+    "id": "vespasien-province-rhodes",
+    "title": "Vespasien retire sa liberté à Rhodes",
+    "start": 73,
+    "precision": "year",
+    "certainty": "debated",
+    "era": "haut-empire",
+    "track": "rome",
+    "category": "culture",
+    "importance": 3,
+    "placeId": "rhodes",
+    "summary": "Rhodes perd sa liberté avec l'Achaïe, la Lycie, Byzance et Samos ; une restitution sous Titus est proposée par von Arnim, plus tard (Nerva ou Trajan) par Van Gelder.",
+    "body": "Rhodes perd sa liberté avec l'Achaïe, la Lycie, Byzance et Samos ; une restitution sous Titus est proposée par von Arnim, plus tard (Nerva ou Trajan) par Van Gelder.\n\nPline dédie l'Histoire naturelle à Titus pendant son sixième consulat (77 apr. J.-C., préface 3) et y décrit les fragments (XXXIV, 41) : c'est le témoignage le plus précis sur l'état de la ruine, donc l'année la plus sûre pour la reconstruire (que Pline ait vu les restes lui-même n'est pas établi). Rhodes a alors perdu sa liberté sous Vespasien (Suétone, Vespasien 8, 4). L'alternative 142 (séisme, aide d'Antonin le Pieux, Pausanias VIII, 43, 4) est rejetée : l'état de la ville après le séisme n'est pas documenté. Le séisme de 142 reste un événement lié de la frise.",
+    "sources": [
+      {
+        "kind": "ancient",
+        "author": "Suétone",
+        "work": "Vespasien 8, 4"
+      },
+      {
+        "kind": "ancient",
+        "author": "Introduction LCL à Dion de Pruse",
+        "work": "Discours 31"
+      }
+    ],
+    "scene": "rhodes"
   }
 ]

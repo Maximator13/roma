@@ -295,5 +295,45 @@ export const places: Place[] = [
     "lat": 36.1117,
     "lon": 9.286,
     "pleiadesId": 315267
+  },
+  {
+    "id": "gizeh",
+    "name": "Gizeh",
+    "ancientName": "Pyramides de Memphis, près du village de Busiris (gr. Bousiris) ; identification avec un village moderne (Nazlet el-Samman, Kafr el-Haram) à vérifier",
+    "lat": 29.9775,
+    "lon": 31.1325,
+    "pleiadesId": 442962448
+  },
+  {
+    "id": "ephese",
+    "name": "Éphèse",
+    "ancientName": "Ἔφεσος, Ἀρτεμίσιον (Ephesus, templum Dianae Ephesiae)",
+    "lat": 37.9497,
+    "lon": 27.3638,
+    "pleiadesId": 599612
+  },
+  {
+    "id": "olympie",
+    "name": "Olympie",
+    "ancientName": "Olympia (Ὀλυμπία), sanctuaire de Zeus Olympien en Élide, province romaine d'Achaïe",
+    "lat": 37.638,
+    "lon": 21.63,
+    "pleiadesId": 570531
+  },
+  {
+    "id": "halicarnasse",
+    "name": "Halicarnasse",
+    "ancientName": "Halikarnassos (grec), Halicarnassus (latin)",
+    "lat": 37.0378,
+    "lon": 27.4242,
+    "pleiadesId": 599636
+  },
+  {
+    "id": "rhodes",
+    "name": "Rhodes",
+    "ancientName": "Rhodos (Ῥόδος)",
+    "lat": 36.444,
+    "lon": 28.224,
+    "pleiadesId": 590030
   }
 ]

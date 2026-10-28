@@ -67,7 +67,8 @@ export const cities: City[] = [
     "pleiadesId": 599612,
     "from": -752,
     "importance": 2,
-    "note": "Cité ionienne déjà ancienne en 753 av. J.-C., capitale de la province d'Asie."
+    "note": "Cité ionienne déjà ancienne en 753 av. J.-C., capitale de la province d'Asie.",
+    "scene": "ephese"
   },
   {
     "id": "gades",
@@ -519,5 +520,53 @@ export const cities: City[] = [
     "importance": 1,
     "note": "Inaugurée par Constantin le 11 mai 330, capitale de l'Empire romain d'Orient (hormis l'occupation latine de 1204 à 1261) jusqu'à sa prise par les Ottomans le 29 mai 1453.",
     "scene": "constantinople"
+  },
+  {
+    "id": "gizeh",
+    "name": "Gizeh",
+    "ancientName": "Pyramides de Memphis, près du village de Busiris (gr. Bousiris) ; identification avec un village moderne (Nazlet el-Samman, Kafr el-Haram) à vérifier",
+    "lat": 29.9775,
+    "lon": 31.1325,
+    "pleiadesId": 442962448,
+    "from": -2559,
+    "importance": 3,
+    "note": "Les pyramides de Gizeh, dans l'Égypte romaine.",
+    "scene": "gizeh"
+  },
+  {
+    "id": "olympie",
+    "name": "Olympie",
+    "ancientName": "Olympia (Ὀλυμπία), sanctuaire de Zeus Olympien en Élide, province romaine d'Achaïe",
+    "lat": 37.638,
+    "lon": 21.63,
+    "pleiadesId": 570531,
+    "from": -775,
+    "importance": 3,
+    "note": "Le grand sanctuaire de Zeus, cité des Jeux olympiques.",
+    "scene": "olympie"
+  },
+  {
+    "id": "halicarnasse",
+    "name": "Halicarnasse",
+    "ancientName": "Halikarnassos (grec), Halicarnassus (latin)",
+    "lat": 37.0378,
+    "lon": 27.4242,
+    "pleiadesId": 599636,
+    "from": -899,
+    "importance": 3,
+    "note": "Ville de Carie, célèbre pour le tombeau de Mausole, une des Sept Merveilles.",
+    "scene": "halicarnasse"
+  },
+  {
+    "id": "rhodes",
+    "name": "Rhodes",
+    "ancientName": "Rhodos (Ῥόδος)",
+    "lat": 36.444,
+    "lon": 28.224,
+    "pleiadesId": 590030,
+    "from": -407,
+    "importance": 3,
+    "note": "Grande cité maritime de l'Égée, dont le Colosse, renversé en 227 ou 226 av. J.-C., gît encore à l'époque romaine.",
+    "scene": "rhodes"
   }
 ]

@@ -859,5 +859,398 @@ export const scenes: Scene[] = [
         ]
       }
     ]
+  },
+  {
+    "id": "gizeh",
+    "title": "Les pyramides de Gizeh",
+    "status": "ready",
+    "year": 165,
+    "lat": 29.9775,
+    "lon": 31.1325,
+    "summary": "Vers 165, sous Marc Aurèle et Lucius Verus, l'Égypte est romaine depuis près de deux siècles et le plateau de Gizeh attire déjà les voyageurs. Bâties plus de vingt-sept siècles plus tôt pour Khéops, Khéphren et Mykérinos, les trois pyramides gardent leur parement de calcaire poli. Strabon les décrit dans sa Géographie, et Germanicus est venu les voir en 19, selon Tacite. Au pied du plateau, les habitants du village de Busiris ont l'habitude d'y grimper, rapporte Pline l'Ancien. La seule légion d'Égypte campe alors près d'Alexandrie.",
+    "ambience": [
+      {
+        "layer": "wind",
+        "volume": 0.55
+      },
+      {
+        "layer": "animals",
+        "volume": 0.35,
+        "points": [
+          "le-plateau",
+          "le-sphinx"
+        ]
+      },
+      {
+        "layer": "birds-day",
+        "volume": 0.25
+      }
+    ],
+    "points": [
+      {
+        "id": "la-grande-pyramide",
+        "title": "La Grande Pyramide et son parement",
+        "text": "La pyramide de Khéops mesurait à l'origine environ 230 mètres de côté et 146 mètres de haut. À l'époque romaine, elle porte encore son parement de calcaire blanc de Toura, qui ne sera arraché qu'au Moyen Âge. Pline décrit un sommet étroit de seize pieds et demi de tour, Diodore une plateforme de six coudées : la pointe manquait peut-être déjà. Strabon signale une pierre amovible qui ferme l'entrée. Vers 120, une Romaine nommée Terentia fit graver sur ce parement un poème latin pour son frère Decimus Terentius Gentianus ; un pèlerin le recopia au XIVe siècle.",
+        "sources": [
+          "Pline l'Ancien, Histoire naturelle XXXVI, 80",
+          "Diodore de Sicile, Bibliothèque historique I, 63",
+          "Strabon, Géographie XVII, 1, 33",
+          "M. Lehner, The Complete Pyramids, 1997",
+          "E. Hemelrijk, Hidden Lives, Public Personae, 2015",
+          "Wikipédia, Decimus Terentius Gentianus"
+        ]
+      },
+      {
+        "id": "le-sphinx",
+        "title": "Le Sphinx sous les empereurs",
+        "text": "Pline l'Ancien voit dans le Sphinx la divinité des gens du lieu, au visage teint de rouge, et rapporte qu'on le dit tombeau d'un roi Harmais. À l'époque romaine, l'enclos est dégagé du sable : un large escalier descend de l'est vers une terrasse devant les pattes, et les flancs abîmés sont rhabillés de petits blocs. Des stèles grecques s'y dressent, comme le décret par lequel les habitants de Busiris honorent vers 22 le stratège Cnaeus Pompeius Sabinus. Un relevé du XIXe siècle signale aussi des réparations sous Marc Aurèle et Lucius Verus.",
+        "sources": [
+          "Pline l'Ancien, Histoire naturelle XXXVI, 77",
+          "S. Hassan, The Sphinx, 1949, p. 234 et 235",
+          "Giza Archives, Harvard, objet 61388",
+          "H. Vyse, Operations, III, 1842, appendice (non vérifié)"
+        ]
+      },
+      {
+        "id": "les-pyramides-de-la-reine",
+        "title": "Les pyramides des reines",
+        "text": "À l'est de la Grande Pyramide s'alignent trois petites pyramides bâties pour des reines de Khéops ; Hérodote attribuait celle du milieu à une fille du roi. Contre la plus méridionale, un temple d'Isis, « dame des pyramides », a été agrandi au premier millénaire avant notre ère, et sa fréquentation à l'époque romaine reste à préciser. Autour, les tombes des courtisans de l'Ancien Empire disparaissent à demi sous le sable. Les visiteurs romains longent ce cimetière avant de tenter l'ascension de la Grande Pyramide avec les guides de Busiris.",
+        "sources": [
+          "Hérodote, Histoires II, 126",
+          "C. Zivie-Coche, Giza au premier millénaire, 1991",
+          "Pline l'Ancien, Histoire naturelle XXXVI, 76"
+        ]
+      },
+      {
+        "id": "le-plateau",
+        "title": "Le plateau au bord de la crue",
+        "text": "Le plateau calcaire domine la vallée à quarante stades de Memphis, dit Strabon. Les temples funéraires et les chaussées qui descendaient vers le fleuve sont en ruine, dépouillés de leurs pierres ; Pline note qu'autour des pyramides on ne voit que du sable, sans trace des travaux de construction. À l'automne, la crue couvre encore les champs et les villages émergent comme des îles. Strabon remarque aussi au pied des pyramides de petites pierres en forme de lentilles, qu'on disait être des restes de la nourriture des ouvriers : ce sont des fossiles.",
+        "sources": [
+          "Strabon, Géographie XVII, 1, 4, 33 et 34",
+          "Pline l'Ancien, Histoire naturelle XXXVI, 81"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ephese",
+    "title": "Le temple d'Artémis à Éphèse",
+    "status": "ready",
+    "year": 150,
+    "lat": 37.9497,
+    "lon": 27.3638,
+    "summary": "Vers 150 après J.-C., sous Antonin le Pieux, Éphèse est la grande métropole de la province d'Asie : c'est par son port que le proconsul doit entrer dans sa province. À environ deux kilomètres du théâtre, l'Artémision se dresse dans la plaine du Caÿstre, au pied de la colline d'Ayasoluk. Rebâti après l'incendie de 356 avant J.-C., le temple compte parmi les merveilles du monde, et Pausanias le juge plus grand que tout autre édifice. Rome l'a fait sien : en 5 avant J.-C., Auguste fit entourer de murs le sanctuaire et un Augusteum, aux frais de la déesse.",
+    "ambience": [
+      {
+        "layer": "market",
+        "volume": 0.45,
+        "points": [
+          "la-voie-sacree"
+        ]
+      },
+      {
+        "layer": "harbour",
+        "volume": 0.5,
+        "points": [
+          "le-port"
+        ]
+      },
+      {
+        "layer": "interior",
+        "volume": 0.4,
+        "points": [
+          "la-statue-d-artemis"
+        ]
+      },
+      {
+        "layer": "birds-day",
+        "volume": 0.3
+      }
+    ],
+    "points": [
+      {
+        "id": "l-artemision",
+        "title": "Le temple d'Artémis",
+        "text": "Pline l'Ancien décrit un temple de 425 pieds sur 225, porté par 127 colonnes hautes de 60 pieds, dont 36 à tambour sculpté. L'un de ces tambours, au British Museum, montre Hermès et Thanatos. Le temple regarde vers l'ouest, vers son autel. À l'époque romaine, il reste un asile : en 22 après J.-C., le Sénat examine ses titres et les confirme, en les encadrant. Il sert aussi de banque sacrée : selon Dion Chrysostome, cités, rois et particuliers y déposent de grosses sommes que nul n'ose toucher.",
+        "sources": [
+          "Pline, Histoire naturelle, XXXVI, 95",
+          "Tacite, Annales, III, 60 à 63",
+          "Dion Chrysostome, Discours XXXI, 54",
+          "British Museum 1872,0803.9"
+        ]
+      },
+      {
+        "id": "la-statue-d-artemis",
+        "title": "La statue d'Artémis Éphésienne",
+        "text": "Dans la cella se tient l'antique statue de la déesse. Pline rapporte, d'après le Romain Mucien, qu'elle est en bois de vigne et qu'on la nourrit de nard pour la conserver. Les monnaies et les copies de marbre de l'époque romaine, comme la Grande Artémis et la Belle Artémis du musée de Selçuk, la montrent raide, coiffée d'une haute couronne, le buste couvert d'ovales dont le sens reste débattu, la robe ornée d'animaux. Selon les Actes des Apôtres, l'orfèvre Démétrios vivait de petits temples d'argent à son image.",
+        "sources": [
+          "Pline, Histoire naturelle, XVI, 213 et 214",
+          "Actes, XIX, 24 à 27",
+          "R. Fleischer, Artemis von Ephesos, 1973"
+        ]
+      },
+      {
+        "id": "le-port",
+        "title": "Un port contre la vase",
+        "text": "Le port d'Éphèse lutte sans cesse contre les alluvions du Caÿstre, qui repoussent la mer vers l'ouest. Strabon raconte qu'Attale II, en rétrécissant l'entrée, aggrava l'envasement. Sous Néron, le proconsul Barea Soranus fit dégager le bassin, ce que Tacite rappelle lors de son procès. Pèlerins, marchands et proconsuls débarquent ici, puis gagnent le théâtre par une grande rue à colonnades. Les carottages des géographes montrent un rivage qui recule de siècle en siècle, jusqu'à laisser la ville loin de la mer.",
+        "sources": [
+          "Strabon, XIV, 1, 24",
+          "Tacite, Annales, XVI, 23",
+          "Ulpien, Digeste, I, 16, 4, 5",
+          "F. Stock et al., 2013"
+        ]
+      },
+      {
+        "id": "la-voie-sacree",
+        "title": "La procession de Salutaris",
+        "text": "En 104 après J.-C., le chevalier romain Caius Vibius Salutaris fonde une procession connue par une longue inscription gravée au théâtre. Des statuettes d'argent, et une Artémis d'or, figurant la déesse mais aussi l'empereur Trajan, l'impératrice Plotine, le Sénat, l'ordre équestre et le peuple romain, sont portées du sanctuaire à travers la ville, exposées au théâtre lors des assemblées, puis ramenées à l'Artémision. Les éphèbes les escortent. La voie relie ainsi la déesse d'Éphèse et le pouvoir de Rome.",
+        "sources": [
+          "IvEph 27",
+          "G. M. Rogers, The Sacred Identity of Ephesos, 1991"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "olympie",
+    "title": "Olympie et la statue de Zeus",
+    "status": "ready",
+    "year": 173,
+    "lat": 37.638,
+    "lon": 21.63,
+    "summary": "Olympie, été 173. Le sanctuaire de Zeus, fondé par les Grecs bien des siècles plus tôt, vit désormais au rythme de l'Empire romain. Sur les rives de l'Alphée se pressent athlètes, marchands et visiteurs venus de toutes les provinces pour la 238e Olympiade. Rome a laissé sa marque partout : thermes, maisons d'hôtes, aqueduc et fontaine monumentale dédiée par Regilla, épouse d'Hérode Atticus, statues d'empereurs dans le Métrôon. Le philosophe Épictète disait qu'on tenait pour un malheur de mourir sans avoir vu le Zeus de Phidias.",
+    "ambience": [
+      {
+        "layer": "arena-crowd",
+        "volume": 0.55,
+        "points": [
+          "le-stade"
+        ]
+      },
+      {
+        "layer": "interior",
+        "volume": 0.45,
+        "points": [
+          "la-statue-de-zeus"
+        ]
+      },
+      {
+        "layer": "summer-evening",
+        "volume": 0.4
+      },
+      {
+        "layer": "birds-day",
+        "volume": 0.3
+      }
+    ],
+    "points": [
+      {
+        "id": "le-temple-de-zeus",
+        "title": "Le temple de Zeus",
+        "text": "Le grand temple dorique, achevé vers 456 av. J.-C., mesure environ 64 mètres sur 28. À l'époque romaine, il porte la marque de la conquête : après la prise de Corinthe en 146 av. J.-C., le consul Lucius Mummius a fait fixer vingt et un boucliers dorés au-dessus des colonnes. À l'intérieur se dressent une statue de Trajan offerte par tous les Grecs et une statue d'Hadrien offerte par les cités achéennes, et Néron y a offert quatre couronnes. Pausanias, qui écrit vers 174, en laisse la description la plus complète que nous ayons.",
+        "sources": [
+          "Pausanias V, 10, 3 à 5",
+          "Pausanias V, 12, 6 à 8",
+          "Pausanias V, 1, 2",
+          "Wikipédia, Temple de Zeus à Olympie"
+        ]
+      },
+      {
+        "id": "la-statue-de-zeus",
+        "title": "La statue de Zeus par Phidias",
+        "text": "Haute d'environ 12 mètres selon les estimations modernes, la statue d'or et d'ivoire touche presque le plafond : si le dieu se levait, écrit Strabon, il emporterait le toit. Devant elle, un dallage noir bordé de marbre de Paros retient l'huile d'olive qui protège l'ivoire de l'humidité. Sous l'Empire, les voyageurs viennent la contempler comme une merveille. Caligula voulut la faire transporter à Rome pour lui donner sa propre tête ; selon Suétone, elle éclata de rire et les ouvriers s'enfuirent. Le satiriste Lucien prétend même que des voleurs lui coupèrent deux boucles d'or.",
+        "sources": [
+          "Strabon VIII, 3, 30",
+          "Pausanias V, 11, 1 et 10",
+          "Suétone, Caligula 22, 2 et 57, 1",
+          "Lucien, Timon 4",
+          "Wikipédia, Statue de Zeus à Olympie"
+        ]
+      },
+      {
+        "id": "le-stade",
+        "title": "Le stade",
+        "text": "On gagne le stade par un passage voûté de 32 mètres, l'entrée cachée réservée aux juges et aux athlètes. La course d'un stade mesure environ 192 mètres et les talus de terre accueillent quelque 45 000 spectateurs debout, selon les estimations modernes. C'est à Olympie qu'en 67 Néron vint concourir, les jeux ayant été décalés pour lui : tombé de son char à dix chevaux, il fut pourtant couronné. Les Éléens, dit Pausanias, n'inscrivirent pas cette Olympiade dans leurs registres.",
+        "sources": [
+          "Pausanias VI, 20, 8",
+          "Pausanias X, 36, 9",
+          "Suétone, Néron 23 et 24",
+          "Dion Cassius LXIII, 14",
+          "Musée d'Olympie antique, le stade"
+        ]
+      },
+      {
+        "id": "l-altis",
+        "title": "L'Altis, bois sacré de Zeus",
+        "text": "L'Altis, bois sacré de Zeus, rassemble autels, temples et offrandes accumulés pendant des siècles. Au temps de Pausanias, Rome y est partout : le Métrôon ne contient plus d'image de la Mère des dieux mais des statues d'empereurs romains. Le guide Aristarchos raconte que, lors d'une réfection du toit de l'Héraion, on y découvrit le corps d'un soldat tombé jadis. Au pied de la terrasse des trésors, les Zanes, statues de bronze payées par les amendes des tricheurs, rappellent la règle des jeux, et le portique d'Écho renvoie sept fois la voix.",
+        "sources": [
+          "Pausanias V, 20, 4, 5 et 9",
+          "Pausanias V, 21, 2 à 17"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "halicarnasse",
+    "title": "Le mausolée d'Halicarnasse",
+    "status": "ready",
+    "year": 77,
+    "lat": 37.0378,
+    "lon": 27.4242,
+    "summary": "En 77 apr. J.-C., Halicarnasse appartient depuis deux siècles environ au monde romain, dans la province d'Asie créée en 129 av. J.-C. Vitruve décrit la ville comme un théâtre : l'agora au bord du port, à mi-pente la vaste esplanade du Mausolée, au sommet un temple de Mars. Ruinée au Ier siècle av. J.-C., elle doit sa renaissance, selon Cicéron, au gouverneur Quintus Cicéron. Sous Auguste, elle fait graver un décret des cités d'Asie qui salue l'empereur en père de la patrie et bienfaiteur des hommes.",
+    "ambience": [
+      {
+        "layer": "harbour",
+        "volume": 0.55,
+        "points": [
+          "vue-d-ensemble",
+          "le-port"
+        ]
+      },
+      {
+        "layer": "market",
+        "volume": 0.4,
+        "points": [
+          "le-theatre"
+        ]
+      },
+      {
+        "layer": "wind",
+        "volume": 0.4,
+        "points": [
+          "le-quadrige"
+        ]
+      },
+      {
+        "layer": "birds-day",
+        "volume": 0.3
+      }
+    ],
+    "points": [
+      {
+        "id": "le-mausolee",
+        "title": "Le Mausolée, modèle des tombeaux romains",
+        "text": "Élevé vers 350 av. J.-C. pour le satrape Mausole, ce tombeau devient pour les Romains la référence absolue : Pausanias rapporte qu'ils nomment « mausolées » leurs grands tombeaux, et le tombeau d'Auguste à Rome porte ce nom. En 77, Pline l'Ancien en donne les mesures : 36 colonnes, une pyramide de 24 degrés, 140 pieds de haut. Il nomme les sculpteurs de chaque face, Scopas à l'est, Bryaxis au nord, Timothée au sud, Léocharès à l'ouest. Le visiteur longe la frise peinte des Amazones.",
+        "sources": [
+          "Pausanias, VIII, 16, 4",
+          "Strabon, V, 3, 8",
+          "Suétone, Auguste, 100",
+          "Pline l'Ancien, Histoire naturelle, XXXVI, 30 à 31"
+        ]
+      },
+      {
+        "id": "le-quadrige",
+        "title": "Le quadrige de Pythis",
+        "text": "Au sommet de la pyramide, un char de marbre à quatre chevaux couronne l'édifice. Pline l'attribue à Pythis et précise que l'ensemble atteint 140 pieds de haut, soit 41 à 45 mètres selon le pied retenu. Qui se tenait dans le char reste débattu : aucun texte antique ne le dit. En 80, Martial ouvre son livre sur l'amphithéâtre flavien en le comparant aux merveilles du monde, dont les Mausolées suspendus dans les airs. Des fragments des chevaux, retrouvés en 1857, sont au British Museum.",
+        "sources": [
+          "Pline l'Ancien, Histoire naturelle, XXXVI, 31",
+          "Martial, Livre des spectacles, 1",
+          "C. T. Newton, A History of Discoveries at Halicarnassus, 1862"
+        ]
+      },
+      {
+        "id": "le-port",
+        "title": "Le port et la fontaine Salmacis",
+        "text": "Le port, abrité par la presqu'île où se dressait le palais de Mausole, reçoit les navires de commerce de l'Égée romaine. Vitruve y place l'agora, au plus bas de la ville en gradins, et un port secret au pied du palais, dont il admire les murs de brique polis comme du verre. À l'ouest, la fontaine Salmacis attire les curieux : Vitruve tient pour fausse sa réputation d'amollir les hommes, et Strabon en accuse plutôt le luxe. Un poème gravé près de la source à la fin du IIe siècle av. J.-C. célèbre la gloire de la cité.",
+        "sources": [
+          "Vitruve, II, 8, 10 à 14",
+          "Strabon, XIV, 2, 16",
+          "S. Isager, ZPE 123, 1998 (SEG 48, 1330)"
+        ]
+      },
+      {
+        "id": "le-theatre",
+        "title": "Le théâtre au-dessus de la ville",
+        "text": "Adossé à la colline qui domine Halicarnasse, le théâtre regarde le Mausolée et le port, comme si la ville entière lui servait de scène. Sa date de construction reste discutée : certains l'attribuent à l'époque de Mausole, au IVe siècle av. J.-C., d'autres au IIIe ou à la fin du IIe siècle av. J.-C. En 77, il garde son état hellénistique, avec un proscenium à quatorze piliers ornés de demi-colonnes doriques. C'est vers le IIe siècle apr. J.-C. que la cité l'agrandit, après le moment représenté ici.",
+        "sources": [
+          "The Ancient Theatre Archive, Halicarnassus (modern Bodrum)",
+          "F. Sear, Roman Theatres, 2006"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rhodes",
+    "title": "Rhodes et le Colosse à terre",
+    "status": "ready",
+    "year": 77,
+    "lat": 36.444,
+    "lon": 28.224,
+    "summary": "En 77 apr. J.-C., Pline l'Ancien dédie son Histoire naturelle à Titus et y décrit le Colosse de Rhodes, statue d'Hélios abattue par un séisme vers 226 av. J.-C. et restée à terre. La cité, longtemps alliée libre de Rome, a perdu sa liberté au début du règne de Vespasien. Un demi-siècle plus tôt, Strabon jugeait ses ports, ses rues et ses murailles sans égal. Des navires marchands mouillent dans ses bassins, et les voyageurs montent vers l'acropole pour voir la célèbre ruine.",
+    "ambience": [
+      {
+        "layer": "harbour",
+        "volume": 0.55,
+        "points": [
+          "vue-d-ensemble",
+          "le-port"
+        ]
+      },
+      {
+        "layer": "market",
+        "volume": 0.45,
+        "points": [
+          "la-ville",
+          "le-colosse-a-terre"
+        ]
+      },
+      {
+        "layer": "wind",
+        "volume": 0.4,
+        "points": [
+          "l-acropole"
+        ]
+      },
+      {
+        "layer": "birds-day",
+        "volume": 0.3
+      }
+    ],
+    "points": [
+      {
+        "id": "le-colosse-a-terre",
+        "title": "Le Colosse à terre",
+        "text": "La statue d'Hélios, œuvre de Charès de Lindos, mesurait 70 coudées, soit plus de 30 m. Un séisme l'a brisée aux genoux et, à cause d'un oracle, les Rhodiens ne l'ont jamais relevée. Pline écrit que, même couchée, elle reste une merveille : peu d'hommes parviennent à entourer son pouce de leurs bras, ses doigts dépassent la plupart des statues, et ses membres rompus s'ouvrent comme des cavernes où l'on voit les gros blocs de pierre qui la lestaient. Son emplacement exact reste débattu : la scène suit l'hypothèse d'un sanctuaire sur l'acropole.",
+        "sources": [
+          "Pline, Histoire naturelle XXXIV, 41",
+          "Strabon XIV, 2, 5",
+          "U. Vedder, Der Koloss von Rhodos, 2015"
+        ]
+      },
+      {
+        "id": "le-port",
+        "title": "Les ports de Rhodes",
+        "text": "Rhodes dispose de plusieurs ports fermés par des môles, que Strabon place au premier rang du monde ; ses arsenaux militaires étaient tenus secrets, et quiconque y pénétrait risquait la mort. Sa flotte, longtemps l'une des plus redoutées de l'Égée, fut pourtant battue deux fois en 43 av. J.-C. par Cassius, l'un des meurtriers de César, qui entra ensuite dans la ville et fit exécuter une cinquantaine de citoyens. Au temps de Vespasien, ce sont surtout des navires de commerce qui font escale ici, sur la route maritime entre l'Égée et l'Orient romain.",
+        "sources": [
+          "Strabon XIV, 2, 5",
+          "Appien, Guerres civiles IV, 65 à 74",
+          "Dion Cassius XLVII, 33"
+        ]
+      },
+      {
+        "id": "l-acropole",
+        "title": "L'acropole, le temple et le stade",
+        "text": "Sur la colline de l'acropole, à l'ouest de la ville, un temple dorique, dit d'Apollon Pythios, domine un stade d'environ 200 m et un petit odéon. L'archéologue Ursula Vedder y voit le sanctuaire d'Hélios où se dressait le Colosse, une hypothèse discutée que la scène retient. Les Romains connaissent bien la cité : le futur empereur Tibère vécut retiré à Rhodes de 6 av. J.-C. à 2 apr. J.-C., fréquentant assidûment les écoles et les leçons des maîtres de la ville.",
+        "sources": [
+          "Pleiades 103328498",
+          "U. Vedder 2015",
+          "Suétone, Tibère 10 à 13",
+          "Velleius Paterculus II, 99"
+        ]
+      },
+      {
+        "id": "la-ville",
+        "title": "Une ville d'études pour les Romains",
+        "text": "Fondée en 408 av. J.-C. sur un plan en damier, Rhodes est restée sous Rome une capitale de l'éloquence : Cicéron y suivit les leçons de Molon et le jeune César y vint étudier. Le philosophe Dion de Pruse reproche aux Rhodiens de son temps de graver le nom de nouveaux honorés sur d'anciennes statues au lieu d'en ériger de nouvelles. Rues droites, portiques et murailles, que Pausanias compte parmi les plus fortes qu'il ait vues, forment le décor que découvrent les visiteurs.",
+        "sources": [
+          "Diodore XIII, 75, 1",
+          "Strabon XIV, 2, 9",
+          "Cicéron, Brutus 316",
+          "Suétone, César 4",
+          "Dion de Pruse, Discours 31, 8 et 9",
+          "Pausanias IV, 31, 5"
+        ]
+      }
+    ]
   }
 ]
