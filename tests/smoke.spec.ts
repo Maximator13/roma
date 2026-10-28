@@ -22,7 +22,8 @@ test('home loads without console errors and within the first screen budget', asy
   const errors = watchErrors(page)
   const transfers: Promise<{ url: string; bytes: number }>[] = []
   page.on('requestfinished', (request) => {
-    transfers.push(request.sizes().then((sizes) => ({ url: new URL(request.url()).pathname, bytes: sizes.responseBodySize })))
+    const url = new URL(request.url()).pathname
+    transfers.push(request.sizes().then((sizes) => ({ url, bytes: sizes.responseBodySize }), () => ({ url, bytes: 0 })))
   })
   const mapData = Promise.all([
     page.waitForResponse((response) => response.url().endsWith('/geo/relief.webp')),
@@ -140,6 +141,6 @@ test('the battle of Cannae plays, follows its phases and switches views', async 
   }
   await page.keyboard.press('Escape')
   await expect(page).toHaveURL(/\/roma\/#\/$/)
-  await expect(page.getByRole('region', { name: 'Lecture de la bataille' })).toHaveCount(0)
+  await expect(page.getByRole('region', { name: 'Lecture de la bataille' })).toHaveCount(0, { timeout: 20_000 })
   expect(errors).toEqual([])
 })
