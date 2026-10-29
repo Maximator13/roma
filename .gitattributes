@@ -6,3 +6,6 @@
 *.glb binary
 *.ktx2 binary
 *.mp4 binary
+
+# Scripts Blender de modélisation : hors statistiques de langage
+blender/** linguist-detectable=false
