@@ -741,7 +741,8 @@ export const events: HistoricalEvent[] = [
         "author": "Michel Reddé",
         "work": "Alésia. L'archéologie face à l'imaginaire, Paris, Errance, 2003"
       }
-    ]
+    ],
+    "scene": "alesia"
   },
   {
     "id": "franchissement-du-rubicon",

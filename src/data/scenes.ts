@@ -1440,5 +1440,118 @@ export const scenes: Scene[] = [
         "volume": 0.35
       }
     ]
+  },
+  {
+    "id": "alesia",
+    "title": "Siège d'Alésia",
+    "status": "ready",
+    "year": -51,
+    "lat": 47.5366,
+    "lon": 4.5039,
+    "summary": "À l'automne 52 av. J.-C., autour du Mont Auxois, à Alise-Sainte-Reine. César enferme Vercingétorix et environ 80 000 hommes derrière une ligne d'environ 16 km tournée vers l'oppidum, puis se protège de l'armée de secours par une seconde ligne d'environ 21 km (chiffres de César). Le tracé suit les fouilles franco-allemandes de 1991 à 1997 de façon schématique ; le camp du Réa n'est pas localisé et sa place est une hypothèse. Relief de l'IGN débarrassé du bourg des Laumes et des routes. Une figurine pour 60 soldats, grossie trois fois en vue tactique.",
+    "points": [
+      {
+        "id": "les-lignes-de-cesar",
+        "title": "Les lignes de César",
+        "text": "Vercingétorix s'est enfermé dans Alésia avec 80 000 hommes. César entoure l'oppidum d'une ligne de 11 milles, environ 16 km, avec des camps et 23 fortins, puis d'une seconde ligne de 14 milles, environ 21 km, tournée vers l'extérieur. Il fait creuser un fossé de 20 pieds, puis deux fossés de 15 pieds, l'un rempli d'eau en plaine, derrière lesquels s'élèvent un rempart de 12 pieds et des tours tous les 80 pieds. En avant, des pièges : cippes, lis et aiguillons. Avant le blocus complet, Vercingétorix renvoie sa cavalerie chercher des secours ; plus tard, les Mandubiens, chassés de la ville, sont refoulés au pied des lignes.",
+        "sources": [
+          "César, Guerre des Gaules VII, 69 à 74 ; 78 ; Texte latin de la Guerre des Gaules VII (The Latin Library)",
+          "Dion Cassius XL, 39 à 41 (trad. Cary, LacusCurtius)",
+          "M. Reddé, Alésia et la guerre des Gaules, Antiquités nationales, numéro spécial, 2012, p. 171 à 194, repris en 2022",
+          "M. Reddé, L'avenir d'Alésia, dans L'âge du Fer en Europe. Mélanges offerts à Olivier Buchsenschutz, Ausonius Mémoires 32, 2013, p. 681 à 688, repris dans Legiones, provincias, classes, Ausonius, B@sic 3, 2022",
+          "M. Reddé et S. von Schnurbein (dir.), Alésia. Fouilles et recherches franco-allemandes sur les travaux militaires romains autour du Mont-Auxois (1991-1997), Mémoires de l'Académie des inscriptions et belles-lettres 22, Paris, 2001, 2 vol. (cité d'après Reddé 2012 et 2013, non lu directement)"
+        ]
+      },
+      {
+        "id": "l-armee-de-secours",
+        "title": "L'arrivée de l'armée de secours",
+        "text": "Commios, Viridomaros, Éporédorix et Vercassivellaunos arrivent avec toutes leurs troupes et campent sur une colline extérieure, à moins d'un mille des lignes romaines. César annonce 8 000 cavaliers et environ 250 000 fantassins, un chiffre que les historiens jugent généralement exagéré. Dans Alésia, où le blé est épuisé, la joie succède au désespoir.",
+        "sources": [
+          "César, Guerre des Gaules VII, 75 à 77 ; 79, 1 ; Texte latin de la Guerre des Gaules VII (The Latin Library)",
+          "Plutarque, Vie de César 27 (trad. Perrin, LacusCurtius)",
+          "Florus, Épitomé I, 45 (III, 10 selon d'autres éditions), texte latin",
+          "Strabon, Géographie IV, 2, 3 (trad. Jones, LacusCurtius)"
+        ]
+      },
+      {
+        "id": "le-combat-de-cavalerie",
+        "title": "Le combat de cavalerie dans la plaine des Laumes",
+        "text": "Le lendemain, la cavalerie gauloise emplit la plaine, mêlée d'archers et de fantassins légers ; les assiégés comblent le premier fossé et se préparent à sortir. Le combat dure de midi presque au coucher du soleil, sous les yeux des deux armées et des Romains postés sur les hauteurs. Les Germains chargent enfin en escadrons serrés et mettent l'ennemi en fuite ; les archers sont encerclés et tués. Les assiégés rentrent dans l'oppidum.",
+        "sources": [
+          "César, Guerre des Gaules VII, 79, 2 à 80, 9 ; Texte latin de la Guerre des Gaules VII (The Latin Library)",
+          "Traduction H. J. Edwards (Loeb, 1917), LacusCurtius",
+          "Dion Cassius XL, 39 à 41 (trad. Cary, LacusCurtius)"
+        ]
+      },
+      {
+        "id": "l-attaque-de-nuit",
+        "title": "L'attaque de nuit",
+        "text": "Après un jour passé à fabriquer claies, échelles et grappins, l'armée de secours sort en silence à minuit et attaque les lignes de plaine. Au cri poussé dehors, Vercingétorix fait sonner la trompette et sort. Dans l'obscurité, frondes, flèches, pierres et machines font de nombreux blessés. Marc Antoine et Trebonius envoient des renforts. Près des lignes, les Gaulois tombent sur les aiguillons et dans les fosses ou sont percés par les pila muraux. À l'approche du jour, ils se retirent sans avoir forcé les lignes ; les assiégés arrivent trop tard. La maquette montre la scène au crépuscule plutôt qu'en pleine nuit, pour que les troupes restent lisibles.",
+        "sources": [
+          "César, Guerre des Gaules VII, 81 et 82 ; Texte latin de la Guerre des Gaules VII (The Latin Library)",
+          "Traduction H. J. Edwards (Loeb, 1917), LacusCurtius",
+          "Dion Cassius XL, 39 à 41 (trad. Cary, LacusCurtius)"
+        ]
+      },
+      {
+        "id": "vercassivellaunos-au-rea",
+        "title": "Vercassivellaunos attaque le camp du Réa",
+        "text": "Instruits par des gens du pays, les chefs gaulois visent le camp de la colline du nord, le Réa, trop vaste pour être enfermé dans les lignes : deux légions y campent sur une pente douce et défavorable. Vercassivellaunos part à la première veille avec 60 000 hommes choisis, se cache derrière la montagne à l'aube et fait reposer ses troupes. Vers midi, il attaque le camp, tandis que la cavalerie gauloise menace les lignes de plaine et que le reste de l'armée se montre devant le camp.",
+        "sources": [
+          "César, Guerre des Gaules VII, 83 ; Texte latin de la Guerre des Gaules VII (The Latin Library)",
+          "Traduction H. J. Edwards (Loeb, 1917), LacusCurtius",
+          "M. Reddé, Alésia et la guerre des Gaules, Antiquités nationales, numéro spécial, 2012, p. 171 à 194, repris en 2022",
+          "M. Reddé, L'avenir d'Alésia, dans L'âge du Fer en Europe. Mélanges offerts à Olivier Buchsenschutz, Ausonius Mémoires 32, 2013, p. 681 à 688, repris dans Legiones, provincias, classes, Ausonius, B@sic 3, 2022"
+        ]
+      },
+      {
+        "id": "la-sortie-de-vercingetorix",
+        "title": "La sortie de Vercingétorix",
+        "text": "Depuis la citadelle, Vercingétorix voit les siens et sort avec claies, perches, abris et faux. On combat partout à la fois ; les cris dans le dos des Romains les effraient. Au Réa, la pente favorise les assaillants, qui se relaient et jettent de la terre sur les pièges. Les assiégés, renonçant à la plaine, attaquent un secteur escarpé, chassent les défenseurs des tours et arrachent le parapet. César envoie Brutus avec des cohortes, puis Fabius, puis conduit lui-même des troupes fraîches et rétablit le combat.",
+        "sources": [
+          "César, Guerre des Gaules VII, 84 à 87, 1 ; Texte latin de la Guerre des Gaules VII (The Latin Library)",
+          "Traduction H. J. Edwards (Loeb, 1917), LacusCurtius"
+        ]
+      },
+      {
+        "id": "labienus-et-cesar",
+        "title": "Labienus, César et la cavalerie à revers",
+        "text": "Labienus, envoyé au Réa avec 6 cohortes, voit que ni remparts ni fossés ne tiennent ; il réunit 40 cohortes tirées des postes voisins et prévient César. Celui-ci prend 4 cohortes au fortin le plus proche, envoie une partie de la cavalerie contourner la ligne extérieure pour prendre l'ennemi à revers et accourt. On le reconnaît à la couleur de son vêtement de commandement. Les Romains lâchent les pila et combattent à l'épée. Soudain, la cavalerie apparaît dans le dos des Gaulois.",
+        "sources": [
+          "César, Guerre des Gaules VII, 86, 1 à 3 ; 87, 2 et 3 ; 88, 1 à 3 ; Texte latin de la Guerre des Gaules VII (The Latin Library)",
+          "Traduction H. J. Edwards (Loeb, 1917), LacusCurtius"
+        ]
+      },
+      {
+        "id": "la-deroute",
+        "title": "La déroute de l'armée de secours",
+        "text": "Les Gaulois tournent le dos ; les cavaliers leur coupent la retraite, le massacre est grand. Sedulius, chef des Lémovices, est tué ; Vercassivellaunos est pris vivant ; 74 enseignes sont apportées à César. Voyant le désastre, les assiégés quittent les lignes et rentrent. L'armée de secours fuit son camp ; à partir de minuit, la cavalerie romaine rattrape l'arrière-garde. Plutarque rapporte que les défenseurs de la ligne intérieure n'apprirent la victoire qu'en voyant le butin.",
+        "sources": [
+          "César, Guerre des Gaules VII, 88, 3 à 7 ; Texte latin de la Guerre des Gaules VII (The Latin Library)",
+          "Plutarque, Vie de César 27 (trad. Perrin, LacusCurtius)"
+        ]
+      },
+      {
+        "id": "la-reddition-de-vercingetorix",
+        "title": "La reddition de Vercingétorix",
+        "text": "Le lendemain, Vercingétorix réunit le conseil et s'offre aux siens, pour être tué ou livré vivant. César exige les armes et les chefs ; assis sur le retranchement devant son camp, il reçoit la reddition. Il distribue un captif à chaque soldat, sauf les Éduens et les Arvernes, gardés pour regagner leurs cités. Plutarque, Florus et Dion Cassius racontent une scène plus théâtrale : le chef gaulois en armes, à cheval chez Plutarque, déposant ses armes aux pieds de César ; ces récits sont des traditions plus tardives.",
+        "sources": [
+          "César, Guerre des Gaules VII, 89 et 90 ; Texte latin de la Guerre des Gaules VII (The Latin Library)",
+          "Plutarque, Vie de César 27 (trad. Perrin, LacusCurtius)",
+          "Florus, Épitomé I, 45 (III, 10 selon d'autres éditions), texte latin",
+          "Dion Cassius XL, 39 à 41 (trad. Cary, LacusCurtius)"
+        ]
+      }
+    ],
+    "ambience": [
+      {
+        "layer": "wind",
+        "volume": 0.5
+      },
+      {
+        "layer": "birds-day",
+        "volume": 0.3
+      }
+    ]
   }
 ]

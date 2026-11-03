@@ -2129,3 +2129,136 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 - **Hypothèse retenue** : Voiles de Cléopâtre roulées sur la vergue toute la journée (une seule maquette par division) ; feu non représenté.
 - **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
 - **Décision** : à trancher
+
+## Scène du siège d'Alésia (52 av. J.-C.)
+
+### 1. Date de la bataille finale
+
+- **Hypothèse retenue** : Fin septembre 52 av. J.-C. (calendrier julien proléptique), affichée comme traditionnelle ; le 27 septembre comme convention moderne.
+- **Pourquoi un doute** : Aucune source antique ne date le siège ; l'origine du 27 septembre (titre de Brunaux 2012) n'a pas été retrouvée.
+- **Sources** : J.-L. Brunaux, Alésia. Le tombeau de l'indépendance gauloise (27 septembre 52 av. J.-C.), Gallimard, coll. Les journées qui ont fait la France, 2012; César, Guerre des Gaules VII, 71, 4 ; 77, 1 ; 90, 3; Hérodote.net, Été 52 av. J.-C. : https://www.herodote.net/ete_52_av_J_C-evenement--580000.php
+- **Décision** : à trancher
+
+### 2. Équinoxe d'automne de 52 av. J.-C. et position du soleil
+
+- **Hypothèse retenue** : Équinoxe vers le 23 à 25 septembre julien ; à la fin septembre, lever vers 6 h et coucher vers 18 h (heure solaire), hauteur de midi de 37° à 45° entre mi-septembre et mi-octobre à 47,54° N.
+- **Pourquoi un doute** : Calcul approché de la fiche (dérive du calendrier julien, déclinaison de +2° à -5°), à confirmer avec un éphéméride.
+- **Sources** : Calcul de la fiche, formule standard de position du soleil, latitude 47,54° N
+- **Décision** : à trancher
+
+### 3. Emplacement du camp du Réa
+
+- **Hypothèse retenue** : Pente sud ou sud-est du Mont du Réa, entre le sommet IGN (47.55401 N, 4.469508 E) et Grésigny.
+- **Pourquoi un doute** : Camp non identifié ; camp D inexistant ; une possible clavicule des fouilles du Second Empire n'a pas pu être réexaminée.
+- **Sources** : M. Reddé, L'avenir d'Alésia, dans L'âge du Fer en Europe. Mélanges offerts à Olivier Buchsenschutz, Ausonius Mémoires 32, 2013, p. 681 à 688, repris dans Legiones, provincias, classes, Ausonius, B@sic 3, 2022 : https://una-editions.fr/32-l-avenir-d-alesia/; M. Reddé, Alésia et la guerre des Gaules, Antiquités nationales, numéro spécial, 2012, p. 171 à 194, repris en 2022 : https://una-editions.fr/33-alesia-et-la-guerre-des-gaules/
+- **Décision** : à trancher
+
+### 4. Nombre et effectif des légions
+
+- **Hypothèse retenue** : 10 à 12 légions, de 30 000 à 50 000 légionnaires.
+- **Pourquoi un doute** : César ne donne pas le nombre ; les chiffres de Dodge et Keppie ne sont connus que par Wikipédia.
+- **Sources** : M. Reddé, L'avenir d'Alésia, dans L'âge du Fer en Europe. Mélanges offerts à Olivier Buchsenschutz, Ausonius Mémoires 32, 2013, p. 681 à 688, repris dans Legiones, provincias, classes, Ausonius, B@sic 3, 2022 : https://una-editions.fr/32-l-avenir-d-alesia/; Wikipédia anglaise, Battle of Alesia (repérage seulement ; estimations attribuées à Dodge, Keppie et Delbrück) : https://en.wikipedia.org/wiki/Battle_of_Alesia
+- **Décision** : à trancher
+
+### 5. Estimations modernes des Gaulois
+
+- **Hypothèse retenue** : Assiégés de 20 000 à 80 000, armée de secours de 50 000 à 100 000.
+- **Pourquoi un doute** : Attribuées à Delbrück (trad. 1990, p. 504) par Wikipédia anglaise ; texte de Delbrück non lu.
+- **Sources** : Wikipédia anglaise, Battle of Alesia (repérage seulement ; estimations attribuées à Dodge, Keppie et Delbrück) : https://en.wikipedia.org/wiki/Battle_of_Alesia
+- **Décision** : à trancher
+
+### 6. Les 40 cohortes de Labienus
+
+- **Hypothèse retenue** : 40 cohortes (XL dans le texte de The Latin Library ; forty dans la traduction Edwards).
+- **Pourquoi un doute** : Variante de lecture possible dans d'autres éditions, non vérifiée.
+- **Sources** : Texte latin de la Guerre des Gaules VII (The Latin Library) : https://www.thelatinlibrary.com/caesar/gall7.shtml; Traduction H. J. Edwards (Loeb, 1917), LacusCurtius : https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Caesar/Gallic_War/7G*.html
+- **Décision** : à trancher
+
+### 7. Balles de fronde T. LABI et camp C
+
+- **Hypothèse retenue** : Le camp C de Bussy est celui de Labienus.
+- **Pourquoi un doute** : Reddé l'affirme (2003, note 9) ; le détail des balles marquées T. LABI vient de Wikipédia, non lu dans la publication de 2001.
+- **Sources** : M. Reddé, Le matériel archéologique d'Alésia, ou les surprises de la chronologie absolue, RAO suppl. 10, 2003, p. 287 à 292, repris en 2022 : https://una-editions.fr/30-le-materiel-archeologique-alesia/; Wikipédia, Siège d'Alésia : https://fr.wikipedia.org/wiki/Si%C3%A8ge_d%27Al%C3%A9sia
+- **Décision** : à trancher
+
+### 8. Secteur de la sortie de Vercingétorix
+
+- **Hypothèse retenue** : Pentes escarpées au sud (montagne de Flavigny) ou à l'est, selon les restitutions.
+- **Pourquoi un doute** : César dit seulement loca praerupta (VII, 86, 4).
+- **Sources** : César, Guerre des Gaules VII, 86, 4 ; Texte latin de la Guerre des Gaules VII (The Latin Library) : https://www.thelatinlibrary.com/caesar/gall7.shtml
+- **Décision** : à trancher
+
+### 9. Typologie des casques et armures à Alésia
+
+- **Hypothèse retenue** : Montefortino et Coolus pour les Romains ; casques gaulois en fer pour des nobles.
+- **Pourquoi un doute** : Catalogue du mobilier (Reddé et von Schnurbein 2001, vol. 2) non consulté.
+- **Sources** : M. Reddé et S. von Schnurbein (dir.), Alésia. Fouilles et recherches franco-allemandes sur les travaux militaires romains autour du Mont-Auxois (1991-1997), Mémoires de l'Académie des inscriptions et belles-lettres 22, Paris, 2001, 2 vol. (cité d'après Reddé 2012 et 2013, non lu directement); M. Reddé, Alésia et la guerre des Gaules, Antiquités nationales, numéro spécial, 2012, p. 171 à 194, repris en 2022 : https://una-editions.fr/33-alesia-et-la-guerre-des-gaules/
+- **Décision** : à trancher
+
+### 10. Date de la proposition de Chaux-des-Crotenay et inscription ALISIIA
+
+- **Hypothèse retenue** : André Berthier, à partir de 1962 ; inscription trouvée en 1839 (CIL XIII, 2880).
+- **Pourquoi un doute** : Connues seulement par Wikipédia.
+- **Sources** : Wikipédia, Historiographie du débat sur la localisation d'Alésia (repérage seulement) : https://fr.wikipedia.org/wiki/Historiographie_du_d%C3%A9bat_sur_la_localisation_d%27Al%C3%A9sia
+- **Décision** : à trancher
+
+### 11. Temps de rendu EEVEE sur l'Iris Plus
+
+- **Hypothèse retenue** : Plan de 288 images faisable avec imposteurs au-delà de 150 m.
+- **Pourquoi un doute** : Aucune mesure ; mesurer 10 images avant tout engagement (règle des 10 minutes).
+- **Sources** : docs/scenes/cannes.md, section Budget
+- **Décision** : à trancher
+
+### 12. Restitution
+
+- **Hypothèse retenue** : Tracés des lignes : schématiques, d'après la topographie et l'allure du plan de Reddé et von Schnurbein (2001) ; contrevallation de 15,2 km, à environ 2,7 km à l'ouest de l'oppidum dans la plaine ; circonvallation de 20,7 km, passant sous le sommet du Réa ; 23 castella espacés régulièrement.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 13. Restitution
+
+- **Hypothèse retenue** : Profil des ouvrages : talus de 2,1 m et parapet jusqu'à 3,5 m ; fossés de 15 pieds à 6,5 à 11 m et 12,5 à 17 m, fossé de 20 pieds à 118 m ; fossé intérieur en eau dans la plaine sous 243 m ; un troisième fossé peint devant la contrevallation des Laumes ; 1 516 tours, une tous les 23,7 m.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 14. Restitution
+
+- **Hypothèse retenue** : Pièges : seulement dans deux secteurs (plaine et Réa), avec deux agencements différents.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 15. Restitution
+
+- **Hypothèse retenue** : Camps : B à 47,51906 N 4,51585 E (290 × 252 m), C à 47,55414 N 4,52914 E (282 × 245 m), A à 47,51996 N 4,49593 E (120 × 100 m) ; camp du Réa sur le versant sud-est, 47,54964 N 4,47402 E (330 × 270 m, hypothèse) ; fortin de l'Épineuse vers 47,53426 N 4,46246 E (position approchée) ; camp de secours en ellipse de 1 300 × 840 m vers 47,52131 N 4,43882 E (hypothèse).
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 16. Restitution
+
+- **Hypothèse retenue** : Oppidum : rempart sur la courbe des 372 m, 320 maisons ; camp gaulois de l'est fermé par un mur de pierres sèches à 230 m du rebord du plateau.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 17. Restitution
+
+- **Hypothèse retenue** : Effectifs choisis : légions du Réa 8 000 ; cohortes de 350 hommes (Labienus 2 100, 34 autres cohortes 11 900, Brutus 2 100, Fabius 2 100, fortin voisin 1 400) ; cavalerie de César 2 000, dont 1 000 Germains ; défenseurs de la plaine 3 000 ; Antoine et Trebonius 2 800 ; archers 2 000 ; attaque de nuit 10 000 ; sortie 20 000 ; Mandubiens 2 000. Chiffres de César gardés pour Vercassivellaunos (60 000) et la cavalerie gauloise (8 000).
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 18. Restitution
+
+- **Hypothèse retenue** : Positions des épisodes : point d'observation de César à Flavigny (47,51951 N 4,50722 E) ; secteur escarpé de la sortie au sud (47,52374 N 4,50058 E) ; reddition sur la ligne intérieure de la plaine (47,53570 N 4,46684 E) ; marche de nuit par l'ouest puis le nord du Réa.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 19. Restitution
+
+- **Hypothèse retenue** : César : cheval gris (choix artistique), manteau écarlate donné comme interprétation.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 20. Restitution
+
+- **Hypothèse retenue** : Rivières : Oze, Ozerain, Brenne et Rabutin tracées automatiquement, larges de 8 à 11 m (exagérées pour la maille de 30 m) ; l'attaque de nuit est montrée au crépuscule.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher

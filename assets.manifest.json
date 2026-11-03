@@ -9,6 +9,13 @@
       "file": "3d32010301ea-actium.glb"
     },
     {
+      "path": "scenes/alesia/alesia.glb",
+      "bytes": 2985836,
+      "sha256": "00681fdac0192875e47ae88c2eadb29506b3a37c7c408872c0528f7d303b1ce4",
+      "release": "assets-v40",
+      "file": "00681fdac019-alesia.glb"
+    },
+    {
       "path": "scenes/alexandrie/alexandrie.glb",
       "bytes": 8758832,
       "sha256": "a765a49ba38bae4964a38157afaf7c52a5d2e7609845c8da81ae80cd2db322e3",
