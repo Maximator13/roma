@@ -101,10 +101,10 @@
     },
     {
       "path": "scenes/pont-du-gard/pont-du-gard.glb",
-      "bytes": 4678216,
-      "sha256": "64c956865b98e6377296eb5917bb48f254434068749721eda505e216c08e1312",
-      "release": "assets-v17",
-      "file": "64c956865b98-pont-du-gard.glb"
+      "bytes": 5799020,
+      "sha256": "1a7f035508530157243e4a69e9f693e2ce287eb9dce0b41c3b0ec7c0246627a1",
+      "release": "assets-v26",
+      "file": "1a7f03550853-pont-du-gard.glb"
     },
     {
       "path": "scenes/rhodes/rhodes.glb",

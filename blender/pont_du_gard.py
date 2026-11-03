@@ -11,6 +11,7 @@ import numpy as np
 from mathutils import Matrix, Vector
 
 from kit import pont_life
+from kit.bake import Atlas, bake_occlusion
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement
 from kit.materials import baked_material, save_pixels
 from kit.pont_bridge import (BASIN_INNER, BASIN_RIM, BASIN_WALL, SLAB_THICKNESS, TIER1_SPANS, Layout, Segment,
@@ -68,6 +69,9 @@ PATHS = {
 }
 TRACKS = {"domaine": [(-31.0, 470.0), (40.0, 420.0)]}
 GROUND_POIS = ("le-pont", "la-grande-arche", "la-carriere", "le-bassin")
+BAKE_ATLASES = (("monument", ("pont_du_gard", "quarry_faces"), 2048, 12.0, "charts"),
+                ("ground", ("ground_bridge", "ground_quarry", "ground_basin"), 1024, 6.0, "planar"))
+BAKE_OCCLUDERS = ("terrain",)
 
 
 def arguments():
@@ -1683,8 +1687,34 @@ def render_previews(options, views):
     return timings
 
 
+def bake(options):
+    if options.get("bake") != "1":
+        return None
+    samples = int(options.get("bake_samples", 64))
+    atlases = [Atlas(name, [bpy.data.objects[key] for key in keys], size, distance, unwrap, samples)
+               for name, keys, size, distance, unwrap in BAKE_ATLASES]
+    report = bake_occlusion(atlases, [bpy.data.objects[key] for key in BAKE_OCCLUDERS], os.path.join(CACHE, "textures"))
+    print("BAKE", json.dumps(report), flush=True)
+    return report
+
+
+def rebake(options):
+    started = time.perf_counter()
+    bpy.ops.wm.open_mainfile(filepath=BLEND)
+    report = bake(options)
+    roots = [obj for obj in bpy.data.collections["PontDuGard"].objects if obj.parent is None]
+    glb = os.path.join(CACHE, "pont-du-gard.glb")
+    export_seconds = export_glb(glb, roots)
+    print("REBAKE", json.dumps({"bake": report, "export_seconds": round(export_seconds, 1),
+                                "glb_bytes": os.path.getsize(glb),
+                                "total_seconds": round(time.perf_counter() - started, 1)}), flush=True)
+
+
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake(options)
+        return
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
         stored = json.loads(bpy.context.scene.get("preview_points", "{}"))
@@ -1739,6 +1769,7 @@ def main():
     statistics = group_statistics(roots)
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
+    baked = bake(options)
     glb = os.path.join(CACHE, "pont-du-gard.glb")
     export_seconds = export_glb(glb, roots)
     t1, t2, t3 = (top + DATUM for top in layout.tops)
@@ -1756,7 +1787,7 @@ def main():
         "life_static_triangles": static_triangles,
         "walk_points": route_points_count, "walk_midpoint_error_metres": route_error,
         "walk_max_grade": route_grade, "walkers": walkers, "smoke_sources": len(smokes), "bird_flocks": flocks,
-        "statistics": statistics, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
+        "statistics": statistics, "bake": baked, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
         "elevation_sources": dem_urls, "elevation_licence": ETALAB_LICENCE, "texture_credits": credits,
         "markers": {key: [[round(v, 2) for v in eye], [round(v, 2) for v in target]]
                     for key, (eye, target) in points.items()},
