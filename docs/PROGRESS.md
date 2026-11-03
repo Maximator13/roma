@@ -216,3 +216,34 @@ Page à part, `#/collection`, avec un lien discret « Collection » dans l'en-t�
 1. Ouvrir ton paquet du jour et dire si les effets et les couleurs sont assez spectaculaires.
 2. Juger les illustrations les plus ternes (moulages de la colonne Trajane, strigile, gladius) et les rendus Blender de Cannes, à refaire si tu veux.
 3. Trancher les points de `docs/A_VERIFIER.md` (rareté, portraits discutés).
+
+## Graphismes, batailles et mur d'Hadrien (du 28 octobre au 3 novembre 2026, en attente de ta validation)
+
+### Fait
+
+- **Qualité moyenne** (option A, cible 40 à 45 i/s sur la machine de mesure) : SMAA sans occlusion ambiante à l'écran ; l'occlusion à l'écran (N8AO) reste réservée à la qualité haute. La qualité ne baisse plus pendant le chargement d'une scène.
+- **Netteté de la carte** quand la caméra plonge : normales du relief lissées, crêtes procédurales et côte fractale près de la caméra (problème connu de la phase 2, réglé).
+- **Moniteur de performance** : il a sa propre touche et n'entre plus en conflit avec celles des scènes.
+- **Mur d'Hadrien** : scène de Housesteads vers 130.
+- **Moteur de bataille** neutre (deux camps quelconques, légende des figurines réglable), mer animée pour les batailles navales.
+- **Actium** (31 av. J.-C.) : bataille navale, un modèle par navire.
+- **Alésia** (52 av. J.-C.) : siège en 9 phases, relief IGN (grilles de 10 m et 100 m), lignes de César, camp du Réa, armée de secours. Une figurine pour 60 soldats (environ 2 300 figurines au lieu de 6 922), grossies trois fois en vue tactique. Mesuré en qualité moyenne : 53 à 60 i/s en lecture, 51 à 64 appels de dessin. 20 points dans `docs/A_VERIFIER.md` (11 à vérifier, 9 hypothèses de restitution).
+- **Lumière précalculée** (occlusion ambiante cuite dans Blender, une texture par grand ensemble) sur les 14 scènes de villes et de monuments : pont du Gard, Nîmes, Arles, Panthéon, mur d'Hadrien, Olympie, Halicarnasse, Éphèse, Rhodes, Gizeh, Colisée, Pompéi, Alexandrie, Constantinople. Arcades, portiques, passages de portes et pronaos gagnent en profondeur ; appels de dessin inchangés, i/s dans le bruit de mesure (Constantinople environ 3 i/s de moins). Poids : 1 à 3 Mo de plus par scène, surtout dus à la seconde carte d'UV (Nîmes 11,6 Mo, Constantinople 16,9 Mo, sous le budget de 20 Mo).
+- **Tests sur CI** : délais allongés pour les machines lentes (frise 20 s après une scène, scène de Nîmes 5 minutes comme les batailles, tailles de requêtes tardives tolérées).
+
+### Décisions prises en autonomie (à confirmer ou à changer)
+
+- **Échelle d'Alésia** : 1 figurine pour 60 soldats (option C) ; 20 ou 40 restent possibles sans refaire le modèle.
+- **Exclus de la lumière précalculée** : le cirque et le port d'Arles, le sol et l'autel d'Éphèse, les îlots et l'atrium des Vettii à Pompéi, les collines, le Grand Cirque et les forums impériaux au Colisée, l'Hippodrome et le palais à Constantinople, les trois grandes pyramides, et le sol de plusieurs scènes (densité trop faible ou taches sombres) ; ils projettent quand même leur ombre sur le reste.
+- **Batailles** (Cannes, Actium, Alésia) : pas de lumière précalculée pour l'instant, gain faible sur de grands terrains.
+
+### Problèmes connus
+
+- **Alésia** : l'attaque de nuit est montrée au crépuscule ; étiquettes qui se chevauchent en vue tactique ; vues rasantes des phases 2, 4 et 7 peu lisibles.
+- **Lumière précalculée** : teinte bleutée dans les niches de la scène du théâtre d'Arles, piliers de l'arc de Titus un peu flous, intérieur du Panthéon plus sombre qu'avant.
+
+### Ce que j'attends de toi
+
+1. Regarder les scènes avec la nouvelle lumière et dire si le Panthéon est trop sombre.
+2. Regarder Alésia et Actium, et confirmer l'échelle de 60 soldats par figurine.
+3. Toujours valables : mesures du HUD sur ta machine, relecture de `docs/A_VERIFIER.md`.
