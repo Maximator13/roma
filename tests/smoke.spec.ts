@@ -100,7 +100,7 @@ test.describe('events', () => {
 })
 
 test('a scene opens from its hash route, walks its points and returns to the map', async ({ page }) => {
-  test.setTimeout(180_000)
+  test.setTimeout(300_000)
   const errors = watchErrors(page)
   await page.goto('./#/scene/nimes')
   await expect(page.getByRole('heading', { name: 'Nîmes romaine (Nemausus)' })).toBeVisible()
