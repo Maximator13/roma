@@ -1,9 +1,12 @@
+import json
 import os
 import time
 
 import bmesh
 import bpy
 import numpy as np
+
+from .stage import export_glb
 
 GLTF_OUTPUT = "glTF Material Output"
 LIGHTMAP = "Lightmap"
@@ -12,7 +15,7 @@ NODE_LABEL = "baked_occlusion"
 
 
 class Atlas:
-    def __init__(self, name, objects, size, distance, unwrap="smart", samples=64, margin=0.004):
+    def __init__(self, name, objects, size, distance, unwrap="smart", samples=64, margin=0.004, strength=1.0):
         self.name = name
         self.objects = list(objects)
         self.size = size
@@ -20,6 +23,7 @@ class Atlas:
         self.unwrap = unwrap
         self.samples = samples
         self.margin = margin
+        self.strength = strength
 
 
 def gltf_output_group():
@@ -297,7 +301,7 @@ def bake_atlas(atlas, folder):
     pixels = np.empty(atlas.size * atlas.size * 4, dtype=np.float32)
     image.pixels.foreach_get(pixels)
     pixels = pixels.reshape(atlas.size, atlas.size, 4)
-    grey = smooth(pixels[..., 0], 1)
+    grey = 1.0 - atlas.strength * (1.0 - smooth(pixels[..., 0], 1))
     pixels[..., :3] = grey[..., None]
     image.pixels.foreach_set(pixels.ravel())
     image.filepath_raw = os.path.join(folder, f"ao_{atlas.name}.png")
@@ -334,3 +338,25 @@ def bake_occlusion(atlases, occluders, folder):
     scene.render.engine = engine
     report["total_seconds"] = round(time.perf_counter() - start, 1)
     return report
+
+
+def bake_scene(options, atlases, occluders, folder):
+    if options.get("bake") != "1":
+        return None
+    samples = int(options.get("bake_samples", 64))
+    chosen = [Atlas(name, [bpy.data.objects[key] for key in keys], size, distance, unwrap, samples, *margin)
+              for name, keys, size, distance, unwrap, *margin in atlases]
+    report = bake_occlusion(chosen, [bpy.data.objects[key] for key in occluders], folder)
+    print("BAKE", json.dumps(report), flush=True)
+    return report
+
+
+def rebake_scene(options, blend, glb, atlases, occluders, folder):
+    started = time.perf_counter()
+    bpy.ops.wm.open_mainfile(filepath=blend)
+    report = bake_scene(options, atlases, occluders, folder)
+    roots = [obj for obj in bpy.context.scene.objects if obj.parent is None]
+    export_seconds = export_glb(glb, roots)
+    print("REBAKE", json.dumps({"bake": report, "export_seconds": round(export_seconds, 1),
+                                "glb_bytes": os.path.getsize(glb),
+                                "total_seconds": round(time.perf_counter() - started, 1)}), flush=True)

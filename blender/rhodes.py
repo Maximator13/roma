@@ -23,6 +23,7 @@ from kit import rhodes_life as life
 from kit import rhodes_monuments as mon
 from kit import rhodes_plan as plan
 from kit import rhodes_terrain as rterrain
+from kit.bake import bake_scene, rebake_scene
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.materials import baked_material, save_pixels
 from kit.rhodes_materials import build_library, remap
@@ -33,6 +34,9 @@ from kit.terrain import point_in_polygon
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(PROJECT, ".cache", "scenes", "rhodes")
 BLEND = os.path.join(CACHE, "work", "rhodes.blend")
+BAKE_ATLASES = (("monument", ("colossus_static.00", "colossus_debris_static.00", "acropolis_static.00", "sanctuary_static.01",
+                              "stadium_static.00"), 2048, 12.0, "charts", 0.002),)
+BAKE_OCCLUDERS = ("terrain_00", "terrain_01", "terrain_10", "terrain_11", "avenue_static.03")
 SUN_AZIMUTH = 104.0
 SUN_ELEVATION = 25.0
 NEAR_TILES = (-1900.0, -2100.0, 1750.0, 2, 10.0, 2048)
@@ -1238,6 +1242,10 @@ def render_previews(options, points):
 
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake_scene(options, BLEND, os.path.join(CACHE, "rhodes.glb"), BAKE_ATLASES, BAKE_OCCLUDERS,
+                     os.path.join(CACHE, "textures"))
+        return
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
         stored = json.loads(bpy.context.scene.get("preview_points", "{}"))
@@ -1286,13 +1294,14 @@ def main():
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
     glb = os.path.join(CACHE, "rhodes.glb")
+    baked = bake_scene(options, BAKE_ATLASES, BAKE_OCCLUDERS, os.path.join(CACHE, "textures"))
     export_seconds = export_glb(glb, roots)
     report = {
         "sun": [SUN_AZIMUTH, SUN_ELEVATION],
         "counts": {"chunks": chunk_counts, "walls": wall_counts, "ships": ship_counts, "columns": column_counts,
                    "vegetation": vegetation_counts, "routes": route_counts, "life": life_counts, "effects": effects},
         "route_checks": route_report(scene),
-        "statistics": statistics, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
+        "statistics": statistics, "bake": baked, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
         "build_seconds": round(time.perf_counter() - started, 1), "terrain_source": rterrain.SOURCE,
         "texture_credits": credits,
         "colossus": {key: [round(v, 2) for v in value] for key, value in scene.marks.items() if key != "frame"},

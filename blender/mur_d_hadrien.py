@@ -18,6 +18,7 @@ from kit import mur_d_hadrien_fort as fort
 from kit import mur_d_hadrien_life as hlife
 from kit import mur_d_hadrien_plan as plan
 from kit import mur_d_hadrien_terrain as hterrain
+from kit.bake import bake_scene, rebake_scene
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.materials import baked_material, save_pixels
 from kit.pompei_terrain import smoothstep, world_noise
@@ -27,6 +28,8 @@ from kit.stage import camera, configure_render, evening_world, export_glb, group
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(PROJECT, ".cache", "scenes", "mur-d-hadrien")
 BLEND = os.path.join(CACHE, "work", "mur-d-hadrien.blend")
+BAKE_ATLASES = (("monument", ("walls_static.00", "fort_buildings_static.03", "rampart_static.00"), 2048, 12.0, "charts", 0.002),)
+BAKE_OCCLUDERS = ("terrain_near", "terrain_core_west", "terrain_core_east")
 SUN_AZIMUTH = 245.0
 SUN_ELEVATION = 17.0
 LENS = 28.0
@@ -869,6 +872,10 @@ def render_previews(options, points):
 
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake_scene(options, BLEND, os.path.join(CACHE, "mur-d-hadrien.glb"), BAKE_ATLASES, BAKE_OCCLUDERS,
+                     os.path.join(CACHE, "textures"))
+        return
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
         stored = json.loads(bpy.context.scene.get("preview_points", "{}"))
@@ -920,6 +927,7 @@ def main():
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
     glb = os.path.join(CACHE, "mur-d-hadrien.glb")
+    baked = bake_scene(options, BAKE_ATLASES, BAKE_OCCLUDERS, os.path.join(CACHE, "textures"))
     export_seconds = export_glb(glb, roots)
     report = {
         "sun": [SUN_AZIMUTH, SUN_ELEVATION], "lakes": terrain.lakes, "copernicus_fit": [terrain.fit_score,
@@ -927,7 +935,7 @@ def main():
         "counts": {"walls": wall_counts, "fort": fort_counts, "interior": interior, "outside": outside,
                    "props": prop_counts, "routes": route_counts, "life": life_counts, "effects": effects},
         "route_checks": route_report(scene),
-        "statistics": statistics, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
+        "statistics": statistics, "bake": baked, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
         "build_seconds": round(time.perf_counter() - started, 1), "terrain_source": hterrain.SOURCE,
         "texture_credits": credits,
         "structures": {kind: [[round(p.x, 1), round(p.y, 1), round(z, 1)] for p, _, z, _ in scene.features.get(kind, [])]

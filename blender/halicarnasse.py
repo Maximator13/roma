@@ -21,6 +21,7 @@ from kit import halicarnasse_life as life
 from kit import halicarnasse_mausoleum as maus
 from kit import halicarnasse_terrain as ter
 from kit import halicarnasse_theatre as theatre
+from kit.bake import bake_scene, rebake_scene
 from kit.colisee_monuments import simple_column, temple, unit_column
 from kit.colisee_terrain import graded_profile, road_blend
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
@@ -34,6 +35,10 @@ from kit.terrain import HeightField, grid_mesh, point_in_polygon, polygon_mask, 
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(PROJECT, ".cache", "scenes", "halicarnasse")
 BLEND = os.path.join(CACHE, "work", "halicarnasse.blend")
+BAKE_ATLASES = (("monument", ("mausolee_static", "theatre_static", "terrasse_static", "agora_static", "port_static", "palais_static",
+                              "sanctuaires_static"), 2048, 12.0, "charts", 0.002),
+                ("ground", ("sol_static",), 1024, 6.0, "planar"))
+BAKE_OCCLUDERS = ("terrain_near",)
 SUN_AZIMUTH = 255.0
 SUN_ELEVATION = 17.0
 SUN_COLOUR = (1.0, 0.80, 0.56)
@@ -1213,6 +1218,10 @@ def render_previews(options, views):
 
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake_scene(options, BLEND, os.path.join(CACHE, "halicarnasse.glb"), BAKE_ATLASES, BAKE_OCCLUDERS,
+                     os.path.join(CACHE, "textures"))
+        return
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
         stored = json.loads(bpy.context.scene.get("preview_points", "{}"))
@@ -1273,12 +1282,13 @@ def main():
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
     glb = os.path.join(CACHE, "halicarnasse.glb")
+    baked = bake_scene(options, BAKE_ATLASES, BAKE_OCCLUDERS, os.path.join(CACHE, "textures"))
     export_seconds = export_glb(glb, roots)
     report = {"sun": [SUN_AZIMUTH, SUN_ELEVATION], "plan": {k: round(v, 2) for k, v in plan.items() if isinstance(v, float)},
               "routes": route_counts, "route_problems": problems, "city": city_counts, "vegetation": vegetation_counts,
               "ships": ship_counts, "walls": wall_counts, "quay_segments": quay_segments, "columns": column_counts,
               "life": life_counts, "street_figures": figure_count, "smoke": smoke_count, "flocks": flock_count,
-              "statistics": statistics, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
+              "statistics": statistics, "bake": baked, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
               "elevation_source": [ter.DEM_URL.format(tile) for tile in ter.DEM_TILES], "elevation_licence": ter.DEM_LICENCE,
               "texture_credits": credits,
               "markers": {key: [[round(v, 2) for v in eye], [round(v, 2) for v in target]] for key, (eye, target) in points.items()},

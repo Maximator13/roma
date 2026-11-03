@@ -14,6 +14,7 @@ import numpy as np
 from mathutils import Matrix, Vector
 
 from kit import arles_crowds, arles_details, arles_life, arles_monuments, buildings, monuments, urban
+from kit.bake import bake_scene, rebake_scene
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.materials import baked_material, build_library, save_pixels
 from kit.orders import column
@@ -26,6 +27,9 @@ from kit.terrain import (ETALAB_LICENCE, RGE_ALTI_LAYER, GeoFrame, HeightField, 
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(PROJECT, ".cache", "scenes", "arles")
 BLEND = os.path.join(CACHE, "work", "arles.blend")
+BAKE_ATLASES = (("monument", ("forum_static", "arena_static", "terraces_static", "gates_static"), 2048, 12.0, "charts", 0.002),
+                ("theatre", ("theatre_static",), 2048, 12.0, "charts", 0.002, 0.55))
+BAKE_OCCLUDERS = ("terrain_00", "terrain_01", "terrain_10", "terrain_11", "terrain_detail")
 ORIGIN = (43.67697, 4.62747)
 GRID = math.radians(10.0)
 TRINQUETAILLE_GRID = math.radians(45.0)
@@ -2298,6 +2302,10 @@ def add_routes(scene, specs):
 
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake_scene(options, BLEND, os.path.join(CACHE, "arles.glb"), BAKE_ATLASES, BAKE_OCCLUDERS,
+                     os.path.join(CACHE, "textures"))
+        return
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
         stored = json.loads(bpy.context.scene.get("preview_points", "{}"))
@@ -2359,6 +2367,7 @@ def main():
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
     glb = os.path.join(CACHE, "arles.glb")
+    baked = bake_scene(options, BAKE_ATLASES, BAKE_OCCLUDERS, os.path.join(CACHE, "textures"))
     export_seconds = export_glb(glb, roots)
     counts = {"houses": house_counts, "trinquetaille": trinquetaille_counts, "walls": wall_counts,
               "vegetation": vegetation_counts, "tombs": tomb_count, "farms": len(farm_points),
@@ -2370,7 +2379,7 @@ def main():
               "circus": {"center": [round(v, 1) for v in circus.center], "bearing_degrees":
                          round((-math.degrees(circus.angle)) % 360, 1), "shift_from_documented_line": circus_shift},
               "sun": [SUN_AZIMUTH, SUN_ELEVATION], "counts": counts, "statistics": statistics,
-              "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
+              "bake": baked, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
               "elevation_sources": dem_urls, "elevation_licence": ETALAB_LICENCE,
               "hydrography": "IGN BD TOPO V3 surface_hydrographique, " + ETALAB_LICENCE,
               "texture_credits": credits,

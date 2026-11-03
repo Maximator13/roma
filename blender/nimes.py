@@ -14,6 +14,7 @@ from mathutils.bvhtree import BVHTree
 from mathutils.kdtree import KDTree
 
 from kit import buildings, materials, monuments, nimes_detail, nimes_figures, nimes_scenery, urban
+from kit.bake import bake_scene, rebake_scene
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.materials import baked_material, build_library, save_pixels
 from kit.orders import column
@@ -34,6 +35,10 @@ FAR_SPACING = 162.5
 SUN_AZIMUTH = 291.0
 SUN_ELEVATION = 12.0
 BLEND = os.path.join(CACHE, "work", "nimes.blend")
+BAKE_ATLASES = (("monument", ("forum_static", "amphitheatre_static", "gates_static", "tour_magne_static", "fontaine_static",
+                              "castellum_static"), 2048, 12.0, "charts", 0.002),
+                ("ground", ("ground_amphitheatre", "ground_castellum", "ground_porte_auguste"), 1024, 6.0, "planar"))
+BAKE_OCCLUDERS = ("terrain.001",)
 PITCH = 72.0
 STREET = 8.0
 U_OFFSET = 36.0
@@ -2174,6 +2179,10 @@ def render_previews(options, scene_points):
 
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake_scene(options, BLEND, os.path.join(CACHE, "nimes.glb"), BAKE_ATLASES, BAKE_OCCLUDERS,
+                     os.path.join(CACHE, "textures"))
+        return
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
         stored = json.loads(bpy.context.scene.get("preview_points", "{}"))
@@ -2262,10 +2271,11 @@ def main():
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
     glb = os.path.join(CACHE, "nimes.glb")
+    baked = bake_scene(options, BAKE_ATLASES, BAKE_OCCLUDERS, os.path.join(CACHE, "textures"))
     export_seconds = export_glb(glb, roots)
     report = {"datum_ngf_metres": round(float(datum), 2), "amphitheatre_ngf_metres": round(float(arena_level), 2),
               "sun": [SUN_AZIMUTH, SUN_ELEVATION], "counts": counts, "statistics": statistics,
-              "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
+              "bake": baked, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
               "elevation_sources": dem_urls, "elevation_licence": ETALAB_LICENCE, "texture_credits": credits,
               "terrain_infill": {"fort_vauban": FORT_VAUBAN, "embankments": EMBANKMENTS},
               "markers": {key: [list(map(lambda value: round(value, 2), eye)),

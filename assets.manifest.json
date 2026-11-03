@@ -17,10 +17,10 @@
     },
     {
       "path": "scenes/arles/arles.glb",
-      "bytes": 7758200,
-      "sha256": "d4937d58a3c0009f0d1f8ca87a589068cb1c5c2394f1112f03596b1fd4b9def1",
-      "release": "assets-v15",
-      "file": "d4937d58a3c0-arles.glb"
+      "bytes": 10571492,
+      "sha256": "484049b7177951b334a43b9cd96893c62517d8976f676554facb31a907b83c14",
+      "release": "assets-v34",
+      "file": "484049b71779-arles.glb"
     },
     {
       "path": "scenes/cannes/cannes.glb",
@@ -52,45 +52,45 @@
     },
     {
       "path": "scenes/gizeh/gizeh.glb",
-      "bytes": 10534940,
-      "sha256": "e88876b0bc78352fc5e37cbd93e18394366db23467b70757336dbfab77a6d0bb",
-      "release": "assets-v19",
-      "file": "e88876b0bc78-gizeh.glb"
+      "bytes": 11725360,
+      "sha256": "9805d91815e4f20a66ceb392e34c6b25befcf39e2f393fcd15934bf38c0eb0d2",
+      "release": "assets-v33",
+      "file": "9805d91815e4-gizeh.glb"
     },
     {
       "path": "scenes/halicarnasse/halicarnasse.glb",
-      "bytes": 8068628,
-      "sha256": "ddc42fe1499bbd03cd8959c8b5c651d34c7f0e0b48e5feb7ec132cb6445a0ead",
-      "release": "assets-v22",
-      "file": "ddc42fe1499b-halicarnasse.glb"
+      "bytes": 9364724,
+      "sha256": "ad6e74372933857482dea90fa2fd33185636a63b5982c51c6dc057a87c962427",
+      "release": "assets-v31",
+      "file": "ad6e74372933-halicarnasse.glb"
     },
     {
       "path": "scenes/mur-d-hadrien/mur-d-hadrien.glb",
-      "bytes": 9163464,
-      "sha256": "dcc0d9ff2158285ee333763bafa8e82d17fc6daf31fcda89ac30c2336372d29c",
-      "release": "assets-v24",
-      "file": "dcc0d9ff2158-mur-d-hadrien.glb"
+      "bytes": 10512208,
+      "sha256": "95f233d0f916795254778f9fbf9ecae51e9979485cffa6342c992c2f6e819e19",
+      "release": "assets-v29",
+      "file": "95f233d0f916-mur-d-hadrien.glb"
     },
     {
       "path": "scenes/nimes/nimes.glb",
-      "bytes": 8397984,
-      "sha256": "e8b6723f9150ef167866020e3d6c7968508feda6859efbd92be01c27326e2c01",
-      "release": "assets-v7",
-      "file": "e8b6723f9150-nimes.glb"
+      "bytes": 11552200,
+      "sha256": "b32daf223fd04b3f3338cd3e69c7f7148540bf8b4d590936520de7b221f185e3",
+      "release": "assets-v27",
+      "file": "b32daf223fd0-nimes.glb"
     },
     {
       "path": "scenes/olympie/olympie.glb",
-      "bytes": 11696248,
-      "sha256": "62f12d684b69f4436218627b2055f4ab653bb15d78c78d579bbf74aebafbccf6",
-      "release": "assets-v21",
-      "file": "62f12d684b69-olympie.glb"
+      "bytes": 13221760,
+      "sha256": "5752c9b599ee0d93eb33473c4108e3e6a4b75b415abe59006340315b9afcc511",
+      "release": "assets-v30",
+      "file": "5752c9b599ee-olympie.glb"
     },
     {
       "path": "scenes/pantheon/pantheon.glb",
-      "bytes": 8293552,
-      "sha256": "356690e404ac6928959b50c10ba0b8d998e1740cffc5d56bd1e10a0a89c73e12",
-      "release": "assets-v10",
-      "file": "356690e404ac-pantheon.glb"
+      "bytes": 9768032,
+      "sha256": "b91f60aa20280dd954f0e3d443931df8520730417df21e9a1281d109df5d714c",
+      "release": "assets-v28",
+      "file": "b91f60aa2028-pantheon.glb"
     },
     {
       "path": "scenes/pompei/pompei.glb",
@@ -108,10 +108,10 @@
     },
     {
       "path": "scenes/rhodes/rhodes.glb",
-      "bytes": 10504940,
-      "sha256": "f28fe87debe2b886486a2dcf3935d7b017397526920a324eacc40169c75fb8b7",
-      "release": "assets-v23",
-      "file": "f28fe87debe2-rhodes.glb"
+      "bytes": 11995288,
+      "sha256": "a8d631cdf8eafc409a8f9fea2fe566c04c4c35e4ad27530b6cad70d34df1caa9",
+      "release": "assets-v32",
+      "file": "a8d631cdf8ea-rhodes.glb"
     }
   ]
 }

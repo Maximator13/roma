@@ -19,6 +19,7 @@ from kit import gizeh_graffiti as ggraffiti
 from kit import gizeh_terrain as gterrain
 from kit import gizeh_weather as gweather
 from kit import nimes_detail
+from kit.bake import bake_scene, rebake_scene
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.gizeh_materials import build_library, remap
 from kit.gizeh_sphinx import sphinx
@@ -28,6 +29,9 @@ from kit.stage import camera, configure_render, evening_world, export_glb, group
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(PROJECT, ".cache", "scenes", "gizeh")
 BLEND = os.path.join(CACHE, "work", "gizeh.blend")
+BAKE_ATLASES = (("monument", ("sphinx_static.00", "sphinx_court_static.00", "temples_static.00", "enclosure_static.00",
+                              "queens_static.00"), 2048, 12.0, "charts", 0.002),)
+BAKE_OCCLUDERS = ("terrain_00", "terrain_01", "terrain_10", "terrain_11", "pyramids_static.00")
 SUN_AZIMUTH = 110.0
 SUN_ELEVATION = 14.0
 NEAR_TILES = (-1500.0, -1500.0, 1600.0, 2, 8.0, 2048)
@@ -804,6 +808,10 @@ def render_previews(options, points):
 
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake_scene(options, BLEND, os.path.join(CACHE, "gizeh.glb"), BAKE_ATLASES, BAKE_OCCLUDERS,
+                     os.path.join(CACHE, "textures"))
+        return
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
         stored = json.loads(bpy.context.scene.get("preview_points", "{}"))
@@ -853,13 +861,14 @@ def main():
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
     glb = os.path.join(CACHE, "gizeh.glb")
+    baked = bake_scene(options, BAKE_ATLASES, BAKE_OCCLUDERS, os.path.join(CACHE, "textures"))
     export_seconds = export_glb(glb, roots)
     report = {
         "sun": [SUN_AZIMUTH, SUN_ELEVATION], "levels": {k: round(v, 2) for k, v in terrain.levels.items()},
         "counts": {"mastabas": mastaba_counts, "village": village_counts, "trees": tree_counts, "rocks": rock_counts, "ships": ship_counts,
                    "routes": route_counts, "life": life_counts, "effects": effects},
         "route_checks": route_report(scene),
-        "statistics": statistics, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
+        "statistics": statistics, "bake": baked, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
         "build_seconds": round(time.perf_counter() - started, 1), "terrain_source": gterrain.SOURCE,
         "texture_credits": credits,
         "markers": {key: [[round(v, 2) for v in eye], [round(v, 2) for v in target]]

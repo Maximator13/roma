@@ -21,6 +21,7 @@ from kit import olympie_monuments as mon
 from kit import olympie_plan as plan
 from kit import olympie_terrain as oterrain
 from kit import olympie_zeus as zeus
+from kit.bake import bake_scene, rebake_scene
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.materials import baked_material, save_pixels
 from kit.nimes_figures import Look, person
@@ -31,6 +32,9 @@ from kit.stage import camera, configure_render, evening_world, export_glb, group
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(PROJECT, ".cache", "scenes", "olympie")
 BLEND = os.path.join(CACHE, "work", "olympie.blend")
+BAKE_ATLASES = (("monument", ("zeus_static.04", "altis_static.00", "stadium_static.00", "altar_static.00"), 2048, 12.0, "charts",
+                 0.002),)
+BAKE_OCCLUDERS = ("terrain_core", "terrain_near", "outer_static.00")
 SUN_AZIMUTH = 250.0
 SUN_ELEVATION = 40.0
 LENS = 27.8
@@ -1091,6 +1095,10 @@ def render_previews(options, points):
 
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake_scene(options, BLEND, os.path.join(CACHE, "olympie.glb"), BAKE_ATLASES, BAKE_OCCLUDERS,
+                     os.path.join(CACHE, "textures"))
+        return
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
         stored = json.loads(bpy.context.scene.get("preview_points", "{}"))
@@ -1144,6 +1152,7 @@ def main():
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
     glb = os.path.join(CACHE, "olympie.glb")
+    baked = bake_scene(options, BAKE_ATLASES, BAKE_OCCLUDERS, os.path.join(CACHE, "textures"))
     export_seconds = export_glb(glb, roots)
     report = {
         "sun": [SUN_AZIMUTH, SUN_ELEVATION],
@@ -1151,7 +1160,7 @@ def main():
                    "plants": plant_counts, "statues": statue_counts, "statue_spots": statue_count,
                    "camps": camp_counts, "camp_items": tent_count, "effects": effects},
         "route_checks": route_report(scene),
-        "statistics": statistics, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
+        "statistics": statistics, "bake": baked, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
         "build_seconds": round(time.perf_counter() - started, 1), "terrain_source": oterrain.SOURCE,
         "texture_credits": credits,
         "markers": {key: [[round(v, 2) for v in eye], [round(v, 2) for v in target]]

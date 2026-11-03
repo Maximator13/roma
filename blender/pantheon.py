@@ -14,6 +14,7 @@ from kit import pantheon_architecture as arch
 from kit import pantheon_city as city
 from kit import pantheon_detail as detail
 from kit import pantheon_refine as refine
+from kit.bake import bake_scene, rebake_scene
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.life import LEATHER
 from kit.nimes_figures import WALKERS, Look, person
@@ -23,6 +24,9 @@ from kit.stage import (camera, configure_render, export_glb, group_statistics, h
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(PROJECT, ".cache", "scenes", "pantheon")
 BLEND = os.path.join(CACHE, "work", "pantheon.blend")
+BAKE_ATLASES = (("monument", ("rotonde_static", "exterieur_static", "porche_static", "place_static"), 2048, 12.0, "charts", 0.002),
+                ("ground", ("rotonde_sol_static", "porche_sol_static", "place_sol_static"), 1024, 6.0, "planar"))
+BAKE_OCCLUDERS = ("terrain.001",)
 AXIS = math.radians(5.5)
 W = Matrix.Rotation(AXIS, 4, "Z")
 LATITUDE = city.ORIGIN[0]
@@ -726,6 +730,10 @@ def preview_views(points):
 
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake_scene(options, BLEND, os.path.join(CACHE, "pantheon.glb"), BAKE_ATLASES, BAKE_OCCLUDERS,
+                     os.path.join(CACHE, "textures"))
+        return
     sun = solar_noon(*DATE, LATITUDE)
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
@@ -755,11 +763,12 @@ def main():
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
     glb = os.path.join(CACHE, "pantheon.glb")
+    baked = bake_scene(options, BAKE_ATLASES, BAKE_OCCLUDERS, os.path.join(CACHE, "textures"))
     export_seconds = export_glb(glb, roots)
     report = {"sun": sun, "sunbeam": beam, "architecture": info, "occlusion": baked, "city": city_counts, "routes": route_counts,
               "life": {"areas": life_counts, "instances": placed, "figure_triangles": triangles, "smoke": smoke_count,
                        "flocks": flock_count, "walkers": list(WALKERS)},
-              "statistics": statistics, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
+              "statistics": statistics, "bake": baked, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
               "texture_credits": credits,
               "markers": {key: [[round(v, 2) for v in eye], [round(v, 2) for v in target]]
                           for key, (eye, target) in points.items()}}
