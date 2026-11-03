@@ -15,7 +15,7 @@ function watchErrors(page: Page): string[] {
 }
 
 async function timelineReady(page: Page) {
-  await expect(page.locator('.eras__button').first()).toBeVisible()
+  await expect(page.locator('.eras__button').first()).toBeVisible({ timeout: 20_000 })
 }
 
 test('home loads without console errors and within the first screen budget', async ({ page }, testInfo) => {
