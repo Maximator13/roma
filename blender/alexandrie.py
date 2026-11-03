@@ -22,6 +22,7 @@ from kit import alexandrie_terrain as aterrain
 from kit import alexandrie_weather as aweather
 from kit import colisee_monuments as cmon
 from kit import nimes_detail, nimes_figures
+from kit.bake import bake_scene, rebake_scene
 from kit.alexandrie_materials import build_library, remap
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.materials import baked_material, save_pixels
@@ -31,6 +32,11 @@ from kit.terrain import point_in_polygon
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(PROJECT, ".cache", "scenes", "alexandrie")
 BLEND = os.path.join(CACHE, "work", "alexandrie.blend")
+BAKE_ATLASES = (("pharos", ("pharos_static.00", "pharos_gilt_static.00", "pharos_court_static.00"), 2048, 12.0, "charts", 0.002),
+                ("monument", ("harbour_static.00", "caesareum_static.02", "emporion_static.00", "island_static.04"), 2048, 12.0,
+                 "charts", 0.002))
+BAKE_OCCLUDERS = ("terrain_00", "terrain_01", "terrain_10", "terrain_11", "heptastadion_static.02", "monuments_static.00",
+                  "palaces_static.06")
 SUN_AZIMUTH = 291.0
 SUN_ELEVATION = 12.0
 NEAR_TILES = (-3500.0, -1900.0, 2300.0, 2)
@@ -1328,6 +1334,10 @@ def render_previews(options, points):
 
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake_scene(options, BLEND, os.path.join(CACHE, "alexandrie.glb"), BAKE_ATLASES, BAKE_OCCLUDERS,
+                     os.path.join(CACHE, "textures"))
+        return
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
         stored = json.loads(bpy.context.scene.get("preview_points", "{}"))
@@ -1383,6 +1393,7 @@ def main():
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
     glb = os.path.join(CACHE, "alexandrie.glb")
+    baked = bake_scene(options, BAKE_ATLASES, BAKE_OCCLUDERS, os.path.join(CACHE, "textures"))
     export_seconds = export_glb(glb, roots)
     report = {
         "sun": [SUN_AZIMUTH, SUN_ELEVATION], "beacon": [round(v, 2) for v in beacon],
@@ -1390,7 +1401,7 @@ def main():
         "counts": {"chunks": chunk_counts, "ships": ship_counts, "routes": route_counts, "life": life_counts,
                    "effects": effects, "figures_estimate": sum(life_counts.values())},
         "route_checks": route_report(scene),
-        "statistics": statistics, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
+        "statistics": statistics, "bake": baked, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
         "build_seconds": round(time.perf_counter() - started, 1), "terrain_source": aterrain.SOURCE,
         "texture_credits": credits,
         "markers": {key: [[round(v, 2) for v in eye], [round(v, 2) for v in target]]

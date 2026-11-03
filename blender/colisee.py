@@ -21,6 +21,7 @@ from kit import colisee_materials
 from kit import colisee_monuments as mon
 from kit import colisee_terrain as ter
 from kit import pantheon_city as city
+from kit.bake import bake_scene, rebake_scene
 from kit.arles_crowds import spectator
 from kit.arles_monuments import strip_normals
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
@@ -34,6 +35,9 @@ from kit.terrain import HeightField, grid_mesh, polyline_distance, remove_faces_
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(PROJECT, ".cache", "scenes", "colisee")
 BLEND = os.path.join(CACHE, "work", "colisee.blend")
+BAKE_ATLASES = (("colisee", ("colisee_static", "colisee_cavea_static", "velarium_static"), 2048, 12.0, "charts", 0.002),
+                ("monument", ("forum_static", "velia_static", "arc_static"), 2048, 12.0, "charts", 0.002))
+BAKE_OCCLUDERS = ("terrain_near", "collines_static", "fora_static")
 DATUM = 21.0
 NEAR_HALF = 1000.0
 NEAR_SPACING = 12.5
@@ -1535,6 +1539,10 @@ def render_previews(options, views):
 
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake_scene(options, BLEND, os.path.join(CACHE, "colisee.glb"), BAKE_ATLASES, BAKE_OCCLUDERS,
+                     os.path.join(CACHE, "textures"))
+        return
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
         stored = json.loads(bpy.context.scene.get("preview_points", "{}"))
@@ -1583,11 +1591,12 @@ def main():
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
     glb = os.path.join(CACHE, "colisee.glb")
+    baked = bake_scene(options, BAKE_ATLASES, BAKE_OCCLUDERS, os.path.join(CACHE, "textures"))
     export_seconds = export_glb(glb, roots)
     report = {"datum_metres": DATUM, "sun": [SUN_AZIMUTH, SUN_ELEVATION], "colosseum_bearing": COL_BEARING,
               "bay_width": width, "crowd_bays_instanced": crowd_bays, "city": city_counts, "far_blocks": far_count,
               "trees": tree_counts, "routes": route_counts, "street_figures": street_count, "life": life_counts,
-              "smoke": smoke_count, "flocks": flock_count, "statistics": statistics, "glb_bytes": os.path.getsize(glb),
+              "smoke": smoke_count, "flocks": flock_count, "statistics": statistics, "bake": baked, "glb_bytes": os.path.getsize(glb),
               "export_seconds": round(export_seconds, 1), "elevation_source": dem_url,
               "elevation_licence": ter.TINITALY_LICENCE, "outer_elevation_source": scene.outer_url,
               "texture_credits": credits,

@@ -10,10 +10,10 @@
     },
     {
       "path": "scenes/alexandrie/alexandrie.glb",
-      "bytes": 6911200,
-      "sha256": "66b697b797bc79043a1dec3e29af0d338eea23672c25d6cea8ef726a91530efa",
-      "release": "assets-v13",
-      "file": "66b697b797bc-alexandrie.glb"
+      "bytes": 8758832,
+      "sha256": "a765a49ba38bae4964a38157afaf7c52a5d2e7609845c8da81ae80cd2db322e3",
+      "release": "assets-v38",
+      "file": "a765a49ba38b-alexandrie.glb"
     },
     {
       "path": "scenes/arles/arles.glb",
@@ -31,24 +31,24 @@
     },
     {
       "path": "scenes/colisee/colisee.glb",
-      "bytes": 8106468,
-      "sha256": "1373f24addbbfd5d4bd3c33b3d178d39723a656bc9bf0c201d891b8076f1fb5c",
-      "release": "assets-v12",
-      "file": "1373f24addbb-colisee.glb"
+      "bytes": 10719708,
+      "sha256": "530c24aee153f7676ace5e658ae9d6b27c3c257a2fca60584369455fe9239b87",
+      "release": "assets-v36",
+      "file": "530c24aee153-colisee.glb"
     },
     {
       "path": "scenes/constantinople/constantinople.glb",
-      "bytes": 14867628,
-      "sha256": "64984d698ee88163bb8262bd9eb8e4ee997eb838e310faa17201040505a33ab2",
-      "release": "assets-v18",
-      "file": "64984d698ee8-constantinople.glb"
+      "bytes": 16899724,
+      "sha256": "d146d1b1450715465de2941ca0cef55131f2a1a03825a1b0ba55ba53a5535e8b",
+      "release": "assets-v39",
+      "file": "d146d1b14507-constantinople.glb"
     },
     {
       "path": "scenes/ephese/ephese.glb",
-      "bytes": 11933784,
-      "sha256": "4b572473ecb0453d54fd08b7d4b75fc581a15fb19ccfcb5a41f91e6a44099473",
-      "release": "assets-v20",
-      "file": "4b572473ecb0-ephese.glb"
+      "bytes": 12855908,
+      "sha256": "4d5a368e99c03a2a0c1af247412f9ffa9a748d205e12caecb1882c32864d1b38",
+      "release": "assets-v35",
+      "file": "4d5a368e99c0-ephese.glb"
     },
     {
       "path": "scenes/gizeh/gizeh.glb",
@@ -94,10 +94,10 @@
     },
     {
       "path": "scenes/pompei/pompei.glb",
-      "bytes": 12550612,
-      "sha256": "c8ce72f96ef1144e58bcd2a8f9e1040a301920186d34d46fc968d0f2a840d1ca",
-      "release": "assets-v16",
-      "file": "c8ce72f96ef1-pompei.glb"
+      "bytes": 13495104,
+      "sha256": "9169067e16d443ad85100381f2f95f6d8e0c510d706fd580dff1bee036dbd9a7",
+      "release": "assets-v37",
+      "file": "9169067e16d4-pompei.glb"
     },
     {
       "path": "scenes/pont-du-gard/pont-du-gard.glb",

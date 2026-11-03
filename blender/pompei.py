@@ -20,6 +20,7 @@ from kit import pompei_plan as plan
 from kit import pompei_terrain as pterrain
 from kit import pompei_town as town
 from kit import pompei_weather
+from kit.bake import bake_scene, rebake_scene
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.materials import baked_material, save_pixels
 from kit.pompei_materials import build_library, remap
@@ -30,6 +31,10 @@ from kit.terrain import grid_mesh, point_in_polygon, polygon_mask, polyline_dist
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(PROJECT, ".cache", "scenes", "pompei")
 BLEND = os.path.join(CACHE, "work", "pompei.blend")
+BAKE_ATLASES = (("monument", ("forum_static.06", "monuments_static.01", "venus_static.00", "thermopolium_static.00",
+                              "amphitheatre_static.00", "gates_static.00"), 2048, 12.0, "charts", 0.002),)
+BAKE_OCCLUDERS = ("terrain.001", "streets.001", "town_es_static.00", "town_en_static.00", "town_ws_static.00", "town_wn_static.00",
+                  "walls_static.01", "vettii_static.01")
 SUN_AZIMUTH = 231.0
 SUN_ELEVATION = 51.0
 FIELD_ORIGIN = (-16500.0, -15500.0)
@@ -1462,6 +1467,10 @@ def render_previews(options, points):
 
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake_scene(options, BLEND, os.path.join(CACHE, "pompei.glb"), BAKE_ATLASES, BAKE_OCCLUDERS,
+                     os.path.join(CACHE, "textures"))
+        return
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
         stored = json.loads(bpy.context.scene.get("preview_points", "{}"))
@@ -1548,6 +1557,7 @@ def main():
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
     glb = os.path.join(CACHE, "pompei.glb")
+    baked = bake_scene(options, BAKE_ATLASES, BAKE_OCCLUDERS, os.path.join(CACHE, "textures"))
     export_seconds = export_glb(glb, roots)
     report = {
         "sun": [SUN_AZIMUTH, SUN_ELEVATION], "forum_level": round(level, 2),
@@ -1559,7 +1569,7 @@ def main():
                                                                                       gardens.items()},
                    "countryside": country, "routes": route_counts, "life": life_counts, "effects": effects},
         "shore": [round(shore.x, 1), round(shore.y, 1)],
-        "statistics": statistics, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
+        "statistics": statistics, "bake": baked, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
         "build_seconds": round(time.perf_counter() - started, 1),
         "elevation_source": pterrain.DEM_URL, "elevation_licence": pterrain.DEM_LICENCE,
         "texture_credits": credits,

@@ -22,6 +22,7 @@ from kit import ephese_gate as egate
 from kit import ephese_life as elife
 from kit import ephese_terrain as et
 from kit import nimes_detail, nimes_figures
+from kit.bake import bake_scene, rebake_scene
 from kit.ephese_materials import build_library, remap
 from kit.geometry import MeshBuilder, TemplateLibrary, ensure_collection, new_empty, new_object, placement, unique_object
 from kit.materials import baked_material, principled_material, save_pixels
@@ -31,6 +32,9 @@ from kit.terrain import point_in_polygon
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(PROJECT, ".cache", "scenes", "ephese")
 BLEND = os.path.join(CACHE, "work", "ephese.blend")
+BAKE_ATLASES = (("monument", ("artemision_static.05", "city_static.14"), 2048, 12.0, "charts", 0.002),)
+BAKE_OCCLUDERS = ("terrain_core", "terrain_east", "terrain_west", "city_monuments_static.00", "harbour_static.02", "altar_static.00",
+                  "sanctuary_ground_static.00")
 SUN_AZIMUTH = 245.0
 SUN_ELEVATION = 34.0
 LENS = 30.0
@@ -1385,6 +1389,10 @@ def render_previews(options, points):
 
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake_scene(options, BLEND, os.path.join(CACHE, "ephese.glb"), BAKE_ATLASES, BAKE_OCCLUDERS,
+                     os.path.join(CACHE, "textures"))
+        return
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
         stored = json.loads(bpy.context.scene.get("preview_points", "{}"))
@@ -1431,13 +1439,14 @@ def main():
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
     glb = os.path.join(CACHE, "ephese.glb")
+    baked = bake_scene(options, BAKE_ATLASES, BAKE_OCCLUDERS, os.path.join(CACHE, "textures"))
     export_seconds = export_glb(glb, roots)
     report = {
         "sun": [SUN_AZIMUTH, SUN_ELEVATION],
         "counts": {"chunks": chunk_counts, "countryside": countryside, "ships": ship_counts, "trees": tree_counts,
                    "columns": column_counts, "routes": route_counts, "life": life_counts, "effects": effects},
         "route_checks": route_report(scene), "terrain": terrain_stats, "water": water_stats,
-        "statistics": statistics, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
+        "statistics": statistics, "bake": baked, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
         "meshes": {key: len(mesh.polygons) for key, mesh in scene.library.meshes.items()},
         "build_seconds": round(time.perf_counter() - started, 1), "terrain_source": et.SOURCE,
         "terrain_licence": et.DEM_LICENCE, "texture_credits": credits,

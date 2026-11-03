@@ -17,6 +17,7 @@ from kit import buildings, constantinople_city as city, constantinople_life as l
 from kit import constantinople_monuments as mon
 from kit import constantinople_sophia as sophia
 from kit import constantinople_terrain as ter
+from kit.bake import bake_scene, rebake_scene
 from kit.arles_details import quadriga
 from kit.arles_life import amphora_pile, barrel_group, crane, sack_pile
 from kit.colisee_terrain import graded_profile, road_blend
@@ -34,6 +35,9 @@ from kit.terrain import HeightField, grid_mesh, polygon_mask, polyline_distance,
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(PROJECT, ".cache", "scenes", "constantinople")
 BLEND = os.path.join(CACHE, "work", "constantinople.blend")
+BAKE_ATLASES = (("sophia", ("sophia_static", "forum_static"), 2048, 12.0, "charts", 0.002),)
+BAKE_OCCLUDERS = ("terrain_near", "murailles_static", "palace_static", "ports_static", "sol_static", "hippodrome_static",
+                  "augusteon_static")
 SUN_AZIMUTH = 138.0
 SUN_ELEVATION = 13.0
 SUN_COLOUR = (1.0, 0.76, 0.52)
@@ -1419,6 +1423,10 @@ def render_previews(options, views):
 
 def main():
     options = arguments()
+    if options.get("reuse") == "1" and options.get("bake") is not None:
+        rebake_scene(options, BLEND, os.path.join(CACHE, "constantinople.glb"), BAKE_ATLASES, BAKE_OCCLUDERS,
+                     os.path.join(CACHE, "textures"))
+        return
     if options.get("reuse") == "1":
         bpy.ops.wm.open_mainfile(filepath=BLEND)
         stored = json.loads(bpy.context.scene.get("preview_points", "{}"))
@@ -1483,12 +1491,13 @@ def main():
     for key, value in statistics.items():
         print("GROUP", key, json.dumps(value), flush=True)
     glb = os.path.join(CACHE, "constantinople.glb")
+    baked = bake_scene(options, BAKE_ATLASES, BAKE_OCCLUDERS, os.path.join(CACHE, "textures"))
     export_seconds = export_glb(glb, roots)
     report = {"sun": [SUN_AZIMUTH, SUN_ELEVATION], "levels": {k: round(v, 2) for k, v in levels.items() if isinstance(v, float)},
               "routes": route_counts, "route_problems": problems, "city": city_counts, "far_city": far_counts,
               "trees": tree_counts, "ships": ship_counts, "walls": wall_count, "life": life_counts, "crowds": crowd_counts,
               "street_figures": life_count, "smoke": smoke_count, "flocks": flock_count, "mese_length": round(mese_length, 1),
-              "statistics": statistics, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
+              "statistics": statistics, "bake": baked, "glb_bytes": os.path.getsize(glb), "export_seconds": round(export_seconds, 1),
               "elevation_source": [ter.DEM_URL.format(tile) for tile in ter.DEM_TILES], "elevation_licence": ter.DEM_LICENCE,
               "texture_credits": credits,
               "markers": {key: [[round(v, 2) for v in eye], [round(v, 2) for v in target]] for key, (eye, target) in points.items()},
