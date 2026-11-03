@@ -61,7 +61,14 @@ function markOpacity(attribute: InstancedBufferAttribute) {
 
 export function standingGeometry(source: Mesh): BufferGeometry {
   source.updateWorldMatrix(true, false)
-  const geometry = source.geometry.clone().applyMatrix4(source.matrixWorld)
+  const geometry = source.geometry.clone()
+  const position = geometry.getAttribute('position')
+  if (position.normalized) {
+    const values = new Float32Array(position.count * 3)
+    for (let index = 0; index < position.count; index += 1) values.set([position.getX(index), position.getY(index), position.getZ(index)], index * 3)
+    geometry.setAttribute('position', new BufferAttribute(values, 3))
+  }
+  geometry.applyMatrix4(source.matrixWorld)
   geometry.computeBoundingBox()
   const box = geometry.boundingBox
   if (box) geometry.translate(-(box.min.x + box.max.x) / 2, -box.min.y, -(box.min.z + box.max.z) / 2)

@@ -2,6 +2,13 @@
   "version": 1,
   "assets": [
     {
+      "path": "scenes/actium/actium.glb",
+      "bytes": 1475628,
+      "sha256": "3d32010301ea97f0557bc0fbba74b56b2668453aefcee99cb91d1a8394dbc76a",
+      "release": "assets-v25",
+      "file": "3d32010301ea-actium.glb"
+    },
+    {
       "path": "scenes/alexandrie/alexandrie.glb",
       "bytes": 6911200,
       "sha256": "66b697b797bc79043a1dec3e29af0d338eea23672c25d6cea8ef726a91530efa",

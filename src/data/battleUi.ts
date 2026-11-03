@@ -11,6 +11,6 @@ export const BATTLE_UI = {
   tactical: 'Vue tactique',
   ground: 'Vue rasante',
   scale: (soldiers: number) => `1 figurine = ${soldiers} soldats`,
-  exaggerated: (factor: number) => `taille des figurines exagérée (× ${factor})`,
+  exaggerated: (factor: number) => `taille exagérée (× ${factor})`,
   help: 'Espace : lecture ou pause. Glisser : tourner la vue. Molette ou pincement : rapprocher.',
 }

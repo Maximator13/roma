@@ -1332,5 +1332,113 @@ export const scenes: Scene[] = [
         ]
       }
     ]
+  },
+  {
+    "id": "actium",
+    "title": "Bataille d'Actium",
+    "status": "ready",
+    "year": -30,
+    "lat": 38.942,
+    "lon": 20.752,
+    "summary": "Le 2 septembre 31 av. J.-C., devant l'entrée du golfe d'Ambracie. Antoine aligne environ 170 navires lourds à tours, plus les 60 de Cléopâtre, contre environ 400 navires plus légers d'Octavien, commandés par Agrippa (chiffres de Florus et d'Orose). La position exacte des lignes n'est donnée par aucune source : la maquette suit une restitution moderne, sur le relief actuel (Copernicus) débarrassé de Préveza et de l'aéroport. Une maquette par navire, grossie une fois et demie en vue tactique.",
+    "points": [
+      {
+        "id": "le-face-a-face-du-matin",
+        "title": "Le face-à-face du matin",
+        "text": "Après quatre jours de vent fort, la mer est calme. Antoine a brûlé les navires qu'il ne pouvait armer et embarqué 20 000 fantassins et 2 000 archers. Au son de la trompette, sa flotte sort du détroit et se range en ligne serrée, un peu au large : Antoine et Publicola à droite, Marcus Octavius et Marcus Insteius au centre, Coelius à gauche, les 60 navires de Cléopâtre en arrière. Octavien, levé avant le jour, inspecte sa ligne en barque. Il s'arrête à environ 8 stades de l'ennemi, qu'il croit à l'ancre, et fait reposer les rames. Sur les deux rivages, les armées de Taurus et de Canidius regardent.",
+        "sources": [
+          "Plutarque, Antoine 64, 1 à 3 ; 65, 1 à 4",
+          "Dion Cassius L, 15, 4 ; 31, 3 à 5",
+          "Velleius Paterculus II, 85, 2",
+          "Orose VI, 19, 8 et 9"
+        ]
+      },
+      {
+        "id": "le-vent-de-mer",
+        "title": "Le vent de mer se lève",
+        "text": "À la sixième heure, un vent se lève de la mer. Impatients et confiants dans la hauteur de leurs navires, les hommes d'Antoine mettent en mouvement leur aile gauche. Octavien s'en réjouit et fait reculer son aile droite à la rame, pour attirer l'ennemi hors du détroit et l'envelopper avec ses navires agiles. Selon Dion, Octavien fait au contraire avancer ses deux ailes en croissant, et Antoine, craignant d'être tourné, s'avance à sa rencontre et engage le combat malgré lui.",
+        "sources": [
+          "Plutarque, Antoine 65, 4 et 5",
+          "Dion Cassius L, 31, 5 et 6"
+        ]
+      },
+      {
+        "id": "l-assaut-des-citadelles-flottantes",
+        "title": "L'assaut des citadelles flottantes",
+        "text": "Les navires ne se heurtent guère à l'éperon : ceux d'Antoine sont trop lourds pour prendre de l'élan, et ceux d'Octavien évitent les étraves blindées et les flancs de grosses poutres. Trois ou quatre navires d'Octavien entourent un seul géant d'Antoine, brisent ses rames, frappent, reculent, reviennent. Du haut des tours, on répond à la catapulte, aux pierres, aux flèches et aux grappins de fer. Plutarque compare le combat à une bataille sur terre, ou plutôt à l'assaut d'une ville fortifiée.",
+        "sources": [
+          "Plutarque, Antoine 66, 1 et 2",
+          "Dion Cassius L, 32, 1 à 8",
+          "Florus II, 21, 6",
+          "Orose VI, 19, 10"
+        ]
+      },
+      {
+        "id": "agrippa-deborde-au-nord",
+        "title": "Agrippa déborde au nord",
+        "text": "À l'aile gauche d'Octavien, Agrippa allonge sa ligne vers le nord pour envelopper l'ennemi. Publicola, à l'aile droite d'Antoine, doit s'étendre pour lui faire face et se sépare du centre. Le centre d'Antoine, désuni, se trouve engagé contre celui d'Arruntius. Le combat reste indécis et égal pour les deux camps.",
+        "sources": [
+          "Plutarque, Antoine 66, 3"
+        ]
+      },
+      {
+        "id": "la-percee-de-cleopatre",
+        "title": "La percée de Cléopâtre",
+        "text": "Soudain, les 60 navires de Cléopâtre hissent leurs voiles et s'élancent à travers les combattants, semant le désordre dans les rangs. Profitant du vent, ils filent vers le sud et le Péloponnèse. Les sources hostiles y voient la peur d'une femme ; beaucoup d'historiens depuis Kromayer y voient une percée préparée, qui a utilisé la brise de l'après-midi. L'intention d'Antoine reste discutée : fuir avec le plus de navires possible, ou vaincre et ne se replier qu'en cas d'échec.",
+        "sources": [
+          "Plutarque, Antoine 66, 3 et 4",
+          "Dion Cassius L, 33, 1 à 3",
+          "Orose VI, 19, 11",
+          "Florus II, 21, 8",
+          "Velleius Paterculus II, 85, 3",
+          "Murray et Petsas 1989, p. 132 et 133",
+          "Tarn 1931",
+          "Lange 2011"
+        ]
+      },
+      {
+        "id": "antoine-suit-la-reine",
+        "title": "Antoine suit la reine",
+        "text": "Voyant partir la reine, Antoine quitte son navire amiral pour un navire à cinq rangs, avec deux compagnons seulement, et s'élance à sa suite. Cléopâtre le reconnaît et le prend à son bord. Des liburnes les poursuivent ; seul Euryclès le Laconien attaque et capture l'autre navire amiral. Sur la ligne, des équipages hissent leurs voiles ou jettent tours et meubles à la mer pour s'alléger et fuir. Les navires d'Octavien, venus sans voiles, ne poursuivent pas.",
+        "sources": [
+          "Plutarque, Antoine 66, 5 ; 67, 1 à 3",
+          "Dion Cassius L, 33, 3 à 5",
+          "Orose VI, 19, 11"
+        ]
+      },
+      {
+        "id": "le-feu",
+        "title": "Le feu",
+        "text": "Les navires d'Antoine restés en ligne résistent comme des villes assiégées. Selon Dion, Octavien, qui voulait épargner leurs trésors, fait alors chercher du feu au camp : traits enflammés, torches et pots de poix embrasent les coques, et le vent attise l'incendie. Les autres sources mentionnent aussi des projectiles enflammés, mais l'ampleur de ce grand incendie final est discutée : peu d'historiens le prennent à la lettre. La maquette ne montre pas les flammes : les navires perdus y sont seulement chavirés.",
+        "sources": [
+          "Dion Cassius L, 34, 1 à 35, 6",
+          "Plutarque, Antoine 66, 2",
+          "Florus II, 21, 6",
+          "Virgile, Énéide VIII, 694 et 695",
+          "Murray et Petsas 1989, p. 134 et 135"
+        ]
+      },
+      {
+        "id": "la-flotte-cede",
+        "title": "La flotte cède à la dixième heure",
+        "text": "Longtemps, la flotte d'Antoine tient. Très éprouvée par la houle qui se lève contre elle, elle cède à contrecœur à la dixième heure. Octavien crie aux équipages qu'Antoine a fui et leur promet la vie sauve ; ils se rendent. Selon Orose, la victoire ne s'achève qu'au point du jour. Sur terre, l'armée d'Antoine attend son chef sept jours, puis, abandonnée par Canidius qui s'enfuit de nuit, passe au vainqueur.",
+        "sources": [
+          "Plutarque, Antoine 68, 1 à 3",
+          "Velleius Paterculus II, 85, 4 à 6",
+          "Orose VI, 19, 10 à 12",
+          "Dion Cassius LI, 1, 4 et 5"
+        ]
+      }
+    ],
+    "ambience": [
+      {
+        "layer": "wind",
+        "volume": 0.5
+      },
+      {
+        "layer": "harbour",
+        "volume": 0.35
+      }
+    ]
   }
 ]

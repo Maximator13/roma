@@ -953,7 +953,8 @@ export const events: HistoricalEvent[] = [
         "work": "The Battle of Actium: A Reconsideration, Classical Quarterly, 61, 2, 2011",
         "url": "https://www.cambridge.org/core/journals/classical-quarterly/article/battle-of-actium-a-reconsideration/0DD01E5FBBCA2198FB105C20014F9662"
       }
-    ]
+    ],
+    "scene": "actium"
   },
   {
     "id": "auguste-princeps",

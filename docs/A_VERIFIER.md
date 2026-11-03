@@ -1968,3 +1968,164 @@ Points que la recherche n'a pas pu trancher avec certitude. Chacun donne la meil
 - **Hypothèse retenue** : Niveau des lacs (Crag, Greenlee, Broomlee, Grindon) tiré du LiDAR actuel.
 - **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
 - **Décision** : à trancher
+
+## Scène de la bataille d'Actium (31 av. J.-C.)
+
+### 1. Nombre de navires engagés
+
+- **Hypothèse retenue** : Antoine environ 170 navires en ligne et 60 de Cléopâtre ; Octavien environ 400, avec une variante à 260.
+- **Pourquoi un doute** : Plutarque donne 500 navires à Antoine avant la guerre et 250 à Octavien ; Florus moins de 200 contre plus de 400 ; Orose 170 (plus 60) contre 230 éperonnés et 30 sans éperon. Le chiffre de 230 pour Antoine est un calcul moderne (170 + 60). Tarn supposait environ 400 de chaque côté. Les livres de Kromayer (1899), Carter (1970) et Murray (2012) n'ont pas été lus directement.
+- **Sources** : W. M. Murray et P. M. Petsas, Octavian's Campsite Memorial for the Actian War, Transactions of the American Philosophical Society 79, 4, Philadelphie, 1989 (NYU Ancient World Digital Library, isaw_aphs000029) : https://sites.dlib.nyu.edu/viewer/books/isaw_aphs000029; Plutarque, Antoine 61, 1 et 2; Florus II, 21, 5; Orose VI, 19, 6 à 11; W. W. Tarn, The Battle of Actium, Journal of Roman Studies 21, 1931, p. 173 à 199, DOI 10.2307/296516; G. W. Richardson, Actium, Journal of Roman Studies 27, 1937, p. 153 à 164, DOI 10.2307/296362
+- **Décision** : à trancher
+
+### 2. Commandants des ailes
+
+- **Hypothèse retenue** : Octavien : Agrippa à gauche, Arruntius au centre, Lurius (avec Octavien) à droite. Antoine : Antoine et Publicola à droite, M. Octavius et M. Insteius au centre, Coelius à gauche, avec mention de Sosius.
+- **Pourquoi un doute** : Plutarque place Agrippa à gauche et Octavien à droite, Arruntius au centre (d'après la note Loeb), Coelius à la gauche d'Antoine ; Velleius place Lurius à droite et Arruntius à gauche, et nomme Publicola et Sosius chefs de la flotte d'Antoine. La place de Sosius à l'aile gauche, fréquente chez les modernes, n'a pas été trouvée dans une source antique lue ; Pelling (commentaire de 1988, p. 281) n'a pas été lu directement. Dion dit à tort Sosius tué avant la bataille (L, 14, 2), puis le dit gracié (LI, 2, 4).
+- **Sources** : Plutarque, Antoine 65, 1 et 2 ; 66, 3; Velleius Paterculus II, 85, 2 ; 86, 2; Dion Cassius L, 14, 2 ; LI, 2, 4; C. B. R. Pelling, Plutarch: Life of Antony, Cambridge, 1988, p. 281 (non lu)
+- **Décision** : à trancher
+
+### 3. Plan d'Antoine : percée ou bataille
+
+- **Hypothèse retenue** : Présenter la percée préparée comme l'interprétation majoritaire, sans l'affirmer, et signaler les autres thèses.
+- **Pourquoi un doute** : Dion seul dit qu'Antoine voulait fuir (L, 15, 1 à 4) ; Kromayer (1899) défend une retraite préparée ; Ferrabino (1924) et Tarn (1931) une bataille pour vaincre, Tarn supposant qu'une partie de la flotte refusa le combat d'après Horace, Épodes 9, 19 et 20 ; Lange (2011) reconsidère la bataille. Résumé de Murray et Petsas : l'opinion suit surtout Kromayer.
+- **Sources** : W. M. Murray et P. M. Petsas, Octavian's Campsite Memorial for the Actian War, Transactions of the American Philosophical Society 79, 4, Philadelphie, 1989 (NYU Ancient World Digital Library, isaw_aphs000029) : https://sites.dlib.nyu.edu/viewer/books/isaw_aphs000029; W. W. Tarn, The Battle of Actium, Journal of Roman Studies 21, 1931, p. 173 à 199, DOI 10.2307/296516; C. H. Lange, The Battle of Actium: a reconsideration, Classical Quarterly 61, 2, 2011, p. 608 à 623, DOI 10.1017/S0009838811000139; Horace, Épodes 9 (texte latin) : https://www.thelatinlibrary.com/horace/ep.shtml; Dion Cassius, Histoire romaine L (trad. Cary, LacusCurtius) : https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Cassius_Dio/50*.html
+- **Décision** : à trancher
+
+### 4. Heure de la percée de Cléopâtre
+
+- **Hypothèse retenue** : Vers 13 h à 14 h (heure solaire), après le début du combat à la 6e heure et pendant la phase indécise d'Orose (5e à 7e heure).
+- **Pourquoi un doute** : Aucune source ne donne l'heure de la fuite ; les modernes la relient à la brise de l'après-midi.
+- **Sources** : Plutarque, Antoine 65, 4 ; 66, 3; Orose VI, 19, 10 et 11
+- **Décision** : à trancher
+
+### 5. Direction et horaire du vent
+
+- **Hypothèse retenue** : Brise de mer de nord-ouest qui se lève vers midi et forcit l'après-midi.
+- **Pourquoi un doute** : Plutarque dit seulement un vent venu de la mer à la 6e heure et une fuite vers le Péloponnèse ; la direction nord-ouest vient de Kromayer et Carter (non lus, cités par Murray et Petsas). À contrôler sur des relevés météorologiques de Préveza ou d'Aktio en fin d'été.
+- **Sources** : Plutarque, Antoine 65, 4 ; 66, 4; Dion Cassius L, 33, 3; Murray et Petsas 1989, p. 133, n. 11
+- **Décision** : à trancher
+
+### 6. Ampleur de l'incendie final
+
+- **Hypothèse retenue** : Quelques navires en feu, pas une flotte entière.
+- **Pourquoi un doute** : Le grand incendie ordonné par Octavien n'est que chez Dion ; Murray et Petsas notent que peu de gens le prennent à la lettre, tout en admettant l'usage du feu par les deux camps.
+- **Sources** : Dion Cassius L, 34 et 35; Murray et Petsas 1989, p. 134 et 135
+- **Décision** : à trancher
+
+### 7. Pertes et navires pris
+
+- **Hypothèse retenue** : Deux compteurs : au plus 5 000 morts (Mémoires d'Auguste, chez Plutarque) et 12 000 morts plus 6 000 blessés (Orose) ; 300 navires pris sur toute la campagne.
+- **Pourquoi un doute** : Kromayer, puis Murray et Petsas rapportent les 300 navires et peut-être les 5 000 morts à toute la guerre et non au seul 2 septembre ; Tarn donnait des pertes bien plus faibles.
+- **Sources** : Plutarque, Antoine 68, 1; Orose VI, 19, 12; Murray et Petsas 1989, p. 135 à 139
+- **Décision** : à trancher
+
+### 8. Équivalent julien du 2 septembre 31 av. J.-C.
+
+- **Hypothèse retenue** : Entre le 30 août et le 2 septembre juliens ; déclinaison solaire de 9 à 10°.
+- **Pourquoi un doute** : Les années bissextiles ont été mal intercalées après la réforme de César ; A. Jones estime que la date civile romaine tombe jusqu'à trois jours après la date julienne entre 42 av. J.-C. et 4 apr. J.-C. ; d'autres reconstructions (Bennett, Skeat) n'ont pas été lues.
+- **Sources** : A. Jones, Calendrica II: date equations from the reign of Augustus, Zeitschrift für Papyrologie und Epigraphik 132, 2000 : https://www.uni-koeln.de/phil-fak/ifa/zpe/downloads/2000/132pdf/132240.pdf
+- **Décision** : à trancher
+
+### 9. Lignes de rivage et largeur du détroit en 31 av. J.-C.
+
+- **Hypothèse retenue** : Détroit d'un peu plus de 4 stades (environ 740 m) selon Strabon ; rivages actuels conservés faute d'étude.
+- **Pourquoi un doute** : Le promontoire et la péninsule de Préveza sont bordés de lagunes et de cordons sableux mobiles ; aucune étude paléogéographique n'a été lue.
+- **Sources** : Strabon, Géographie VII, 7, 5 et 6 (trad. Jones, LacusCurtius) : https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Strabo/7G*.html; Dion Cassius L, 12, 7
+- **Décision** : à trancher
+
+### 10. Position exacte des lignes
+
+- **Hypothèse retenue** : Ligne d'Antoine en arc à environ 1 à 2 km à l'ouest de l'entrée du détroit ; ligne d'Octavien 1,5 km plus à l'ouest.
+- **Pourquoi un doute** : Les sources ne donnent que « un peu en dehors du détroit » et l'écart de 8 stades ; les restitutions de Kromayer et de Murray n'ont pas été lues directement.
+- **Sources** : Dion Cassius L, 31, 4; Plutarque, Antoine 65, 3 et 4
+- **Décision** : à trancher
+
+### 11. Forme des grands navires
+
+- **Hypothèse retenue** : Décères à deux ou trois rangs de rames, grand franc-bord, tours de bois, protections de bronze à la proue seulement.
+- **Pourquoi un doute** : Le système de nage des « huit » et des « dix » n'est pas connu avec certitude ; Plutarque parle de proues armées de bronze et de grosses poutres liées par du fer, pas d'un blindage complet de bronze.
+- **Sources** : Plutarque, Antoine 66, 1 et 2; Orose VI, 19, 9; Murray et Petsas 1989, chap. III
+- **Décision** : à trancher
+
+### 12. Nombre d'éperons du mémorial
+
+- **Hypothèse retenue** : De 33 à 35 éperons, d'après les 23 logements relevés en 1986.
+- **Pourquoi un doute** : Murray et Petsas (1989, p. 55 et 56) donnent 33 à 35 (minimum 33, peut-être 40) ; les fouilles de K. Zachos depuis 1995 ont pu modifier ce chiffre (Wikipédia : « au moins 36 »), non vérifié dans Zachos 2003 (Journal of Roman Archaeology 16, p. 64 à 92).
+- **Sources** : W. M. Murray et P. M. Petsas, Octavian's Campsite Memorial for the Actian War, Transactions of the American Philosophical Society 79, 4, Philadelphie, 1989 (NYU Ancient World Digital Library, isaw_aphs000029) : https://sites.dlib.nyu.edu/viewer/books/isaw_aphs000029; Wikipédia (anglais), Campsite Memorial of Augustus : https://en.wikipedia.org/wiki/Campsite_Memorial_of_Augustus
+- **Décision** : à trancher
+
+### 13. Dates de fondation de Nicopolis et des morts de 30 av. J.-C.
+
+- **Hypothèse retenue** : Nicopolis dédiée au début d'août 29 av. J.-C. ; prise d'Alexandrie le 1er août 30 ; mort de Cléopâtre vers le 10 ou le 12 août 30.
+- **Pourquoi un doute** : Les chronographes et Gagé divergent sur l'année des premiers jeux Actiaques (29 ou 28) ; le 1er août vient des calendriers romains et de Macrobe (non lus ici) ; Dion dit seulement que le jour de la prise d'Alexandrie fut déclaré faste ; le jour de la mort de Cléopâtre est discuté (Skeat, non lu).
+- **Sources** : Murray et Petsas 1989, p. 126 à 130; Dion Cassius LI, 19, 6
+- **Décision** : à trancher
+
+### 14. Anecdote de l'ânier
+
+- **Hypothèse retenue** : Simple légende sur un cartel éventuel, classée comme tradition.
+- **Pourquoi un doute** : Plutarque (65, 3) et Suétone (Auguste 96, 2) rapportent la rencontre d'un ânier au nom de bon augure ; récit édifiant, invérifiable.
+- **Sources** : Plutarque, Antoine 65, 3; Suétone, Vie d'Auguste 96, 2
+- **Décision** : à trancher
+
+### 15. Licence du relief Copernicus
+
+- **Hypothèse retenue** : Utiliser NASADEM (sans restriction) et garder Copernicus en option.
+- **Pourquoi un doute** : La licence Copernicus WorldDEM-30 est gratuite mais n'est ni CC0, ni domaine public, ni CC BY ; elle impose une mention et une clause de non-responsabilité : à toi de décider.
+- **Sources** : https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Data/DEM/resources/license/License-COPDEM-30.pdf; https://www.earthdata.nasa.gov/data/catalog/lpcloud-nasadem-hgt-001
+- **Décision** : à trancher
+
+### 16. Restitution
+
+- **Hypothèse retenue** : Lignes : Antoine sur un arc d'environ 3,3 km face au 275°, de 38,939 N 20,740 E à 38,919 N 20,738 E ; Octavien 1,5 km plus à l'ouest, sur environ 4,5 km, de 38,940 N 20,723 E à 38,913 N 20,720 E.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 17. Restitution
+
+- **Hypothèse retenue** : Mouvements : Antoine sort du golfe en convoi, Octavien arrive du nord le long de la péninsule ; la côte empêchant Agrippa de s'étendre au nord, il pivote pour envelopper.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 18. Restitution
+
+- **Hypothèse retenue** : Composition des divisions par type de navire : inventée.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 19. Restitution
+
+- **Hypothèse retenue** : Navires : décère de 45 m, franc-bord de 3 m et deux tours ; hexère de 40 m et une tour ; liburne de 23 m ; éperon de bronze chez Antoine seulement ; deux ou trois rangs de rames visibles.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 20. Restitution
+
+- **Hypothèse retenue** : Pertes de la maquette (navires chavirés) : environ 11 à 13 % chez Antoine, 3 % chez Octavien ; six liburnes en poursuite.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 21. Restitution
+
+- **Hypothèse retenue** : Heures des phases : 8 h 30, 11 h 30, 12 h 30, 13 h 12, 13 h 48, 14 h 18, 15 h 12, 16 h 18 ; déclinaison solaire 9,5°.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 22. Restitution
+
+- **Hypothèse retenue** : Camps : 520 × 420 m pour Octavien (point Pleiades), 700 × 520 m pour Antoine à 38,938 N 20,768 E ; temple d'Apollon à 38,925 N 20,752 E ; tours du détroit de 14 m à 38,951 N 20,756 E et 38,956 N 20,765 E ; murs vers Comaros non modélisés.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 23. Restitution
+
+- **Hypothèse retenue** : Côtes : tracé actuel de Copernicus conservé, basses terres relevées d'au moins 3 m ; armées de terre en 12 blocs schématiques de chaque côté.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher
+
+### 24. Restitution
+
+- **Hypothèse retenue** : Voiles de Cléopâtre roulées sur la vergue toute la journée (une seule maquette par division) ; feu non représenté.
+- **Pourquoi un doute** : choix de restitution fait pendant la construction de la scène, à confronter aux sources.
+- **Décision** : à trancher

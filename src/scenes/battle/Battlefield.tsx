@@ -7,6 +7,7 @@ import { useApp } from '../../store.ts'
 import { Atmosphere, type HazeSettings } from '../kit/Atmosphere.tsx'
 import { standingGeometry } from '../kit/Life.tsx'
 import { useSceneModel } from '../kit/model.ts'
+import { WATER_TIME } from '../kit/Water.ts'
 import type { SceneProps } from '../registry.ts'
 import { CameraRig } from './CameraRig.tsx'
 import { Controls } from './Controls.tsx'
@@ -137,6 +138,9 @@ export function Battlefield({ config, scene, insets, quality }: SceneProps & { c
     return { ...position, color: config.sunColor, intensity: config.sunIntensity }
   }, [battle, phaseIndex, config])
   usePlayback(battle, reducedMotion)
+  useFrame(({ clock }) => {
+    WATER_TIME.value = clock.elapsedTime
+  })
 
   return (
     <>
