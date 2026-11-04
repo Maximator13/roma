@@ -24,6 +24,7 @@ import { prefersReducedMotion } from '../../core/motion.ts'
 import type { QualityTier } from '../../stage/quality.ts'
 import type { SceneModel } from './model.ts'
 import { pingPong, pointAlong, routeFrom, walkerCount, type Route } from './paths.ts'
+import { drape, floorOf } from './surface.ts'
 
 const WALKER_SPACING = 22
 const WALKERS_PER_ROUTE = 12
@@ -83,11 +84,11 @@ interface Walker {
   speed: number
 }
 
-function planWalkers(routes: Map<string, Vector3[]>, variants: number, density: number): Walker[] {
+function planWalkers(routes: Iterable<Vector3[]>, variants: number, density: number): Walker[] {
   const plan: Walker[] = []
   const slots = new Array<number>(variants).fill(0)
   let index = 0
-  for (const points of routes.values()) {
+  for (const points of routes) {
     if (points.length < 2) continue
     const route = routeFrom(points)
     const count = Math.max(1, Math.round(walkerCount(route.total, WALKER_SPACING, WALKERS_PER_ROUTE) * density))
@@ -103,7 +104,13 @@ function planWalkers(routes: Map<string, Vector3[]>, variants: number, density: 
 
 function Walkers({ model, density, shadows }: { model: SceneModel; density: number; shadows: boolean }) {
   const reducedMotion = useMemo(() => prefersReducedMotion(), [])
-  const plan = useMemo(() => planWalkers(model.routes, model.walkers.length, density), [model, density])
+  const routes = useMemo(() => {
+    const lines = [...model.routes.values()].filter((points) => points.length > 1)
+    const walkers = new Set<unknown>(model.walkers)
+    const floor = floorOf(model.root, lines, (mesh) => walkers.has(mesh))
+    return lines.map((points) => drape(points, floor))
+  }, [model])
+  const plan = useMemo(() => planWalkers(routes, model.walkers.length, density), [routes, model, density])
   const meshes = useMemo(
     () =>
       model.walkers.map((source: Mesh, variant) => {
